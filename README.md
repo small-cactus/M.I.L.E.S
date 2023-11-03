@@ -1,6 +1,6 @@
 # 🎙️ **M.I.L.E.S**
 
-> **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by ChatGPT. Enhance your day with swift voice commands and state-of-the-art language processing.
+> **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by the same technology used in ChatGPT. Enhance your day with swift voice commands and state-of-the-art language processing.
 
 <p align="center">
   <img src="miles_logo.png" width="200">
