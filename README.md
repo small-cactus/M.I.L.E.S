@@ -5,6 +5,7 @@
 <p align="center">
   <img src="miles_logo.png" width="200">
 </p>
+
 ## 🌐 **Core Features**
 - 📡 **Powered by ChatGPT:** Runs on the **GPT-3.5-Turbo** model out of the box, but easily switchable to **GPT-4** via `main.py`.
 - 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice commands. *(Requires Spotify Premium)*
