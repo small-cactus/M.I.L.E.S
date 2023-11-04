@@ -37,7 +37,7 @@
 - [Placeholder for Troubleshooting Step 3]
 
 ## ✨ **Highlights & Features**
-- **Unrestricted Interaction**: M.I.L.E.S does not impose a token limit, this means you'll be twiddling your thumbs for if you submit a long request.
+- **Unrestricted Interaction**: M.I.L.E.S does not impose a token limit, this means you'll be twiddling your thumbs if you submit a long request.
 - **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary.
 - **Customization**: Modify system prompts and wake word within the `main.py` file.
 - **Flexible Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or any phrase beginning with "Miles", the system responds accurately. Optimized detection ensures minimal errors even amidst noise or continuous speech.
