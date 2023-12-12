@@ -7,7 +7,7 @@
 </p>
 
 ## 🌐 **Core Features**
-- 📡 **Powered by AI language models:** Runs on the **GPT-3.5-Turbo** model out of the box, but easily switchable to **GPT-4** via `main.py`.
+- 📡 **Powered by AI language models:** Operated by **GPT-4-Turbo** model out of the box, but easily switchable to **any other OpenAI model** via `main.py`.
 - 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice, and via the UI. *(Requires Spotify Premium)*
 - ☀️ **Weather Capabilities:** Stay updated with real-time weather data.
 
@@ -38,18 +38,24 @@
 
 ## ✨ **Highlights & Features**
 - **Unrestricted Interaction**: M.I.L.E.S has no token limit, this means you might be twiddling your thumbs if you submit a long request.
-- **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary.
-- **Customization**: Modify system prompts and wake word within the `main.py` file.
-- **Flexible Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or any phrase beginning with "Miles", the system responds accurately. Optimized detection ensures minimal errors even amidst noise or continuous speech.
+  
+- **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary. It's basically magic in a bottle, but not it a bottle, or magic.
+  
+- **Customization**: Modify system prompts and wake word within the `main.py` file. (Shhh don't tell anyone but... Miles is soon gonna be able to update his own system prompt if he finds that it limits him in helping you, don't worry, it reverts back to anything you had it set to after miles is finished with it! And yes you can turn this feature off.)
+  
+- **World Class Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or literaly any starting phrase that ends with "Miles", the system WILL respond accurately. We have about a 10% fail rate for hearing if it's been activated, and a 0% accidental activation error rate.
+  
 - **Advanced Audio Processing**: M.I.L.E.S excels in noisy environments, ensuring accurate command interpretation.
+  
 - **Graphics & Interface**: Features a dynamic interface displaying Spotify song playback, weather cards, user interactions, and ongoing actions.
 
 ## 📜 **Changelog**
-- 🔊 **Realistic Voice Upgrade with ElevenLabs**: M.I.L.E.S now utilizes ElevenLabs for Text-To-Speech, elevating the voice quality to ultra-realistic levels. Note: Should you exhaust your free characters, M.I.L.E.S will seamlessly switch to a basic TTS to ensure uninterrupted communication.
-- 📢 **Enhanced Wake Word Detection**: M.I.L.E.S now leverages the same technology used in leading smart home products like Google Home and Alexa for unmatched wake word detection accuracy.
+- 🔊 **Realistic Voice Upgrade with OpenAI TTS**: M.I.L.E.S now utilizes OpenAI TTS for Text-To-Speech, elevating the voice quality to ultra-realistic levels. M.I.L.E.S will seamlessly switch to a basic TTS if any errors are detected.
+- 📢 **Enhanced Wake Word Detection**: M.I.L.E.S now leverages the same technology used in leading smart home products like Google Home and Alexa for unmatched wake word detection accuracy, this means you don't have to wait for the program to listen and stop listening, now it's always listening!
 - 🔢 **Enhanced Calculator Operations**: M.I.L.E.S now efficiently handles multiple simultaneous calculations at the same time.
 - 💡 **Improved UI**: Introducing a graphical interface for better user interactions.
 - 🌦️ **Enhancements**: Augmented weather data, permanent memory, and date + time support.
+- 🎲 **Multi-Task Mode** M.I.L.E.S can use up to 3 tools at once, this means M.I.L.E.S can find the weather in Shanghai, calculate the temp difference if it were to drop 23.883 degrees, and then store it in memory to call upon later, all before he even responds to you. That's the future.
 
 ## 🆕 **Upcoming Features**
 - 🌐 **Web Browsing**: M.I.L.E.S will soon be able to search anything on the entire internet to gain more knowledge and assist you further.
