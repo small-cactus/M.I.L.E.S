@@ -56,6 +56,7 @@
 - 💡 **Improved UI**: Introducing a graphical interface for better user interactions.
 - 🌦️ **Enhancements**: Augmented weather data, permanent memory, and date + time support.
 - 🎲 **Multi-Task Mode** M.I.L.E.S can use up to 3 tools at once, this means M.I.L.E.S can find the weather in Shanghai, calculate the temp difference if it were to drop 23.883 degrees, and then store it in memory to call upon later, all before he even responds to you. That's the future.
+- 💻 **Cross Platform!** M.I.L.E.S now supports MacOS and Windows 10/11.
 
 ## 🆕 **Upcoming Features**
 - 🌐 **Web Browsing**: M.I.L.E.S will soon be able to search anything on the entire internet to gain more knowledge and assist you further.
