@@ -13,7 +13,7 @@
 
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
 
-
+  <br><br>
 
 ## 🚀 **Prerequisites (Mac install)**
 
@@ -33,6 +33,8 @@ Before starting, ensure the following are installed on your Mac:
   ```
   brew install node
   ```
+
+  <br><br>
 
 ## 🛠️ **Getting Started (Windows and Mac)**
 
@@ -57,16 +59,74 @@ Follow these steps to set up the project on your local machine:
    ```
    npm start
    ```
+  <br><br>
 
-## ⚙️ **Configuration**
-### Spotify Client ID & Client Secret Setup
-1. **Create a Spotify Account**: If not already, sign up on [Spotify's website](https://www.spotify.com/).
-2. **Access Developer Dashboard**: Head to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/). Log in using your Spotify credentials.
-3. **New App Creation**: Click "Create an App" ➔ App Name: `Miles` ➔ App Description: `Voice assistant`.
-4. **Retrieve Credentials**: On your app's dashboard, find the **Client ID**. Copy this to the `apikey.py` file. Click "Show Client Secret" to reveal and copy your **Client Secret** to the same file.
-5. **Test the Integration**: Launch Spotify ➔ Start M.I.L.E.S ➔ Request a song playback.
+# ⚙️ **Configurations:**
+Follow these steps to set up Miles.
+
+## 🔑 OpenAI API Integration (REQUIRED)
+### 1️⃣ Sign Up for OpenAI
+- Begin by signing up for an OpenAI account, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
+
+### 2️⃣ Access Your API Key
+- After logging in, choose "API", then click your profile in the top right, navigate to the API section to find your API key.
+
+### 3️⃣ Update the `apikey.py` File
+- Copy the API key from OpenAI.
+- Locate the `apikey.py` file in your local copy of the Miles project.
+- Insert your OpenAI API key into the `apikey.py` file where it says OpenAI api key.
+
+
+<br><br>
+
+## 🎵 Spotify Integration
+Follow the steps below to set up Spotify integration:
+
+### 1️⃣ Create a Spotify Account
+Start by [creating or accessing your Spotify account](https://www.spotify.com/).
+
+### 2️⃣ Access the Spotify Developer Dashboard
+- Navigate to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) and sign in.
+
+### 3️⃣ Create a New App
+- After logging in, click on the "Create an App" button.
+- Fill in:
+  - **App Name**: `Miles`
+  - **App Description**: `Helpful voice assistant`
+  - **Redirect URL**: `http://localhost:8080/callback`
+
+### 4️⃣ Get Your Client ID and Client Secret
+- On your app's dashboard, locate your **Client ID** and enter it in the `apikey.py` file.
+- Click "Show Client Secret" to retrieve your **Client Secret** and add it to the `apikey.py` file as well.
+
+### 5️⃣ Music With Miles
+Initiate Miles and request your favorite songs!
+
+
+<br><br>
+## 🗣️ Picovoice Porcupine Wake Word Setup (REQUIRED)
+For enabling wake word detection in Miles, you'll need to obtain an API key from Picovoice Porcupine. Here's how to do it:
+
+### 1️⃣ Create a Picovoice Account
+- Sign up for a Picovoice account or log in if you already have one. You can do so [here](https://console.picovoice.ai/signup).
+
+### 2️⃣ Access the Picovoice Console
+- After logging in, head over to the [Picovoice Console](https://console.picovoice.ai/).
+
+### 3️⃣ Obtain Your API Key
+- In the console, you'll find an option to generate an API key. Follow the instructions to create one.
+- Once you have your API key, copy it.
+
+### 4️⃣ Update Your `apikey.py` File
+- In your local copy of the Miles project, locate the `apikey.py` file.
+- Paste the copied API key into this file, following the format provided in the file.
+
+- **All done! 🥳**
+
+<br><br>
 
 ## 🔍 **Troubleshooting**
+**This is a beta release, there are no troubleshooting steps at the moment, submit issues in githubs issue tracker for now.**
 - [Placeholder for Troubleshooting Step 1]
 - [Placeholder for Troubleshooting Step 2]
 - [Placeholder for Troubleshooting Step 3]
@@ -117,7 +177,7 @@ As we continue to push the boundaries of voice assistant technology with M.I.L.E
 
 - 🍎 **iOS App**: M.I.L.E.S is gearing up to join the Apple ecosystem. Our iOS app will bring the same intelligence and flair to Apple devices, tailored to meet the high standards of iOS users.
 
-- 🖥️ **Mac Support (Coming Very Soon)**: M.I.L.E.S's expansion to the Mac ecosystem is imminent. Mac users can soon expect a robust voice assistant experience optimized for macOS's unique features and strengths.
+- 🖥️ **Mac Support (Completed!)**: Completed!
 
 - 🏠 **Packaged Smart Home Product**: Transforming houses into smarter homes. The future will see M.I.L.E.S integrated into dedicated smart home products. Imagine a world where M.I.L.E.S orchestrates your lights, thermostats, security systems, and more, all through voice commands.
 
