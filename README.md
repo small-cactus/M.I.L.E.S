@@ -55,7 +55,7 @@ Follow these steps to set up the project on your local machine:
    npm install
    ```
 
-4. **Run the app**: In the project directory, run this command in the terimnal:
+4. **Run the app**: Complete the steps in Configurations section before starting the app, after that's done, while in the project directory, run this command in the terimnal:
    ```
    npm start
    ```
