@@ -13,15 +13,50 @@
 
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
 
-## 🚀 **Prerequisites**
-- [Placeholder for Prerequisite 1]
-- [Placeholder for Prerequisite 2]
-- [Placeholder for Prerequisite 3]
 
-## 🛠️ **Getting Started**
-1. [Placeholder for Installation Step 1]
-2. [Placeholder for Installation Step 2]
-3. [Placeholder for Installation Step 3]
+
+## 🚀 **Prerequisites (Mac install)**
+
+Before starting, ensure the following are installed on your Mac:
+
+- **Homebrew**: If Homebrew is not installed on your Mac, open Terminal and run the following command (copied from [brew.sh](https://brew.sh/)):
+  ```
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  ```
+  
+- **Python**: Install Python via Homebrew. Open Terminal and run:
+  ```
+  brew install python
+  ```
+
+- **Node.js and npm**: Install Node.js (which includes npm) using Homebrew:
+  ```
+  brew install node
+  ```
+
+## 🛠️ **Getting Started (Windows and Mac)**
+
+Follow these steps to set up the project on your local machine:
+
+1. **Clone the repository**: Clone the project to your computer.
+   ```
+   git clone https://github.com/small-cactus/M.I.L.E.S.git
+   ```
+
+2. **Install Python dependencies**: In the project directory, run the following command to install all required Python packages:
+   ```
+   pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio os-mac
+   ```
+
+3. **Install Node.js dependencies**: Still in the project directory, install the Node.js packages.
+   ```
+   npm install
+   ```
+
+4. **Run the app**: In the project directory, run this command in the terimnal:
+   ```
+   npm start
+   ```
 
 ## ⚙️ **Configuration**
 ### Spotify Client ID & Client Secret Setup
