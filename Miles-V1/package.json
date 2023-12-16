@@ -1,0 +1,15 @@
+{
+    "name": "ai-assistant-app",
+    "version": "1.0.0",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "dependencies": {
+        "electron": "latest",
+        "express": "^4.17.1",
+        "marked": "^9.1.5",
+        "socket.io": "^4.7.2",
+        "socket.io-client": "^4.7.2"
+    }
+}
