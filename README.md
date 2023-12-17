@@ -12,7 +12,12 @@
 - ☀️ **Weather Capabilities:** Stay updated with real-time weather data.
 
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
-
+  <br><br>
+  ## 🖥️ M.I.L.E.S Conversation screen
+  ![M.I.L.E.S Interface](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/conversation.webp)
+  <br><br>
+  ## 🔍 M.I.L.E.S Action notifications
+  ![M.I.L.E.S Actions](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/actions.webp)
   <br><br>
 
 ## 🚀 **Prerequisites (Mac install)**
