@@ -18,6 +18,15 @@
 - 🔊 **Wake word:** Our wake word detection is on par with smart home assistants.
 
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
+
+## 📄 **What commands are there?**
+There are no commands, Miles is powered by a language model, not code, say anything however you like and it will work, want to play Spotify? You can just say this:
+- "Miles, prithee, lend thine ear to Spotify's sweet melodies and grace us with a song that doth stir the soul."
+  ### or this:
+- "Miles, play that one song that was in the spongebob movie."
+  ### or this:
+- "Miles, in yonder digital realm of Spotify, embark thou upon a quest to unleash the timeless lay 'Never Gonna Give You Up', that we may be ensnared in its melodious rapture most unexpected."
+
   <br><br>
   ## 🖥️ M.I.L.E.S Conversation screen
   ![M.I.L.E.S Interface](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/conversation.webp)
