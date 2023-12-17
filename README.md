@@ -8,8 +8,14 @@
 
 ## 🌐 **Core Features**
 - 📡 **Powered by AI language models:** Operated by **GPT-4-Turbo** model out of the box, but easily switchable to **any other OpenAI model** via `main.py`.
-- 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice, and via the UI. *(Requires Spotify Premium)*
+- 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice. *(Requires Spotify Premium)*
 - ☀️ **Weather Capabilities:** Stay updated with real-time weather data.
+- 🧠 **Persistant Memory:** Ask Miles to remember something, ask him to forget it.
+- 🧮 **Calculator:** Don't rely on language model math, Miles can use a real calculator.
+- 🧩 **Multi-tasker:** Miles can use up to 3 tools at the same time.
+- 🤔 **Context:** Miles has context about him, who made him, the app he's in, and who you are through things you ask him to remember.
+- 🎙️ **Realistic Voice:** Miles doesn't sound like a robot, he sounds real.
+- 🔊 **Wake word:** Our wake word detection is on par with smart home assistants.
 
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
   <br><br>
