@@ -100,7 +100,7 @@ Follow these steps to set up Miles.
 
 <br><br>
 
-## 🎵 Spotify Integration
+## 🎵 Spotify Integration (REQUIRED even if you dont have premium, Miles won't start on mac without this completed)
 Follow the steps below to set up Spotify integration:
 
 ### 1️⃣ Create a Spotify Account
