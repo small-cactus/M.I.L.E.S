@@ -46,8 +46,9 @@ Before starting, ensure the following are installed on your Mac:
   ```
   
 - **Python**: Install Python via Homebrew. Open Terminal and run:
+- ⚠️ **This command is needed, if you have python 3.12 or newer, it will not work. Also, if you choose to make a venv, all virtual environments will have to be made using python 3.11 or it will not work.**
   ```
-  brew install python
+  brew install python@3.11
   ```
 
 - **Node.js and npm**: Install Node.js (which includes npm) using Homebrew:
@@ -68,17 +69,12 @@ Follow these steps to set up the project on your local machine:
 
 2. **Install Python dependencies**: In the project directory, run the following command to install all required Python packages:
    ```
-   pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio os-mac
+   pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio
    ```
 
 3. **Install Node.js dependencies**: Still in the project directory, install the Node.js packages.
    ```
    npm install
-   ```
-
-4. **Run the app**: Complete the steps in Configurations section before starting the app, after that's done, while in the project directory, run this command in the terimnal:
-   ```
-   npm start
    ```
   <br><br>
 
@@ -86,8 +82,9 @@ Follow these steps to set up the project on your local machine:
 Follow these steps to set up Miles.
 
 ## 🔑 OpenAI API Integration (REQUIRED)
+- **WARNING**: ⚠️ **If you do not have access to gpt-4-1106-preview, Miles will not answer you, instead, use CMD or CTRL + F in `main.py` to search for `model="gpt-4-1106-preview",` => and replace that full line with this instead: `model="gpt-3.5-turbo-1106",`. You should have to do this 2 times in the main.py file.**
 ### 1️⃣ Sign Up for OpenAI
-- Begin by signing up for an OpenAI account, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
+- Begin by signing into your OpenAI account, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
 
 ### 2️⃣ Access Your API Key
 - After logging in, choose "API", then click your profile in the top right, navigate to the API section to find your API key.
@@ -100,7 +97,7 @@ Follow these steps to set up Miles.
 
 <br><br>
 
-## 🎵 Spotify Integration (REQUIRED even if you dont have premium, Miles won't start on mac without this completed)
+## 🎵 Spotify Integration (⚠️ REQUIRED even if you dont have premium, Miles won't start on mac without this completed)
 Follow the steps below to set up Spotify integration:
 
 ### 1️⃣ Create a Spotify Account
@@ -125,12 +122,12 @@ Initiate Miles and request your favorite songs!
 
 
 <br><br>
-## 🗣️ Picovoice Porcupine Wake Word Setup (REQUIRED)
+## 🗣️ Picovoice Porcupine Wake Word Setup (⚠️REQUIRED)
 For enabling wake word detection in Miles, you'll need to obtain an API key from Picovoice Porcupine. Here's how to do it:
 
 ### 1️⃣ Create a Picovoice Account
 - Sign up for a Picovoice account or log in if you already have one. You can do so [here](https://console.picovoice.ai/signup).
-
+- ⚠️ **It will ask for a company email, just enter your personal email, it has no difference.**
 ### 2️⃣ Access the Picovoice Console
 - After logging in, head over to the [Picovoice Console](https://console.picovoice.ai/).
 
@@ -142,15 +139,51 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 - In your local copy of the Miles project, locate the `apikey.py` file.
 - Paste the copied API key into this file, following the format provided in the file.
 
-- **All done! 🥳**
+- **Run the app**: While in the project directory, run this command in the terimnal:
+   ```
+   npm start
+   ```
+- **All done! 🥳** Say "Miles, are you there?" to see if it works.
+
 
 <br><br>
 
 ## 🔍 **Troubleshooting**
-**This is a beta release, there are no troubleshooting steps at the moment, submit issues in githubs issue tracker for now.**
-- [Placeholder for Troubleshooting Step 1]
-- [Placeholder for Troubleshooting Step 2]
-- [Placeholder for Troubleshooting Step 3]
+**This is a beta release, troubleshooting steps are based off of nothing but hopes and dreams of what I think might go wrong, submit issues in githubs issue tracker for now if the steps don't help.**
+### **It won't start**
+1. Check if you have access to the model this project uses, if you don't, follow the instructions in OpenAI section above.
+2. Check if you have python 3.11, open terminal and run `brew search python`. Check for a green checkmark next to python 3.11, if there isn't, refer to inital setup instructions.
+
+### **Nothing works and I'm going crazy!!!**
+1. Calm down
+2. Using the same commands in the inital setup, replace `install` with `uninstall` and click enter.
+3. Now we're going to make a virtual environment, this seperates my project from anything on your Mac that might be conflicting with it, don't worry, this is easy.
+4. **First,** make a new folder anywhere, name it anything you want, but let's call it `virtual-env`.
+5. **Next,** right click the folder and click open in terminal, next enter the following command `python3.11 -m venv myenv`.
+6. **Next,** now that we have the environment created, we need to activate it, run the command `source myenv/bin/activate`.
+7. **Lastly,** if you can see the little (myenv) on the left of the command line, you did it right! if not, delete the folder and try again.
+8. **What next?** Now that you have the virtual environment set up, just go through the setup as normal like it's written above. Just make sure you use the `cd` command followed by a file or folder directory instead of opening the terminal directly from the file. Good luck!
+
+### **All hope is lost, I am so lost.**
+1. No worries!
+2. Log into ChatGPT.
+3. Paste the entirety of this text into ChatGPT. You may need to do small portions and go 1 at a time.
+4. Ask ChatGPT "`How do I install this? I'm so confused!`"
+5. Hope and pray that it understands.
+6. Good luck.
+
+### **All I ask for is mercy, these funny magic words are nonsense, what even is a command????????**
+1. **Beginner's Quest:** Google "Free online coding courses for beginners" and pick one.
+2. **Three-Month Challenge:** Spend the next three months learning the basics of coding.
+3. **Immerse Yourself:** Surround your workspace with coding notes and inspirational quotes.
+4. **YouTube Marathon:** Watch as many coding tutorials as you can until you dream in code.
+5. **Community Engagement:** Join online coding forums and share your journey.
+6. **The Return:** Armed with knowledge, revisit this project and conquer the commands.
+7. **Wisdom of the Ages:** If stuck, seek advice from the oldest tech wizard you know.
+8. **Celebrate Your Triumph:** Regardless of the outcome, treat yourself for embarking on this coding adventure.
+
+
+
 
 ## ✨ **Highlights & Features**
 - **Unrestricted Interaction**: M.I.L.E.S has no token limit, this means you might be twiddling your thumbs if you submit a long request.
