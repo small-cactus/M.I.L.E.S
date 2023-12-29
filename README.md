@@ -58,7 +58,7 @@ Before starting, ensure the following are installed on your Mac:
 
   <br><br>
 
-## 🛠️ **Getting Started (Windows and Mac)**
+## 🛠️ **Getting Started (Mac and Windows)**
 Don't even try to run this on windows, I have a working windows copy, but every other step in this page is meant for Mac.
 Follow these steps to set up the project on your local machine:
 
