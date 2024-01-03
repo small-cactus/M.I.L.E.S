@@ -190,7 +190,7 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
   
 - **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary. It's basically magic in a bottle, but not it a bottle, or magic.
   
-- **Customization**: Modify system prompts and wake word within the `main.py` file. (Shhh don't tell anyone but... Miles is soon gonna be able to update his own system prompt if he finds that it limits him in helping you, don't worry, it reverts back to anything you had it set to after miles is finished with it! And yes you can turn this feature off.)
+- **Customization**: Just ask M.I.L.E.S to change his model and he will. Modify system prompts and wake wake word within the main.py file.
   
 - **World Class Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or literaly any starting phrase that ends with "Miles", the system WILL respond accurately. We have about a 10% fail rate for hearing if it's been activated, and a 0% accidental activation error rate.
   
@@ -206,8 +206,14 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 - 🌦️ **Enhancements**: Augmented weather data, permanent memory, and date + time support.
 - 🎲 **Multi-Task Mode** M.I.L.E.S can use up to 3 tools at once, this means M.I.L.E.S can find the weather in Shanghai, calculate the temp difference if it were to drop 23.883 degrees, and then store it in memory to call upon later, all before he even responds to you. That's the future.
 - 💻 **Cross Platform!** M.I.L.E.S now supports MacOS and Windows 10/11.
+- 🎧 **Full Playback Controls** M.I.L.E.S can now pause, unpause, toggle playback, set spotify volume, and set system volume.
+- 🔇 **Smart Audio Management** If you request Miles while a song is playing, he will pause it to listen, unpause at a low volume while he speaks, and return to the orginal volume when he's done talking. Miles also remembers playback states and volume levels.
+- 💾 **Internal Automatic Model Switching** Find that GPT-4-Turbo is too expensive? Just ask Miles to change it to the cheaper one. It's that simple.
+- 🌘 **Dynamic Action Notifications** Miles' UI now shows what specifically he is doing, instead of "Searching a song" it'll now say "Searching for Never gonna give you up". This is applied for all Actions.
 
 ## 🆕 **Upcoming Features**
+- 🖤 **Dark/Light mode** I'm working on a light mode for Miles, as well as a graphical overhaul.
+- 📸 **Image Processing** Miles will be able to view and describe images.
 - 🌐 **Web Browsing**: M.I.L.E.S will soon be able to search anything on the entire internet to gain more knowledge and assist you further.
 - 📜 **Chat History**: An upcoming feature to keep track of your previous interactions.
 - 🖥️ **Typing Interface**: Soon, you won't be restricted to voice. Type your commands and queries for M.I.L.E.S.
