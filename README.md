@@ -17,6 +17,15 @@
 - 🎙️ **Realistic Voice:** Miles doesn't sound like a robot, he sounds real. (Both faster and cheaper than eleven labs for the same quality - OpenAI TTS)
 - 🔊 **Wake word:** Our wake word detection is on par with smart home assistants.
 
+## 🔥 **Tips and Tricks**
+- ‼️ **I strongly recommend you ask Miles what he can do and what tools he can use, he is aware of everything he can do when using the default system prompt.**
+- 💰 **Find it too expensive to run?** Just ask Miles to be cheaper and he will switch his language model and ask him to make his system prompt cheaper and he will be more cost effective for you.
+- 🪪 **Ask Miles to be Anything** Miles can manipulate his own personality and instructions, just ask him to be anything and he will rewrite himself to comply.
+- ⚠️ **Things to Note**: When you ask Miles to be cheaper, he will do both of these things:
+  1. Switch his model to GPT-3.5-Turbo.
+  2. Rewrite his system prompt to reduce the token count by 700 tokens.
+  3. However, in doing both of these things, he will lose most of his functinality and will be less helpful, he does NOT actually lose any functinality in doing this, but he may hallucinate that he can't do some of the things you ask him to do. Asking him to write a custom system prompt for a specific list of instructions will help.
+
 💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
 
 ## 📄 **What commands are there?**
@@ -34,6 +43,7 @@ There are no commands, Miles is powered by a language model, not code, say anyth
   ## 🔍 M.I.L.E.S Action notifications
   If they look wonky it's because each action has an animation and it's hard to screenshot because it's moving + Miles responds too fast to screenshot it. Sorry about that!
   ![M.I.L.E.S Actions](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/actions.webp)
+  - These action notifications are outdated as of today, there are 10 new actions Miles can perform on top of the ones shown, I will update them when I have time.
   <br><br>
 
 ## 🚀 **Prerequisites (Mac install)**
@@ -190,7 +200,7 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
   
 - **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary. It's basically magic in a bottle, but not it a bottle, or magic.
   
-- **Customization**: Just ask M.I.L.E.S to change his model and he will. Modify system prompts and wake wake word within the main.py file.
+- **Customization**: Just ask M.I.L.E.S to change his model and he will. Miles can also change his own system prompt on command or by himself to whatever he wants.
   
 - **World Class Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or literaly any starting phrase that ends with "Miles", the system WILL respond accurately. We have about a 10% fail rate for hearing if it's been activated, and a 0% accidental activation error rate.
   
@@ -210,6 +220,8 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 - 🔇 **Smart Audio Management** If you request Miles while a song is playing, he will pause it to listen, unpause at a low volume while he speaks, and return to the orginal volume when he's done talking. Miles also remembers playback states and volume levels.
 - 💾 **Internal Automatic Model Switching** Find that GPT-4-Turbo is too expensive? Just ask Miles to change it to the cheaper one. It's that simple.
 - 🌘 **Dynamic Action Notifications** Miles' UI now shows what specifically he is doing, instead of "Searching a song" it'll now say "Searching for Never gonna give you up". This is applied for all Actions.
+- 🪪 **Internal Automatic Personality switching** M.I.L.E.S can now change his own system prompt from what you ask, or by himself. This lets him or you specify personality traits, ways of responding, and topics to talk about or avoid. Think of it like a instruction set combined with a personality desctiption.
+
 
 ## 🆕 **Upcoming Features**
 - 🖤 **Dark/Light mode** I'm working on a light mode for Miles, as well as a graphical overhaul.
