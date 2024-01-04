@@ -109,19 +109,30 @@ function processMessage(message) {
             iconClass = 'fas fa-calculator';
         } else if (actionText.startsWith('finding the current weather')) {
             iconClass = 'fas fa-cloud';
-            fetchWeather();  // Fetch and display the weather card
+            fetchWeather();
         } else if (actionText.startsWith('finding the current time')) {
             iconClass = 'fas fa-clock';
         } else if (actionText.startsWith('retrieving his memory')) {
             iconClass = 'fas fa-server';
-        } else if (actionText.startsWith('searching a song')) {
+        } else if (actionText.startsWith('searching for')) {
             iconClass = 'fab fa-spotify';
         } else if (actionText.startsWith('showing the weather')) {
             iconClass = 'fas fa-window-restore';
             fetchWeather();
+        } else if (actionText.startsWith('updating Spotify playback')) {
+            iconClass = 'fab fa-spotify';
+        } else if (actionText.startsWith('switching the model')) {
+            iconClass = 'fas fa-microchip';
+        } else if (actionText.startsWith('changing Spotify volume')) {
+            iconClass = 'fab fa-spotify';
+        } else if (actionText.startsWith('setting system volume')) {
+            iconClass = 'fas fa-volume-high';
+        } else if (actionText.startsWith('changing system prompt')) {
+            iconClass = 'fas fa-id-card';
         } else {
             iconClass = 'fas fa-robot';
         }
+
 
         setStatus(actionText.charAt(0).toUpperCase() + actionText.slice(1), 'status-action', iconClass);
         return;
