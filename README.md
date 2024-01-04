@@ -7,7 +7,7 @@
 </p>
 
 ## 🌐 **Core Features**
-- 📡 **Powered by AI language models:** Operated by **GPT-4-Turbo** model out of the box, but easily switchable to **any other OpenAI model** via `main.py`.
+- 📡 **Powered by AI language models:** Operated by **GPT-4-Turbo** model out of the box, but easily switchable to **any other OpenAI model** via asking Miles to change it.
 - 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice. *(Requires Spotify Premium)*
 - ☀️ **Weather Capabilities:** Stay updated with real-time weather data.
 - 🧠 **Persistant Memory:** Ask Miles to remember something, ask him to forget it.
