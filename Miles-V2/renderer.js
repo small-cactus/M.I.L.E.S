@@ -2,7 +2,7 @@ const io = require('socket.io-client');
 const socket = io('http://localhost:3000');
 const outputDiv = document.getElementById('output');
 const statusIndicator = document.getElementById('status-indicator');
-const applocation = "New York"; // Change the city to your city for this to work in the beta release.
+const applocation = "Clearwater"; //This is a beta release, change this city to your city, it will be automatic in the future.
 
 function scrollToBottom() {
     const appContainer = document.getElementById('app-container');
@@ -129,6 +129,12 @@ function processMessage(message) {
             iconClass = 'fas fa-volume-high';
         } else if (actionText.startsWith('changing system prompt')) {
             iconClass = 'fas fa-id-card';
+        } else if (actionText.startsWith('generating speech')) {
+            iconClass = 'fas fa-cog';
+        } else if (actionText.startsWith('speaking a response')) {
+            iconClass = 'fas fa-comment-dots';
+        } else if (actionText.startsWith('taking longer than expected')) {
+            iconClass = 'fas fa-hourglass-half';
         } else {
             iconClass = 'fas fa-robot';
         }
@@ -139,7 +145,9 @@ function processMessage(message) {
     }
 
     function setStatus(text, className, iconClass = '') {
-        if (iconClass === 'fas fa-microphone' || iconClass === 'fas fa-user') {
+        if (iconClass === 'fas fa-microphone' || iconClass === 'fas fa-user' ||
+            iconClass === 'fas fa-comment-dots' ||
+            iconClass === 'fas fa-hourglass-half') {
             statusIndicator.innerHTML = `<i class="${iconClass} jiggling"></i> ${text}`;
         } else if (iconClass === 'fas fa-cog') {
             statusIndicator.innerHTML = `<i class="${iconClass} rotating"></i> ${text}`;
@@ -162,7 +170,6 @@ function processMessage(message) {
         scrollToBottom();
     }
 }
-
 
 
 

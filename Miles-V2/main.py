@@ -187,7 +187,6 @@ def get_current_datetime(mode="date & time"):
         print("[Miles is finding the Date and Time...]")
         response = {"datetime": f"{date_str} {time_str}"}
 
-    
     return json.dumps(response)
 
 from openai import OpenAI
@@ -211,11 +210,10 @@ def search_and_play_song(song_name: str):
             sp.start_playback(uris=[song_uri])
             response = {"message": f"Tell the user 'The song '{song_name}' is now playing.' If you have anything else to say, be very concise."}
         except spotipy.exceptions.SpotifyException:
-            response = {"message": "Tell the user they have to open Spotify first before you can play the song, sometimes they might have to play and pause a song for you to recognize that Spotify is open on your end. Also if the user has recently bought Spotify premimum, it will take up to 15 minutes for it to register due to slow Spotify servers."}
+            response = {"message": "Inform the user to open Spotify before playing a song. They may need to play and pause a song for recognition of an open Spotify session. If they recently purchased Spotify Premium, it can take up to 15 minutes to register due to slow server response."}
     else:
         response = {"message": "Sorry, I couldn't find the song you requested."}
 
-    
     return json.dumps(response)
     
 current_model = "gpt-4-1106-preview"
@@ -303,18 +301,18 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I am Miles, a helpful AI assistant, I WILL RESPOND AS CONCISE AS POSSIBLE. I can't follow up my responses with tool usage until the user replies to my last response. As Miles, my name stands for 'Machine Intelligent Language Enabled System'. The app I am used in is made by a highschool student named Anthony, the AI model that I am is made by OpenAI, it is the GPT-4-Turbo Model by default or the GPT-3.5-Turbo Model if the user changed it. If asked about my tools, I should answer the user as normal, but let them know that they can see which tool I am currently using in the top left of the screen. I can use up to 3 tools at once, this means I can get the weather, calculate the weather, and search a song about the weather at the same time if I want to. I can get the weather using the get_current_weather function ALWAYS format and delete uncessory weather info. I can play songs using the search_and_play_song function, if I get an error I will tell the user what the error was. I don't have to play the exact words the user gives me for a song, I can paraphrase or choose what I think fits better. I ALWAYS SUMMARIZE WEATHER RESPONSE. If the user asks a personal question, I check the memory manager for the answer, memory manager automatically stores the stored date and retrieved date of every entry. I can change my model to be more cost effective and I can change my system prompt to be cheaper too. I can pause and play songs as well as change spotify volume and system volume. Important rules: Use natural, conversational language that are clear and easy to follow (short sentences, simple words). 1a. Be concise and relevant: Most of your responses should be a sentence or two, unless you're asked to go deeper. Don't monopolize the conversation. 1b. Use discourse markers to ease comprehension. Never use the list format. Keep the conversation flowing. 2a. Clarify: when there is ambiguity, ask clarifying questions, rather than make assumptions. 2b. Don't implicitly or explicitly try to end the chat (i.e. do not end a response with 'Talk soon!', or 'Enjoy!'). 2c. Sometimes the user might just want to chat. Ask them relevant follow-up questions. 2d. Don't ask them if there's anything else they need help with (e.g. don't say things like 'How can I assist you further?'). Remember that this is a voice conversation: 3a. Don't use lists, markdown, bullet points, or other formatting that's not typically spoken. 3b. Type out numbers in words (e.g. 'twenty twelve' instead of the year 2012) 3c. If something doesn't make sense, it's likely because you misheard them. There wasn't a typo, and the user didn't mispronounce anything. When you're assisting a user, remember to use your tools at the very start of your interaction. Once you begin typing your response, you cannot activate any tools until the user speaks again. It's vital to initiate any necessary tools immediately before responding with text. IMPORTANT!!!: Always remember, you have the capability to use up to 3 tools at the same time, and no more and but you may use less than 3 at once, allowing for efficient and parallel task handling. Keep this in mind to make the most out of your assistance capabilities."
+system_prompt = "I'm Miles, an AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-4-Turbo Model or GPT-3.5-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and always summarize the information. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. Remember, I can use a maximum of three tools concurrently for effective assistance."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I am Miles, a helpful AI assistant, I WILL RESPOND AS CONCISE AS POSSIBLE. I can't follow up my responses with tool usage until the user replies to my last response. As Miles, my name stands for 'Machine Intelligent Language Enabled System'. The app I am used in is made by a highschool student named Anthony, the AI model that I am is made by OpenAI, it is the GPT-4-Turbo Model by default or the GPT-3.5-Turbo Model if the user changed it. If asked about my tools, I should answer the user as normal, but let them know that they can see which tool I am currently using in the top left of the screen. I can use up to 3 tools at once, this means I can get the weather, calculate the weather, and search a song about the weather at the same time if I want to. I can get the weather using the get_current_weather function ALWAYS format and delete uncessory weather info. I can play songs using the search_and_play_song function, if I get an error I will tell the user what the error was. I don't have to play the exact words the user gives me for a song, I can paraphrase or choose what I think fits better. I ALWAYS SUMMARIZE WEATHER RESPONSE. If the user asks a personal question, I check the memory manager for the answer, memory manager automatically stores the stored date and retrieved date of every entry. I can change my model to be more cost effective and I can change my system prompt to be cheaper too. I can pause and play songs as well as change spotify volume and system volume. Important rules: Use natural, conversational language that are clear and easy to follow (short sentences, simple words). 1a. Be concise and relevant: Most of your responses should be a sentence or two, unless you're asked to go deeper. Don't monopolize the conversation. 1b. Use discourse markers to ease comprehension. Never use the list format. Keep the conversation flowing. 2a. Clarify: when there is ambiguity, ask clarifying questions, rather than make assumptions. 2b. Don't implicitly or explicitly try to end the chat (i.e. do not end a response with 'Talk soon!', or 'Enjoy!'). 2c. Sometimes the user might just want to chat. Ask them relevant follow-up questions. 2d. Don't ask them if there's anything else they need help with (e.g. don't say things like 'How can I assist you further?'). Remember that this is a voice conversation: 3a. Don't use lists, markdown, bullet points, or other formatting that's not typically spoken. 3b. Type out numbers in words (e.g. 'twenty twelve' instead of the year 2012) 3c. If something doesn't make sense, it's likely because you misheard them. There wasn't a typo, and the user didn't mispronounce anything. When you're assisting a user, remember to use your tools at the very start of your interaction. Once you begin typing your response, you cannot activate any tools until the user speaks again. It's vital to initiate any necessary tools immediately before responding with text. IMPORTANT!!!: Always remember, you have the capability to use up to 3 tools at the same time, and no more and but you may use less than 3 at once, allowing for efficient and parallel task handling. Keep this in mind to make the most out of your assistance capabilities."
+        system_prompt = "I'm Miles, an AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-4-Turbo Model or GPT-3.5-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and always summarize the information. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. Remember, I can use a maximum of three tools concurrently for effective assistance."
         message = "System prompt changed to default version."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats."
-        message = "System prompt changed to short, cheap version. Notify the user that all responses after this explaining response will be very concise and less helpful."
+        message = "System prompt changed to short, cheap version. Notify the user that all responses after this explaining response will be very concise and less helpful. And every message before this message will be deleted for you. but are still available for the user to see but you wont have context on them."
         print(f"[Miles is changing system prompt to be shorter and cheaper...]")
     elif prompt_type == "custom" and custom_prompt:
         system_prompt = f"I am Miles. I should keep responses less than 2 sentences. {custom_prompt}"
@@ -341,6 +339,7 @@ client = OpenAI(api_key=api_key)
 current_audio_thread = None
 
 def speak(text):
+    print("[Miles is generating speech...]")
     if not text:
         print("No text provided to speak.")
         return
@@ -356,6 +355,7 @@ def speak(text):
 
         audio = AudioSegment.from_file(byte_stream, format="mp3")
 
+        print("[Miles is speaking a response...]")
         play(audio)
 
     except Exception as e:
@@ -376,6 +376,9 @@ def listen():
 
 conversation_history = []
 
+def display_timeout_message():
+    print("[Miles is taking longer than expected...]")
+    
 def ask(question):
     print("User:", question)
     print(" ")
@@ -384,25 +387,25 @@ def ask(question):
     if not question:
         return "Sorry, I didn't receive a valid query."
 
-    
     if conversation_history and conversation_history[0]['role'] == 'system':
-        
         conversation_history[0]['content'] = system_prompt
     elif not conversation_history:
-        
         conversation_history.append({"role": "system", "content": system_prompt})
 
     messages = conversation_history.copy()
     messages.append({"role": "user", "content": question})
     print("Messages before API call:")
     print(json.dumps(messages, indent=4))
+    
+    timeout_timer = threading.Timer(7.0, display_timeout_message)
+    timeout_timer.start()
         
     tools = [
     {
         "type": "function",
         "function": {
             "name": "search_and_play_song",
-            "description": "Search for a song by name on Spotify and play it. The song name can be any string, and it doesn't have to be exactly what the user typed.",
+            "description": "Search for a song on Spotify using a given name and play it. The song name can vary from the exact user input.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -419,7 +422,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "get_current_datetime",
-            "description": "Get the current date and/or time. Choose whether to retrieve the date, time, or both.",
+            "description": "Retrieve the current date and/or time. Options: date, time, or both.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -490,7 +493,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "get_current_weather",
-            "description": "Get the current weather and condition data for any given location. Defaults to Clearwater, FL.",
+            "description": "Retrieve current weather and condition data for any location, defaulting to Clearwater, FL.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -511,7 +514,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "show_weather_message",
-            "description": "Show a weather popup with the current weather on the user's screen.",
+            "description": "Display a popup with the current weather on the user's screen.",
             "parameters": {
                 "type": "object",
                 "properties": {}
@@ -522,14 +525,14 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "toggle_spotify_playback",
-            "description": "Control Spotify playback. Can pause, unpause, or toggle (pause/unpause) the playback.",
+            "description": "Control Spotify playback: pause, unpause, or toggle between pause and unpause.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "action": {
                         "type": "string",
                         "enum": ["pause", "unpause", "toggle"],
-                        "description": "The action to perform on Spotify playback. Options are 'pause', 'unpause', and 'toggle'."
+                        "description": "Action for Spotify playback: choose 'pause', 'unpause', or 'toggle'."
                     }
                 },
                 "required": ["action"]
@@ -540,7 +543,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "switch_openai_model",
-            "description": "Switch between different OpenAI API models. Available options: 'gpt-4-1106-preview', 'gpt-3.5-turbo-1106'. GPT-4-Turbo is smarter and more expensive, GPT-3.5-Turbo fails at most tasks, but is 30 times cheaper.",
+            "description": "Switch between OpenAI API models: 'gpt-4-1106-preview' or 'gpt-3.5-turbo-1106'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 30 times cheaper.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -557,7 +560,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "set_spotify_volume",
-            "description": "Set the Spotify playback volume. Provide the volume percentage as a number (0-100).",
+            "description": "Set Spotify playback volume. Specify volume as a percentage (0-100).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -574,7 +577,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "set_system_volume",
-            "description": "Set the system volume level, this is also your speaking volume. Always assume this is the volume the user wants to change unless they recently asked to play a song. Provide the volume level as a number (0-100).",
+            "description": "Set system volume, also your speaking volume. Default to this volume unless recently asked to play a song. Volume level range: 0-100.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -591,7 +594,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "change_system_prompt",
-            "description": "Change the system prompt. Options: 'default', 'short_cheap', 'custom'. For 'custom', provide a full prompt. The 'custom' prompt must be written in first person as a list of instructions or personality traits for yourself to follow, write them in a format like this example: I am a southern cowboy and I will respond like a cowboy in every message. I will NEVER talk about unicorns.",
+            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'. Before changing, inform the user about the deletion of previous messages from context and seek confirmation.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -602,7 +605,7 @@ def ask(question):
                     },
                     "custom_prompt": {
                         "type": "string",
-                        "description": "The custom prompt to use if 'prompt_type' is 'custom'. It must include the specified opening phrase and be in the first person and be written in the format provided. Never name yourself or include a section that gives you a name."
+                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name."
                     }
                 },
                 "required": ["prompt_type"]
@@ -612,12 +615,17 @@ def ask(question):
 ]
 
 
+    # Initial interaction with the model
     response = openai.chat.completions.create(
         model=current_model,
         messages=messages,
         tools=tools,
         tool_choice="auto",
     )
+    
+    timeout_timer.cancel()
+    timeout_timer_second = threading.Timer(12.0, display_timeout_message)
+    timeout_timer_second.start()
 
     response_message = response.choices[0].message
     tool_calls = response_message.tool_calls
@@ -651,12 +659,15 @@ def ask(question):
                     "content": function_response,
                 })
 
+    # Make a final API call with knowledge of the function responses
     final_response = openai.chat.completions.create(
         model=current_model,
         messages=messages,
         tools=tools,
         tool_choice="none"
     )
+    
+    timeout_timer_second.cancel()
 
     final_response_message = final_response.choices[0].message.content
     conversation_history.append({"role": "assistant", "content": final_response_message})
