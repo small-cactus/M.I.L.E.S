@@ -32,7 +32,7 @@
         }
 
         #app-container {
-            background: #2b2b2b;
+            background: #141414;
             width: auto;
             height: auto;
             padding: 20px;
@@ -46,8 +46,9 @@
             overflow-y: auto !important;
             height: calc(100vh - 100px) !important;
             padding: 10px !important;
-            background: #222222 !important;
+            background: #1d1d1d !important;
             border-radius: 10px !important;
+            box-shadow: -5px 5px 50px rgba(0, 0, 0, 0.5);
         }
 
         ::-webkit-scrollbar {
@@ -58,12 +59,13 @@
             margin: 10px 0;
             margin-bottom: 15px;
             font-size: 16px;
-            color: #D1D5DB;
+            color: #cbcbcb;
             font-weight: 100;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 18px;
             line-height: 1.75;
-            outline: solid 2px #32343D;
+            outline: solid 2px #3d3e40;
+            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
         }
 
         .status-miles {
@@ -100,8 +102,14 @@
             box-shadow: -5px 5px 150px black;
             white-space: pre-wrap;
         }
+        
+        .bold-glow {
+            font-weight: bold;
+            text-shadow: 0 0 1.5px rgba(255, 255, 255, 0.8);
+            color: white;
+            font-size: 17px;
+        }
 
-        /* Animations */
         @keyframes rotate {
             0%, 100% {
                 transform: rotate(0deg);

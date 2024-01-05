@@ -2,7 +2,7 @@ const io = require('socket.io-client');
 const socket = io('http://localhost:3000');
 const outputDiv = document.getElementById('output');
 const statusIndicator = document.getElementById('status-indicator');
-const applocation = "Clearwater"; //This is a beta release, change this city to your city, it will be automatic in the future.
+const applocation = "Clearwater"; //This is a beta release, change this city to your city otherwise weather popups won't display the correct info. This doesn't affect Miles' speech or responses.
 
 function scrollToBottom() {
     const appContainer = document.getElementById('app-container');
@@ -160,16 +160,19 @@ function processMessage(message) {
     }
 
     if (messageClass === 'miles' || messageClass === 'user') {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = messageClass + ' common-style';
+            const messageDiv = document.createElement('div');
+            messageDiv.className = messageClass + ' common-style';
 
-        const formattedText = message.replace(/\n/g, '<br>');
-        messageDiv.innerHTML = formattedText;
-        messageDiv.style.minHeight = '40px';
-        outputDiv.appendChild(messageDiv);
-        scrollToBottom();
+            const formattedText = message
+                .replace(/(User:|Miles:)/g, '<span class="bold-glow">$1</span>')
+                .replace(/\n/g, '<br>');
+            
+            messageDiv.innerHTML = formattedText;
+            messageDiv.style.minHeight = '40px';
+            outputDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
     }
-}
 
 
 
