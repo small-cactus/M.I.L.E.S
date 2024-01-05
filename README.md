@@ -77,12 +77,17 @@ Follow these steps to set up the project on your local machine:
    git clone https://github.com/small-cactus/M.I.L.E.S.git
    ```
 
-2. **Install Python dependencies**: In the project directory, run the following command to install all required Python packages:
+2. **Open terminal in Miles-V2 folder**
+   ```
+   cd [REPLACE WITH PATH TO MILES-V2 FOLDER!!!!]
+   ```
+   
+4. **Install Python dependencies**: In Miles-V2 in the terminal, run the following command to install all required Python packages:
    ```
    pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio
    ```
 
-3. **Install Node.js dependencies**: Still in the project directory, install the Node.js packages.
+5. **Install Node.js dependencies**: Still in Miles-V2 in the terminal, install the Node.js packages.
    ```
    npm install
    ```
