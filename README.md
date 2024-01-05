@@ -7,34 +7,34 @@
 </p>
 
 ## 🌐 **Core Features**
-- 📡 **Powered by AI language models:** Operated by **GPT-4-Turbo** model out of the box, but easily switchable to **any other OpenAI model** via asking Miles to change it.
-- 🎵 **Integrated with Spotify:** Enjoy seamless Spotify controls right from your voice. *(Requires Spotify Premium)*
-- ☀️ **Weather Capabilities:** Stay updated with real-time weather data.
-- 🧠 **Persistant Memory:** Ask Miles to remember something, ask him to forget it.
-- 🧮 **Calculator:** Don't rely on language model math, Miles can use a real calculator.
-- 🧩 **Multi-tasker:** Miles can use up to 3 tools at the same time.
-- 🤔 **Context:** Miles has context about him, who made him, the app he's in, and who you are through things you ask him to remember.
-- 🎙️ **Realistic Voice:** Miles doesn't sound like a robot, he sounds real. (Both faster and cheaper than eleven labs for the same quality - OpenAI TTS)
-- 🔊 **Wake word:** Our wake word detection is on par with smart home assistants.
+- 📡 **Powered by AI language models:** Operated by **`GPT-4-Turbo`** model out of the box, but easily switchable to **`any other OpenAI model`** via asking Miles to change it.
+- 🎵 **Integrated with Spotify:** Enjoy `seamless Spotify controls` right from your voice. *(Requires Spotify Premium)*
+- ☀️ **Weather Capabilities:** Stay updated with `real-time weather data`.
+- 🧠 **Persistant Memory:** Ask Miles to `remember something, ask him to forget it`.
+- 🧮 **Calculator:** Don't rely on language model math, Miles can use a `real calculator`.
+- 🧩 **Multi-tasker:** Miles can use up to `3 tools at the same time`.
+- 🤔 **Context:** `Miles has context` about him, who made him, the app he's in, and who you are through things you ask him to remember.
+- 🎙️ **Realistic Voice:** Miles `doesn't sound like a robot, he sounds real`. (Both faster and cheaper than eleven labs for the same quality - OpenAI TTS)
+- 🔊 **Wake word:** Our wake word detection is `on par with smart home assistants`.
 
 ## 🔥 **Tips and Tricks**
-- ‼️ **I strongly recommend you ask Miles what he can do and what tools he can use, he is aware of everything he can do when using the default system prompt.**
-- 💰 **Find it too expensive to run?** Just ask Miles to be cheaper and he will switch his language model and ask him to make his system prompt cheaper and he will be more cost effective for you.
-- 🪪 **Ask Miles to be Anything** Miles can manipulate his own personality and instructions, just ask him to be anything and he will rewrite himself to comply.
+- ‼️ **I strongly recommend you `ask Miles what he can do and what tools he can use`, he is aware of everything he can do when using the `default system prompt`.**
+- 💰 **Find it too expensive to run?** Just `ask Miles to be cheaper` and he will switch his language model and ask him to make his system prompt cheaper and he will be more cost effective for you.
+- 🪪 **Ask Miles to be Anything** Miles can `manipulate his own personality and instructions`, just ask him to be anything and he will rewrite himself to comply.
 - ⚠️ **Things to Note**: When you ask Miles to be cheaper, he will do both of these things:
-  1. Switch his model to GPT-3.5-Turbo.
-  2. Rewrite his system prompt to reduce the token count by 700 tokens.
-  3. However, in doing both of these things, he will lose most of his functinality and will be less helpful, he does NOT actually lose any functinality in doing this, but he may hallucinate that he can't do some of the things you ask him to do. Asking him to write a custom system prompt for a specific list of instructions will help.
+  1. Switch his model to `GPT-3.5-Turbo`.
+  2. Rewrite his system prompt to `reduce the token count by 700 tokens`.
+  3. However, in doing both of these things, he will lose most of his functinality and will be less helpful, he `does NOT actually lose any functinality` in doing this, but he may hallucinate that he can't do some of the things you ask him to do. Asking him to write a custom system prompt for a specific list of instructions will help.
 
-💡 **Note:** Before diving in, make sure you have your **OpenAI API key**. Place this key within the quotes in the `apikey.py` file.
+💡 **Note:** Before diving in, make sure you have your **`OpenAI API key`**. Place this key within the quotes in the `apikey.py` file.
 
 ## 📄 **What commands are there?**
-There are no commands, Miles is powered by a language model, not code, say anything however you like and it will work, want to play Spotify? You can just say this:
-- "Miles, prithee, lend thine ear to Spotify's sweet melodies and grace us with a song that doth stir the soul."
+`There are no commands`, Miles is powered by a language model, not code, say anything however you like and it will work, want to play Spotify? You can just say this:
+- `"Miles, prithee, lend thine ear to Spotify's sweet melodies and grace us with a song that doth stir the soul."`
   ### or this:
-- "Miles, play that one song that was in the spongebob movie."
+- `"Miles, play that one song that was in the spongebob movie."`
   ### or this:
-- "Miles, in yonder digital realm of Spotify, embark thou upon a quest to unleash the timeless lay 'Never Gonna Give You Up', that we may be ensnared in its melodious rapture most unexpected."
+- `"Miles, in yonder digital realm of Spotify, embark thou upon a quest to unleash the timeless lay 'Never Gonna Give You Up', that we may be ensnared in its melodious rapture most unexpected."`
 
   <br><br>
   ## 🖥️ M.I.L.E.S Conversation screen
@@ -50,18 +50,18 @@ There are no commands, Miles is powered by a language model, not code, say anyth
 
 Before starting, ensure the following are installed on your Mac:
 
-- **Homebrew**: If Homebrew is not installed on your Mac, open Terminal and run the following command (copied from [brew.sh](https://brew.sh/)):
+- **Homebrew**: If Homebrew is not installed on your Mac, open Terminal and `run the following command` (copied from [brew.sh](https://brew.sh/)):
   ```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
   
 - **Python**: Install Python via Homebrew. Open Terminal and run:
-- ⚠️ **This command is needed, if you have python 3.12 or newer, it will not work. Also, if you choose to make a venv, all virtual environments will have to be made using python 3.11 or it will not work.**
+- ⚠️ **This command is needed, `if you have python 3.12 or newer, it will not work`. Also, if you choose to make a venv, all virtual environments `will have to be made using python 3.11` or it will not work.**
   ```
   brew install python@3.11
   ```
 
-- **Node.js and npm**: Install Node.js (which includes npm) using Homebrew:
+- **Node.js and npm**: `Install Node.js` (which includes npm) using Homebrew:
   ```
   brew install node
   ```
@@ -72,22 +72,22 @@ Before starting, ensure the following are installed on your Mac:
 Don't even try to run this on windows, I have a working windows copy, but every other step in this page is meant for Mac.
 Follow these steps to set up the project on your local machine:
 
-1. **Clone the repository**: Clone the project to your computer.
+1. **Clone the repository**: `Clone the project` to your computer.
    ```
    git clone https://github.com/small-cactus/M.I.L.E.S.git
    ```
 
-2. **Open terminal in Miles-V2 folder**
+2. **Open terminal in `Miles-V2 folder`**
    ```
    cd [REPLACE WITH PATH TO MILES-V2 FOLDER!!!!]
    ```
    
-4. **Install Python dependencies**: In Miles-V2 in the terminal, run the following command to install all required Python packages:
+4. **Install Python dependencies**: In Miles-V2 in the terminal, `run the following command to install all required Python packages`:
    ```
    pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio
    ```
 
-5. **Install Node.js dependencies**: Still in Miles-V2 in the terminal, install the Node.js packages.
+5. **Install Node.js dependencies**: Still in Miles-V2 in the terminal, `install the Node.js packages`.
    ```
    npm install
    ```
@@ -97,12 +97,12 @@ Follow these steps to set up the project on your local machine:
 Follow these steps to set up Miles.
 
 ## 🔑 OpenAI API Integration (REQUIRED)
-- **WARNING**: ⚠️ **If you do not have access to gpt-4-1106-preview, Miles will not answer you, instead, use CMD or CTRL + F in `main.py` to search for `model="gpt-4-1106-preview",` => and replace that full line with this instead: `model="gpt-3.5-turbo-1106",`. You should have to do this 2 times in the main.py file.**
+- **WARNING**: ⚠️ **`If you do not have access to gpt-4-1106-preview`, Miles will not answer you, instead, use CMD or CTRL + F in `main.py` to search for `model="gpt-4-1106-preview",` => and replace that full line with this instead: `model="gpt-3.5-turbo-1106",`. You should have to do this 2 times in the main.py file.**
 ### 1️⃣ Sign Up for OpenAI
-- Begin by signing into your OpenAI account, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
+- Begin by `signing into your OpenAI account`, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
 
 ### 2️⃣ Access Your API Key
-- After logging in, choose "API", then click your profile in the top right, navigate to the API section to find your API key.
+- After logging in, choose "`API`", then click your profile in the top right, navigate to the API section to find your API key.
 
 ### 3️⃣ Update the `apikey.py` File
 - Copy the API key from OpenAI.
@@ -164,68 +164,70 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 <br><br>
 
 ## 🔍 **Troubleshooting**
-**This is a beta release, troubleshooting steps are based off of nothing but hopes and dreams of what I think might go wrong, submit issues in githubs issue tracker for now if the steps don't help.**
+**This is a beta release, troubleshooting steps are based off of nothing but `hopes and dreams` of what I think might go wrong, submit issues in `githubs issue tracker` for now if the steps don't help.**
 ### **It won't start**
-1. Check if you have access to the model this project uses, if you don't, follow the instructions in OpenAI section above.
-2. Check if you have python 3.11, open terminal and run `brew search python`. Check for a green checkmark next to python 3.11, if there isn't, refer to inital setup instructions.
+1. Check if you have access to the model this project uses, if you don't, follow the instructions in `OpenAI section` above.
+2. Check if you have `python 3.11`, open terminal and run `brew search python`. Check for a `green checkmark` next to `python 3.11`, if there isn't, refer to `inital setup instructions`.
 
 ### **Nothing works and I'm going crazy!!!**
-1. Calm down
-2. Using the same commands in the inital setup, replace `install` with `uninstall` and click enter.
-3. Now we're going to make a virtual environment, this seperates my project from anything on your Mac that might be conflicting with it, don't worry, this is easy.
-4. **First,** make a new folder anywhere, name it anything you want, but let's call it `virtual-env`.
-5. **Next,** right click the folder and click open in terminal, next enter the following command `python3.11 -m venv myenv`.
-6. **Next,** now that we have the environment created, we need to activate it, run the command `source myenv/bin/activate`.
+1. `Calm down`
+2. Using the `same commands` in the inital setup, replace `install` with `uninstall` and click enter.
+3. Now we're going to make a `virtual environment`, this seperates my project from anything on your Mac that might be conflicting with it, don't worry, this is easy.
+4. **First,** `make a new folder anywhere`, name it anything you want, but let's call it `virtual-env`.
+5. **Next,** `right click the folder and click open in terminal`, next enter the following command `python3.11 -m venv myenv`.
+6. **Next,** now that we have the environment created, we need to activate it, **run the command** `source myenv/bin/activate`.
 7. **Lastly,** if you can see the little (myenv) on the left of the command line, you did it right! if not, delete the folder and try again.
 8. **What next?** Now that you have the virtual environment set up, just go through the setup as normal like it's written above. Just make sure you use the `cd` command followed by a file or folder directory instead of opening the terminal directly from the file. Good luck!
 
 ### **All hope is lost, I am so lost.**
 1. No worries!
-2. Log into ChatGPT.
-3. Paste the entirety of this text into ChatGPT. You may need to do small portions and go 1 at a time.
+2. Log into `ChatGPT`.
+3. Paste the entirety of this text into `ChatGPT`. You may need to do small portions and go 1 at a time.
 4. Ask ChatGPT "`How do I install this? I'm so confused!`"
 5. Hope and pray that it understands.
 6. Good luck.
 
 ### **All I ask for is mercy, these funny magic words are nonsense, what even is a command????????**
-1. **Beginner's Quest:** Google "Free online coding courses for beginners" and pick one.
+1. **Beginner's Quest:** Google "`Free online coding courses for beginners`" and pick one.
 2. **Three-Month Challenge:** Spend the next three months learning the basics of coding.
-3. **Immerse Yourself:** Surround your workspace with coding notes and inspirational quotes.
+3. **Immerse Yourself:** Surround your workspace with coding notes and `inspirational quotes`.
 4. **YouTube Marathon:** Watch as many coding tutorials as you can until you dream in code.
 5. **Community Engagement:** Join online coding forums and share your journey.
 6. **The Return:** Armed with knowledge, revisit this project and conquer the commands.
-7. **Wisdom of the Ages:** If stuck, seek advice from the oldest tech wizard you know.
+7. **Wisdom of the Ages:** If stuck, seek advice from the `oldest tech wizard` you know.
 8. **Celebrate Your Triumph:** Regardless of the outcome, treat yourself for embarking on this coding adventure.
 
 
 
 
+
 ## ✨ **Highlights & Features**
-- **Unrestricted Interaction**: M.I.L.E.S has no token limit, this means you might be twiddling your thumbs if you submit a long request.
+- **Unrestricted Interaction**: M.I.L.E.S has `no token limit`, this means you might be twiddling your thumbs if you submit a long request.
   
-- **Intuitive Understanding & Action**: Powered by an advanced language model, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary. It's basically magic in a bottle, but not it a bottle, or magic.
+- **Intuitive Understanding & Action**: Powered by an advanced `language model`, M.I.L.E.S not only grasps even the most uniquely phrased commands but also proactively executes actions when it deems necessary. It's basically `magic in a bottle`, but not it a bottle, or magic.
   
-- **Customization**: Just ask M.I.L.E.S to change his model and he will. Miles can also change his own system prompt on command or by himself to whatever he wants.
+- **Customization**: Just `ask M.I.L.E.S to change his model` and he will. Miles can also `change his own system prompt on command` or by himself to whatever he wants.
   
-- **World Class Wake Word Invocation**: Whether you say "Hey Miles", "Hi Miles", "What's up Miles", "Miles", or literaly any starting phrase that ends with "Miles", the system WILL respond accurately. We have about a 10% fail rate for hearing if it's been activated, and a 0% accidental activation error rate.
+- **World Class Wake Word Invocation**: Whether you say `"Hey Miles"`, `"Hi Miles"`, `"What's up Miles"`, `"Miles"`, or literaly any starting phrase that ends with `"Miles"`, the system WILL respond accurately. We have about a `10% fail rate` for hearing if it's been activated, and a 0% accidental activation error rate.
   
 - **Advanced Audio Processing**: M.I.L.E.S excels in noisy environments, ensuring accurate command interpretation.
   
-- **Graphics & Interface**: Features a dynamic interface displaying Spotify song playback, weather cards, user interactions, and ongoing actions.
+- **Graphics & Interface**: Features a `dynamic interface` displaying Spotify song playback, weather cards, user interactions, and ongoing actions.
 
 ## 📜 **Changelog**
-- 🔊 **Realistic Voice Upgrade with OpenAI TTS**: M.I.L.E.S now utilizes OpenAI TTS for Text-To-Speech, elevating the voice quality to ultra-realistic levels. M.I.L.E.S will seamlessly switch to a basic TTS if any errors are detected.
-- 📢 **Enhanced Wake Word Detection**: M.I.L.E.S now leverages the same technology used in leading smart home products like Google Home and Alexa for unmatched wake word detection accuracy, this means you don't have to wait for the program to listen and stop listening, now it's always listening!
-- 🔢 **Enhanced Calculator Operations**: M.I.L.E.S now efficiently handles multiple simultaneous calculations at the same time.
-- 💡 **Improved UI**: Introducing a graphical interface for better user interactions.
-- 🌦️ **Enhancements**: Augmented weather data, permanent memory, and date + time support.
-- 🎲 **Multi-Task Mode** M.I.L.E.S can use up to 3 tools at once, this means M.I.L.E.S can find the weather in Shanghai, calculate the temp difference if it were to drop 23.883 degrees, and then store it in memory to call upon later, all before he even responds to you. That's the future.
-- 💻 **Cross Platform!** M.I.L.E.S now supports MacOS and Windows 10/11.
-- 🎧 **Full Playback Controls** M.I.L.E.S can now pause, unpause, toggle playback, set spotify volume, and set system volume.
-- 🔇 **Smart Audio Management** If you request Miles while a song is playing, he will pause it to listen, unpause at a low volume while he speaks, and return to the orginal volume when he's done talking. Miles also remembers playback states and volume levels.
-- 💾 **Internal Automatic Model Switching** Find that GPT-4-Turbo is too expensive? Just ask Miles to change it to the cheaper one. It's that simple.
-- 🌘 **Dynamic Action Notifications** Miles' UI now shows what specifically he is doing, instead of "Searching a song" it'll now say "Searching for Never gonna give you up". This is applied for all Actions.
-- 🪪 **Internal Automatic Personality switching** M.I.L.E.S can now change his own system prompt from what you ask, or by himself. This lets him or you specify personality traits, ways of responding, and topics to talk about or avoid. Think of it like a instruction set combined with a personality desctiption.
+- 🔊 **Realistic Voice Upgrade with `OpenAI TTS`**: M.I.L.E.S now utilizes `OpenAI TTS` for Text-To-Speech, elevating the voice quality to `ultra-realistic` levels. M.I.L.E.S will seamlessly switch to a `basic TTS` if any errors are detected.
+- 📢 **Enhanced Wake Word Detection**: M.I.L.E.S now leverages the same technology used in `leading smart home products` like `Google Home` and `Alexa` for `unmatched wake word detection accuracy`, this means you don't have to wait for the program to listen and stop listening, now it's `always listening`!
+- 🔢 **Enhanced Calculator Operations**: M.I.L.E.S now efficiently handles `multiple simultaneous calculations` at the same time.
+- 💡 **Improved UI**: Introducing a `graphical interface` for better user interactions.
+- 🌦️ **Enhancements**: Augmented `weather data`, `permanent memory`, and `date + time support`.
+- 🎲 **Multi-Task Mode** M.I.L.E.S can use up to `3 tools` at once, this means M.I.L.E.S can find the weather in `Shanghai`, calculate the temp difference if it were to drop `23.883 degrees`, and then store it in memory to call upon later, all before he even responds to you. That's the future.
+- 💻 **Cross Platform!** M.I.L.E.S now supports `MacOS` and `Windows 10/11`.
+- 🎧 **Full Playback Controls** M.I.L.E.S can now `pause`, `unpause`, `toggle playback`, set `spotify volume`, and set `system volume`.
+- 🔇 **Smart Audio Management** If you request Miles while a song is playing, he will `pause it to listen`, `unpause at a low volume` while he speaks, and return to the `orginal volume` when he's done talking. Miles also remembers `playback states` and `volume levels`.
+- 💾 **Internal Automatic Model Switching** Find that `GPT-4-Turbo` is too expensive? Just ask Miles to change it to the `cheaper one`. It's that simple.
+- 🌘 **Dynamic Action Notifications** Miles' UI now shows `what specifically he is doing`, instead of "Searching a song" it'll now say "Searching for `Never gonna give you up`". This is applied for all Actions.
+- 🪪 **Internal Automatic Personality switching** M.I.L.E.S can now change his own `system prompt` from what you ask, or by himself. This lets him or you specify `personality traits`, `ways of responding`, and `topics to talk about or avoid`. Think of it like a `instruction set` combined with a `personality desctiption`.
+
 
 
 ## 🆕 **Upcoming Features**
