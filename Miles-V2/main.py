@@ -270,9 +270,9 @@ def switch_openai_model(model_name):
         print(f"[Miles is switching the model to {current_model}...]")
 
         if current_model == "gpt-3.5-turbo-1106":
-            warning_message = "Tell the user: I'm required to tell you this disclaimer, choosing GPT-3.5 as my model will result in less accurate responses and reduced tool functionality but will be 30 times cheaper."
+            warning_message = "Tell the user: I'm required to tell you this disclaimer, choosing GPT-3.5 as my model will result in less accurate responses and reduced tool functionality but will be 12.5 times cheaper."
         elif current_model == "gpt-4-1106-preview":
-            warning_message = "Tell the user this: I'm required to tell you this disclaimer, using GPT-4 as my model is approximately 30 times more expensive and may take longer to process responses."
+            warning_message = "Tell the user this: I'm required to tell you this disclaimer, using GPT-4 as my model is approximately 12.5 times more expensive and may take longer to process responses."
 
     else:
         current_model = "gpt-4-1106-preview"
@@ -543,7 +543,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "switch_openai_model",
-            "description": "Switch between OpenAI API models: 'gpt-4-1106-preview' or 'gpt-3.5-turbo-1106'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 30 times cheaper.",
+            "description": "Switch between OpenAI API models: 'gpt-4-1106-preview' or 'gpt-3.5-turbo-1106'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 12.5 times cheaper.",
             "parameters": {
                 "type": "object",
                 "properties": {
