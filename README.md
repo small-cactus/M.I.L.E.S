@@ -272,3 +272,6 @@ Your support fuels my passion, and I'm excited to continue this journey with all
 
 ## 🤝 **Contribute to Development**
 Your feedback shapes M.I.L.E.S! Though this is a beta release, we eagerly await your feature requests and issue reports for our final launch on GitHub.
+
+**Contact:** anthonyhayward1000@gmail.com
+
