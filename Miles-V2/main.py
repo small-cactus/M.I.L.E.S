@@ -216,7 +216,7 @@ def search_and_play_song(song_name: str):
 
     return json.dumps(response)
     
-current_model = "gpt-4-1106-preview"
+current_model = "gpt-4-1106-preview" #default model to start the program with, change this.
 
 def toggle_spotify_playback(action):
     global was_spotify_playing, user_requested_pause
