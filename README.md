@@ -97,7 +97,7 @@ Follow these steps to set up the project on your local machine:
 Follow these steps to set up Miles.
 
 ## 🔑 OpenAI API Integration (REQUIRED)
-- **WARNING**: ⚠️ **`If you do not have access to gpt-4-1106-preview`, Miles will not answer you, instead, use CMD or CTRL + F in `main.py` to search for `model="gpt-4-1106-preview",` => and replace that full line with this instead: `model="gpt-3.5-turbo-1106",`. You should have to do this 2 times in the main.py file.**
+- **WARNING**: ⚠️ **`If you do not have access to gpt-4-1106-preview`, Miles will not answer you, instead, use CMD + F or CTRL + F in `main.py` to search for `#default model` => and replace that entire full line with this instead: `current_model = "gpt-3.5-turbo-1106"`. You should have to do this once in the main.py file.**
 ### 1️⃣ Sign Up for OpenAI
 - Begin by `signing into your OpenAI account`, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
 
