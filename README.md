@@ -269,4 +269,4 @@ Hello! I'm a one-man developer team, currently navigating the world of high scho
 Your support fuels my passion, and I'm excited to continue this journey with all of you!
 
 ## 🤝 **Contribute to Development**
-Your feedback shapes M.I.L.E.S! Though this is a placeholder release, we eagerly await your feature requests and issue reports for our official launch on GitHub.
+Your feedback shapes M.I.L.E.S! Though this is a beta release, we eagerly await your feature requests and issue reports for our final launch on GitHub.
