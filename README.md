@@ -10,7 +10,7 @@
 - 📡 **Powered by AI language models:** Operated by **`GPT-4-Turbo`** model out of the box, but easily switchable to **`any other OpenAI model`** via asking Miles to change it.
 - 🎵 **Integrated with Spotify:** Enjoy `seamless Spotify controls` right from your voice. *(Requires Spotify Premium)*
 - ☀️ **Weather Capabilities:** Stay updated with `real-time weather data`.
-- 🧠 **Persistant Memory:** Ask Miles to `remember something, ask him to forget it`.
+- 🧠 **Persistant Selective Memory:** Ask Miles to `remember something, ask him to forget it`.
 - 🧮 **Calculator:** Don't rely on language model math, Miles can use a `real calculator`.
 - 🧩 **Multi-tasker:** Miles can use up to `3 tools at the same time`.
 - 🤔 **Context:** `Miles has context` about him, who made him, the app he's in, and who you are through things you ask him to remember.
@@ -272,3 +272,6 @@ Your support fuels my passion, and I'm excited to continue this journey with all
 
 ## 🤝 **Contribute to Development**
 Your feedback shapes M.I.L.E.S! Though this is a beta release, we eagerly await your feature requests and issue reports for our final launch on GitHub.
+
+**Contact:** anthonyhayward1000@gmail.com
+
