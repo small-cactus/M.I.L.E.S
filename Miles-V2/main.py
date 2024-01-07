@@ -777,6 +777,8 @@ def is_spotify_playing():
 def play_beep():
     os.system("afplay beep_sound.wav")
 
+from apikey import wake_word_key
+
 def main():
     global was_spotify_playing, original_volume, user_requested_pause
     miles_folder = os.path.join(os.path.dirname(__file__), 'Miles')
@@ -791,7 +793,7 @@ def main():
 
     try:
         porcupine = pvporcupine.create(
-            access_key='tT201HRc0pPYIyL02DZJKG1EEFkHzqYHQkiPQVJEoyPJkQ/TqFYEHA==',
+            access_key=wake_word_key,
             keyword_paths=[ppn_file_path]
         )
     except Exception as e:
