@@ -1,4 +1,4 @@
-# **Miles - GPT-4-Turbo powered voice assistant**
+# **Miles - GPT 4 Turbo powered voice assistant**
 
 > **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by the same technology used in ChatGPT. Enhance your day with magical voice commands and state-of-the-art language processing.
 
