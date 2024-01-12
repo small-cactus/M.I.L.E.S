@@ -230,19 +230,12 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 
 
 
-## 🆕 **Upcoming Features**
-- 🖤 **Dark/Light mode** I'm working on a light mode for Miles, as well as a graphical overhaul.
-- 📸 **Image Processing** Miles will be able to view and describe images.
-- 🌐 **Web Browsing**: M.I.L.E.S will soon be able to search anything on the entire internet to gain more knowledge and assist you further.
-- 📜 **Chat History**: An upcoming feature to keep track of your previous interactions.
-- 🖥️ **Typing Interface**: Soon, you won't be restricted to voice. Type your commands and queries for M.I.L.E.S.
-- ⏸️ **Interrupt Capabilities**: Interrupt M.I.L.E.S in the middle of a speech to provide new instructions or queries.
-- 📝 **Formatted Code Blocks**: M.I.L.E.S will have the ability to display formatted code blocks inline, although these won't be spoken.
-- 📊 **Tables**: Introducing the ability to display tables, which will not be spoken.
-- 📄 **Text File Submission**: Submit text files to M.I.L.E.S for it to read and gain context about them.
-- 💡 **Smart Light Control**:
-  - **LIFX Lights**: M.I.L.E.S is gearing up to seamlessly integrate with LIFX lights, allowing users to control their home lighting with just their voice. From adjusting brightness levels to changing colors, experience the future of smart lighting control.
-  - **Philips Hue**: Following the integration with LIFX, we'll be extending our support to Philips Hue lights. Immerse yourself in a vibrant ambiance by directing M.I.L.E.S to set your preferred lighting moods and scenes.
+## 🆕 **In Progess Features**
+- 😭 **Graphical API key interface** Starting idk when you'll be able to start Miles instantly after install and it will prompt you to insert API keys, once you insert the API keys, cient secrets etc and click the submit button, it will close the input screen and allow you to talk to Miles without ever having to open a seperate file.
+- **Progress on feature:** 1% complete, I had it working fine, tried to over achieve and make it test each API key, realied I suck at reading and writing JS, scraped all of the JS, went back to working copy of Miles and now I'm left with JUST the raw HTML and CSS elements with no logic behind it. Good idea scrapping it? Yes, I had 15 functions written across 3 files that all talk to each other for no reason and never even worked, I started coding at 6pm, and ended at 5am, with no working code, nothing worked, no errors, all console log prints never even worked.
+
+- ⚙️ **Graphical settings and config menu** As much as I want the users of Miles to speak their every command and desire to him without ever clicking buttons or typing, I also don't want people to have to physically change lines of code to get Miles to work. Let's say someone doesn't have access to GPT-4-Turbo, most people don't, since you wouldn't be able to ask Miles to switch the model by himself, you'd have to dig into the main code, so instead, right after I get the api key interface working, i'll be putting both the api key interface, and any config settings including speed and cost optimizing features in a settings menu that will be located in the top right of the app.
+
 
 ## 🚀 **Future Roadmap**
 
