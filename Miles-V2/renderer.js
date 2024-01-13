@@ -2,7 +2,15 @@ const io = require('socket.io-client');
 const socket = io('http://localhost:3000');
 const outputDiv = document.getElementById('output');
 const statusIndicator = document.getElementById('status-indicator');
+const { shell } = require('electron');
 const applocation = "Clearwater"; //This is a beta release, change this city to your city otherwise weather popups won't display the correct info. This doesn't affect Miles' speech or responses.
+
+document.addEventListener('click', function(event) {
+    if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
+        event.preventDefault();
+        shell.openExternal(event.target.href);
+    }
+});
 
 function scrollToBottom() {
     const appContainer = document.getElementById('app-container');
@@ -174,8 +182,119 @@ function processMessage(message) {
         }
     }
 
+// Define the setup steps
+const setupSteps = [
+    {
+        instruction: "Welcome to <b>Miles</b>!. You'll have to go through some setup before you can use <b>Miles<b/>. <br><br>Please enter your <b>OpenAI API key</b>. You can obtain it <a href='https://openai.com/api/' target='_blank' class='setup-link'>here</a>:<br><br><b>1. Sign in</b> <br><b>2. Navigate to your account</b> <br><b>3. Click API keys</b> <br><b>4. Click 'Create new secret key'</b> <br><b>5. Copy and paste it here</b>.",
+        field: { name: "api_key", label: "OpenAI API key"}
+    },
+    {
+        instruction: "Please enter your <b>Picovoice API key</b>. You can obtain it <a href='https://console.picovoice.ai' target='_blank' class='setup-link'>here</a>:<br><br><b>1. To sign in, find the passion project sign in button <br>(CMD+f then type 'passion').</b> <br><b>2. Type your name</b> <br><b>3. In the dropdown box, choose 'Porcupine Wake Word'</b> <br><b>4. For where did you hear about it, type 'GitHub'</b> <br><b>5. For project description, type 'Voice assistant'.</b> <br><b>6. Wait for the key to generate and then copy and paste it here.</b>.",
+        field: { name: "wake_word_key", label: "Picovoice wake word key"}
+    },
+    {
+        instruction: "Enter your <b>Spotify Client ID</b>:<br><br>" +
+                     "<b>1.</b> Create or access your Spotify account at the <a href='https://developer.spotify.com/dashboard/' target='_blank' class='setup-link'>Spotify Developer Dashboard</a>.<br>" +
+                     "<b>2.</b> Create a new app with:<br>" +
+                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- App Name:</b> Miles<br>" +
+                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- App Description:</b> Helpful voice assistant<br>" +
+                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- Redirect URL:</b> http://localhost:8080/callback<br>" +
+                     "<b>3.</b> Your Client ID is located on your app's dashboard.",
+        field: { name: "spotify_client_id", label: "Spotify Client ID" }
+    },    
+    {
+        instruction: "Enter your <b>Spotify Client Secret</b>:<br><br>" +
+                     "<b>1.</b> In the <a href='https://developer.spotify.com/dashboard/' target='_blank' class='setup-link'>Spotify Developer Dashboard</a>, select your 'Miles' app.<br>" +
+                     "<b>2.</b> Click 'Show Client Secret' on your app's dashboard to retrieve your Client Secret.",
+        field: { name: "spotify_client_secret", label: "Spotify Client Secret" }
+    },
+    {
+        instruction: "Please enter your <b>Default Location</b>: <br><br>(The default city you want Miles to get the weather for)",
+        field: { name: "DEFAULT_LOCATION", label: "Default Location" }
+    },
+    {
+        instruction: "Please choose your preferred <b>unit</b> <br><br>(Drop down menu click blank field to populate it):",
+        field: { name: "UNIT", label: "Unit", type: "select", options: ["Imperial", "Metric"] }
+    },
+    // other setup pages here
+];
+
+let currentStep = 0;
+let setupValues = {};
+
+// Function to initialize the setup screen
+function initializeSetupScreen() {
+    document.getElementById('status-indicator').style.display = 'none';
+    document.getElementById('app-container').style.display = 'none';
+    document.getElementById('api-key-setup-container').style.display = 'block';
+    const instructionsDiv = document.getElementById('setup-instructions');
+    const inputsDiv = document.getElementById('api-key-inputs');
+
+    // Function to update the setup screen based on the current step
+    function updateSetupScreen() {
+        const step = setupSteps[currentStep];
+        instructionsDiv.innerHTML = `<p>${step.instruction}</p>`;
+
+        inputsDiv.innerHTML = '';
+        const inputField = document.createElement(step.field.type === "select" ? 'select' : 'input');
+        inputField.id = step.field.name;
+
+        if (step.field.type === "select") {
+            step.field.options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                inputField.appendChild(optionElement);
+            });
+        } else {
+            inputField.type = 'text';
+            inputField.placeholder = step.field.label;
+        }
+
+        inputField.value = setupValues[step.field.name] || '';
+        inputsDiv.appendChild(inputField);
+    }
+
+    updateSetupScreen();
+
+    // Function to navigate through setup steps
+window.navigateSetup = function(direction) {
+    const inputField = document.getElementById(setupSteps[currentStep].field.name);
+    setupValues[setupSteps[currentStep].field.name] = inputField.value;
+
+    currentStep += direction;
+
+    // Prevent going before the first step or beyond the last step
+    if (currentStep < 0) {
+        currentStep = 0;
+        return; // Exit the function early
+    } else if (currentStep >= setupSteps.length) {
+        // All steps completed, save the API keys
+        saveApiKeys();
+    } else {
+        updateSetupScreen();
+    }
+}};
 
 
+// Function to save API keys
+function saveApiKeys() {
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.send('saveApiKeys', setupValues);
 
+    document.getElementById('api-key-setup-container').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    document.getElementById('status-indicator').style.display = 'block';
 
-fetch('http://localhost:3000/triggerPython');
+}
+
+const { ipcRenderer } = require('electron');
+
+ipcRenderer.on('initialize-setup', () => {
+    initializeSetupScreen();
+});
+
+ipcRenderer.on('setup-complete', (event, message) => {
+    console.log(message); 
+    fetch('http://localhost:3000/triggerPython');
+});
