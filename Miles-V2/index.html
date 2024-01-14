@@ -11,7 +11,7 @@
             --status-miles: #3498db;
             --status-prompt: #f39c12;
             --status-action: #9b59b6;
-            --status-processing: #2ecc71;
+            --status-processing: #043f67;
             --user-bg: #2c3e50;
             --miles-bg: #bdc3c7;
         }
@@ -22,6 +22,7 @@
             color: white;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
 
         h1 {
@@ -239,16 +240,111 @@
             transform: translateX(-110%);
         }
 
+        #api-key-setup-container {
+    background: #141414;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 25px;
+    max-width: 500px;
+    box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
+    display: none; 
+    opacity: 0; 
+    animation: fadeIn 0.5s ease-out forwards; 
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+#setup-instructions {
+    color: #cbcbcb;
+    margin-bottom: 20px;
+}
+
+#api-key-inputs input[type="text"], #api-key-inputs select {
+    width: 95%; 
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border-radius: 5px; 
+    border: 1px solid #3d3e40; 
+    background-color: #353741; 
+    color: #E0E0F1; 
+    font-size: 16px; 
+}
+
+#api-key-inputs select {
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    appearance: none; 
+    cursor: pointer; 
+}
+
+
+#api-key-setup-container button {
+    width: 48%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--status-miles);
+    color: white;
+    margin: 5px;
+}
+
+#api-key-setup-container button:hover {
+    background-color: var(--status-processing);
+    transition: background-color 0.3s; 
+}
+
+#prev-button {
+    float: left;
+}
+
+#next-button {
+    float: right;
+}
+
+/* Clear floats */
+#api-key-setup-container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.setup-link {
+    color: #ffffff; 
+    text-decoration: none; 
+    font-style: italic;
+    font-weight: bold;
+}
+
+.setup-link:hover {
+    text-decoration: underline;
+    color: #3498db; 
+    transition: color 0.3s; 
+}
+
+
     </style>
 </head>
 
 <body>
-    <div id="status-indicator"></div>
-    <div id="app-container">
+    <div id="api-key-setup-container" style="display: none;">
+        <div id="setup-instructions">
+            <!-- Instructions will be dynamically inserted here -->
+        </div>
+        <div id="api-key-inputs">
+            <!-- API Key input fields will be dynamically inserted here -->
+        </div>
+        <button id="prev-button" onclick="navigateSetup(-1)">Previous</button>
+        <button id="next-button" onclick="navigateSetup(1)">Next</button>
+    </div>
+    <div id="status-indicator" style="display: block;"></div>
+    <div id="app-container" style="display: block;">
         <h1>M.I.L.E.S</h1>
         <div id="output" class="scroll_enabled"></div>
-    </div>
-    <script src="renderer.js"></script>
+<script src="renderer.js"></script>
 </body>
 
 </html>
