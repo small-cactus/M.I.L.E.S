@@ -63,7 +63,7 @@
   ```
 4. **Run setup script:**
   ```
-   cd ~/Miles-V2
+   cd ~/M.I.L.E.S/Miles-V2
   ```
    **Next, run:**
   ```
