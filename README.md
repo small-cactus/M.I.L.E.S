@@ -7,7 +7,7 @@
 </p>
 
 ## 🌐 **Core Features**
-- 📡 **Powered by AI language models:** Operated by **`GPT-4-Turbo`** model out of the box, but easily switchable to **`any other OpenAI model`** via asking Miles to change it.
+- 📡 **Powered by AI language models:** Operated by **`GPT-3.5-Turbo`** and **`GPT-4-Turbo`** model out of the box for maximum compatibility, but easily switchable to `any other OpenAI model` via asking Miles to change it.
 - 🎵 **Integrated with Spotify:** Enjoy `seamless Spotify controls` right from your voice. *(Requires Spotify Premium)*
 - ☀️ **Weather Capabilities:** Stay updated with `real-time weather data`.
 - 🧠 **Persistant Selective Memory:** Ask Miles to `remember something, ask him to forget it`.
@@ -46,120 +46,38 @@
   - These action notifications are outdated as of today, there are 10 new actions Miles can perform on top of the ones shown, I will update them when I have time.
   <br><br>
 
-## 🚀 **Prerequisites (Mac install)**
+## 🚀 **Download and Install (Mac easy install)**
 
-Before starting, ensure the following are installed on your Mac:
-
-- **Homebrew**: If Homebrew is not installed on your Mac, open Terminal and `run the following command` (copied from [brew.sh](https://brew.sh/)):
+1. **Install Homebrew:**
   ```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
-  
-- **Python**: Install Python via Homebrew. Open Terminal and run:
-- ⚠️ **This command is needed, `if you have python 3.12 or newer, it will not work`. Also, if you choose to make a venv, all virtual environments `will have to be made using python 3.11` or it will not work.**
+2. **Install Git:**
   ```
-  brew install python@3.11
+  brew install git
   ```
 
-- **Node.js and npm**: `Install Node.js` (which includes npm) using Homebrew:
+3. **Clone the Repo:**
   ```
-  brew install node
+  git clone https://github.com/small-cactus/M.I.L.E.S.git
   ```
+4. **Run setup script:**
+  ```
+   cd ~/Miles-V2
+  ```
+   **Next, run:**
+  ```
+   chmod +x setup.sh
+  ```
+   **Finally, run:**
+  ```
+   ./setup.sh
+  ```
+5. **Config:**
 
-  <br><br>
+  🥳 The app will guide you through setup once it's open. (You need an `OpenAI API` key, `Picovoice API` key, `Spotify client ID`, `Spotify Client Secret`, `Your city`, and `Your preferred Unit`.) **`All have steps in the app`**.
 
-## 🛠️ **Getting Started (Mac and Windows)**
-Don't even try to run this on windows, I have a working windows copy, but every other step in this page is meant for Mac.
-Follow these steps to set up the project on your local machine:
-
-1. **Clone the repository**: `Clone the project` to your computer.
-   ```
-   git clone https://github.com/small-cactus/M.I.L.E.S.git
-   ```
-
-2. **Open terminal in `Miles-V2 folder`**
-   ```
-   cd [REPLACE WITH PATH TO MILES-V2 FOLDER!!!!]
-   ```
-   
-4. **Install Python dependencies**: In Miles-V2 in the terminal, `run the following command to install all required Python packages`:
-   ```
-   pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio
-   ```
-
-5. **Install Node.js dependencies**: Still in Miles-V2 in the terminal, `install the Node.js packages`.
-   ```
-   npm install
-   ```
-  <br><br>
-
-# ⚙️ **Configurations:**
-Follow these steps to set up Miles.
-
-## 🔑 OpenAI API Integration (REQUIRED)
-- **WARNING**: ⚠️ **`If you do not have access to gpt-4-1106-preview`, Miles will not answer you, instead, use CMD + F or CTRL + F in `main.py` to search for `#default model` => and replace that entire full line with this instead: `current_model = "gpt-3.5-turbo-1106"`. You should have to do this once in the main.py file.**
-### 1️⃣ Sign Up for OpenAI
-- Begin by `signing into your OpenAI account`, if you don't already have one. Visit the [OpenAI API portal](https://beta.openai.com/signup/) to register.
-
-### 2️⃣ Access Your API Key
-- After logging in, choose "`API`", then click your profile in the top right, navigate to the API section to find your API key.
-
-### 3️⃣ Update the `apikey.py` File
-- Copy the API key from OpenAI.
-- Locate the `apikey.py` file in your local copy of the Miles project.
-- Insert your OpenAI API key into the `apikey.py` file where it says OpenAI api key.
-
-
-<br><br>
-
-## 🎵 Spotify Integration (⚠️ REQUIRED even if you dont have premium, Miles won't start on mac without this completed)
-Follow the steps below to set up Spotify integration:
-
-### 1️⃣ Create a Spotify Account
-Start by [creating or accessing your Spotify account](https://www.spotify.com/).
-
-### 2️⃣ Access the Spotify Developer Dashboard
-- Navigate to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) and sign in.
-
-### 3️⃣ Create a New App
-- After logging in, click on the "Create an App" button.
-- Fill in:
-  - **App Name**: `Miles`
-  - **App Description**: `Helpful voice assistant`
-  - **Redirect URL**: `http://localhost:8080/callback`
-
-### 4️⃣ Get Your Client ID and Client Secret
-- On your app's dashboard, locate your **Client ID** and enter it in the `apikey.py` file.
-- Click "Show Client Secret" to retrieve your **Client Secret** and add it to the `apikey.py` file as well.
-
-### 5️⃣ Music With Miles
-Initiate Miles and request your favorite songs!
-
-
-<br><br>
-## 🗣️ Picovoice Porcupine Wake Word Setup (⚠️REQUIRED)
-For enabling wake word detection in Miles, you'll need to obtain an API key from Picovoice Porcupine. Here's how to do it:
-
-### 1️⃣ Create a Picovoice Account
-- Sign up for a Picovoice account or log in if you already have one. You can do so [here](https://console.picovoice.ai/signup).
-- ⚠️ **It will ask for a company email, just enter your personal email, it has no difference.**
-### 2️⃣ Access the Picovoice Console
-- After logging in, head over to the [Picovoice Console](https://console.picovoice.ai/).
-
-### 3️⃣ Obtain Your API Key
-- In the console, you'll find an option to generate an API key. Follow the instructions to create one.
-- Once you have your API key, copy it.
-
-### 4️⃣ Update Your `apikey.py` File
-- In your local copy of the Miles project, locate the `apikey.py` file.
-- Paste the copied API key into this file, following the format provided in the file.
-
-- **Run the app**: While in the project directory, run this command in the terimnal:
-   ```
-   npm start
-   ```
-- **All done! 🥳** Say "Miles, are you there?" to see if it works.
-
+  - **Do I have to pay?** The only API that requires payment is OpenAI, it is a pay per use model so you won't have unnecessary charges. You also need Spotify Premimum to use Miles` Spotify features, but to get the API key I believe it's free.
 
 <br><br>
 
@@ -227,13 +145,12 @@ For enabling wake word detection in Miles, you'll need to obtain an API key from
 - 💾 **Internal Automatic Model Switching** Find that `GPT-4-Turbo` is too expensive? Just ask Miles to change it to the `cheaper one`. It's that simple.
 - 🌘 **Dynamic Action Notifications** Miles' UI now shows `what specifically he is doing`, instead of "Searching a song" it'll now say "Searching for `Never gonna give you up`". This is applied for all Actions.
 - 🪪 **Internal Automatic Personality switching** M.I.L.E.S can now change his own `system prompt` from what you ask, or by himself. This lets him or you specify `personality traits`, `ways of responding`, and `topics to talk about or avoid`. Think of it like a `instruction set` combined with a `personality desctiption`.
+- ⚙️ **Graphical Setup Process** Once you start the app, it will `automaticaly show a setup screen` if you don't already have API keys setup.
+- 🧠 **Default Model Change** The **default LLM is now `GPT-3.5-Turbo`**, the only reason for this is that most people `don't have access to GPT-4-Turbo` so `Miles would crash instantly`. If you have access and want to use `GPT-4-Turbo` just **ask Miles to change it to `GPT-4-Turbo`**.
 
 
 
 ## 🆕 **In Progess Features**
-- 😭 **Graphical API key interface** Starting idk when you'll be able to start Miles instantly after install and it will prompt you to insert API keys, once you insert the API keys, cient secrets etc and click the submit button, it will close the input screen and allow you to talk to Miles without ever having to open a seperate file.
-- **Progress on feature:** 1% complete, I had it working fine, tried to over achieve and make it test each API key, realied I suck at reading and writing JS, scraped all of the JS, went back to working copy of Miles and now I'm left with JUST the raw HTML and CSS elements with no logic behind it. Good idea scrapping it? Yes, I had 15 functions written across 3 files that all talk to each other for no reason and never even worked, I started coding at 6pm, and ended at 5am, with no working code, nothing worked, no errors, all console log prints never even worked.
-
 - ⚙️ **Graphical settings and config menu** As much as I want the users of Miles to speak their every command and desire to him without ever clicking buttons or typing, I also don't want people to have to physically change lines of code to get Miles to work. Let's say someone doesn't have access to GPT-4-Turbo, most people don't, since you wouldn't be able to ask Miles to switch the model by himself, you'd have to dig into the main code, so instead, right after I get the api key interface working, i'll be putting both the api key interface, and any config settings including speed and cost optimizing features in a settings menu that will be located in the top right of the app.
 
 
