@@ -52,16 +52,20 @@
   ```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
-2. **Install Git:**
+2. **Install Python 3.11:**
+  ```
+  brew install python@3.11
+  ```
+3. **Install Git:**
   ```
   brew install git
   ```
 
-3. **Clone the Repo:**
+4. **Clone the Repo:**
   ```
   git clone https://github.com/small-cactus/M.I.L.E.S.git
   ```
-4. **Run setup script:**
+5. **Run setup script:**
   ```
    cd ~/M.I.L.E.S/Miles-V2
   ```
@@ -73,7 +77,7 @@
   ```
    ./setup.sh
   ```
-5. **Config:**
+6. **Config:**
 
   🥳 The app will guide you through setup once it's open. (You need an `OpenAI API` key, `Picovoice API` key, `Spotify client ID`, `Spotify Client Secret`, `Your city`, and `Your preferred Unit`.) **`All have steps in the app`**.
 
