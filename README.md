@@ -40,11 +40,16 @@
   ## 🖥️ M.I.L.E.S Conversation screen
   ![M.I.L.E.S Interface](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/conversation.webp)
   <br><br>
-  ## 🔍 M.I.L.E.S Action notifications
-  If they look wonky it's because each action has an animation and it's hard to screenshot because it's moving + Miles responds too fast to screenshot it. Sorry about that!
-  ![M.I.L.E.S Actions](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/actions.webp)
-  - These action notifications are outdated as of today, there are 10 new actions Miles can perform on top of the ones shown, I will update them when I have time.
-  <br><br>
+  ## 📸 Screenshots of Welcome and Setup Pages
+### Welcome Page
+The most simple of them all. Miles Welcome Page:
+![M.I.L.E.S Welcome Page](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/welcome-page.png)
+
+### Setup Page
+The Setup page walks users through the process of entering their API keys and other necessary configurations for M.I.L.E.S.
+![M.I.L.E.S Setup Page](https://github.com/small-cactus/M.I.L.E.S/blob/main/screenshots/setup-page.png)
+<br><br>
+
 
 ## 🚀 **Download and Install (Mac easy install)**
 
