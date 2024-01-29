@@ -85,9 +85,7 @@ The Setup page walks users through the process of entering their API keys and ot
 6. **Config:**
 
   🥳 The app will guide you through setup once it's open. (You need an `OpenAI API` key, `Picovoice API` key, `Spotify client ID`, `Spotify Client Secret`, `Your city`, and `Your preferred Unit`.) **`All have steps in the app`**.
-
-  - ⚠️ You will get an error when setup is complete, just click ok and say `Miles` and speak a prompt like `Are you there?`. After you do that, everything will now be working. I'm not sure if the error happens to everyone, or just because I have 2 copies on my Mac. Either way all functionality is working.
-
+  
   - **Do I have to pay?** The only API that requires payment is OpenAI, it is a pay per use model so you won't have unnecessary charges. You also need Spotify Premimum to use Miles` Spotify features, but to get the API key I believe it's free.
 
 <br><br>
