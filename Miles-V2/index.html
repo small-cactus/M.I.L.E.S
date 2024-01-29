@@ -1,352 +1,602 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M.I.L.E.S</title>
-    <style>
-        :root {
-            --status-miles: #3498db;
-            --status-prompt: #f39c12;
-            --status-action: #9b59b6;
-            --status-processing: #043f67;
-            --user-bg: #2c3e50;
-            --miles-bg: #bdc3c7;
-        }
+    
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>M.I.L.E.S</title>
+                    <style>
+                        body {
+                            font-family: 'Roboto', 'Arial', sans-serif;
+                            background-color: #121212;
+                            color: white;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        
+                        /* Incorrect Animation Style */
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            20%, 60% { transform: translateX(-10px); }
+                            40%, 80% { transform: translateX(10px); }
+                        }
+                        
+                        .incorrect-animation {
+                            animation: shake 0.5s linear;
+                        }
+                        
+                        /* Styles for the navigation menu */
+                        .nav-menu {
+                            list-style-type: none;
+                            padding: 7px;
+                            margin: 0;
+                            display: flex;
+                            justify-content: center;
+                            background-color: #1c1c1c;
+                            position: relative;
+                        }
+                        
+                        .nav-menu li {
+                            color: #ececf1;
+                            margin: 0 10px;
+                            padding: 8px;
+                            border-radius: 12px;
+                            font-size: 16px;
+                            position: relative;
+                            border: 1px solid transparent;
+                            transition: background-color 0.4s ease, border-color 0.3s ease;
+                        }
+                        
+                        .nav-menu a {
+                            text-decoration: none;
+                            color: #ececf1;
+                            display: block;
+                            padding: 5px;
+                            border-radius: 12px;
+                            transition: color 0.3s ease;
+                        }
+                        
+                        .nav-menu li:hover, .nav-menu li:focus {
+                            background-color: #333;
+                            border-color: #585858;
+                        }
+                        
+                        /* Active link style (optional) */
+                        .nav-menu li.active {
+                            font-weight: bold;
+                            color: #f1c40f;
+                        }
+                        
+                        /* Hover effect for links */
+                        .nav-menu a:hover {
+                            color: #fff;
+                        }
+                        
+                        /* Fade-in animation */
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        
+                        @keyframes fadeOut {
+                            from { opacity: 1; }
+                            to { opacity: 0; }
+                        }
+                        
+                        .content {
+                            padding: 20px;
+                            text-align: center;
+                            opacity: 0;
+                            animation: fadeIn 1.5s ease forwards;
+                            animation-duration: 0.5s;
+                            animation-fill-mode: forwards;
+                        }
+                        
+                        .hidden {
+                            display: none;
+                        }
+                        
+                        .button-flex-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding-top: 150px;
+                        }
+                        
+                        /* Styles for content descriptions */
+                        .content-description {
+                            color: #ececf1;
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                            padding-top: 200px;
+                        }
+                        
+                        /* Styles for all dynamic buttons */
+                        #dynamic-button-openai, #dynamic-button-picovoice, #dynamic-button-spotify-id, #dynamic-button-spotify-secret, #dynamic-button-city, #dynamic-button-unit {
+                            cursor: pointer;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            background-color: #1a1a1a;
+                            color: #d1d5db;
+                            border: 1px solid #333;
+                            border-radius: 15px;
+                            padding: 15px 20px;
+                            font-size: 16px;
+                            margin: 0;
+                            transition: background-color 0.3s ease;
+                        }
+                        
+                        #dynamic-button-openai:hover, #dynamic-button-picovoice:hover, #dynamic-button-spotify-id:hover, #dynamic-button-spotify-secret:hover, #dynamic-button-city:hover, #dynamic-button-unit:hover {
+                            background-color: #333;
+                        }
+                        
+                        /* Styles for all dynamic textboxes */
+                        #dynamic-textbox-openai, #dynamic-textbox-picovoice, #dynamic-textbox-spotify-id, #dynamic-textbox-spotify-secret, #dynamic-textbox-city, #dynamic-textbox-unit {
+                            display: none;
+                            background-color: #1a1a1a;
+                            color: white;
+                            border: 1px solid #333;
+                            border-radius: 15px;
+                            padding: 15px 20px;
+                            font-size: 16px;
+                            margin: 0;
+                            flex-grow: 1;
+                            transition: background-color 0.3s ease;
+                            transition: box-shadow 0.3s ease;
+                        }
+                        
+                        #dynamic-textbox-openai:hover, #dynamic-textbox-picovoice:hover, #dynamic-textbox-spotify-id:hover, #dynamic-textbox-spotify-secret:hover, #dynamic-textbox-city:hover, #dynamic-textbox-unit:hover {
+                            background-color: #333;
+                            box-shadow: 0px 0px 100px gray;
+                        }
+                        
+                        /* Styles for all refresh buttons */
+                        #refresh-button-openai, #refresh-button-picovoice, #refresh-button-spotify-id, #refresh-button-spotify-secret, #refresh-button-city, #refresh-button-unit {
+                            cursor: pointer;
+                            background-color: #1a1a1a;
+                            color: white;
+                            border: 2px solid #333;
+                            font-size: 16px;
+                            border-radius: 15px;
+                            width: 50px;
+                            height: 50px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            text-align: center;
+                            margin-left: 10px;
+                            transition: background-color 0.3s ease;
+                            padding: 0;
+                            line-height: 1;
+                        }
+                        #refresh-button-openai:hover, #refresh-button-picovoice:hover, #refresh-button-spotify-id:hover, #refresh-button-spotify-secret:hover, #refresh-button-city:hover, #refresh-button-unit:hover {
+                            background-color: #333;
+                        }
+                        
+                        #container-openai, #container-picovoice, #container-spotify-id, #container-spotify-secret, #container-city, #container-unit {
+                            position: relative;
+                        }
+                        
+                        /* Style for the tooltip */
+                        .tooltip {
+                            position: absolute;
+                            bottom: 100%;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(-10px);
+                            background-color: #333;
+                            color: white;
+                            padding: 5px 10px;
+                            border-radius: 8px;
+                            font-size: 12px;
+                            white-space: nowrap;
+                            z-index: 1000;
+                            display: none;
+                            box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+                        }
+                        
+                        /* Arrow for the tooltip */
+                        .tooltip::after {
+                            content: '';
+                            position: absolute;
+                            top: 100%;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            border-width: 5px;
+                            border-style: solid;
+                            border-color: #333 transparent transparent transparent;
+                        }
+                        
+                        .show-tooltip {
+                            display: block;
+                        }
+                        
+                        h1 {
+                            text-align: center;
+                            margin-bottom: 1rem;
+                            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+                            padding: 20px;
+                        }
+                        
+                        #app-container {
+                            background: #141414;
+                            width: auto;
+                            height: auto;
+                            padding: 20px;
+                            overflow: hidden;
+                            border-radius: 10px;
+                            white-space: pre-wrap;
+                            transition: scroll-margin-top 0.5s;
+                        }
+                        
+                        .scroll_enabled {
+                            overflow-y: auto !important;
+                            height: calc(100vh - 100px) !important;
+                            padding: 10px !important;
+                            background: #1d1d1d !important;
+                            border-radius: 10px !important;
+                            box-shadow: -5px 5px 50px rgba(0, 0, 0, 0.5);
+                            display: flex;
+                            flex-direction: column;
+                            overflow-anchor: auto !important;
+                            transform: translateZ(0);
+                        }
+                        
+                        ::-webkit-scrollbar {
+                            display: none;
+                        }
+                        
+                        .common-style {
+                            margin: 10px 0;
+                            margin-bottom: 15px;
+                            font-size: 16px;
+                            color: #cbcbcb;
+                            font-weight: 100;
+                            border-radius: 15px;
+                            padding: 18px;
+                            line-height: 1.75;
+                            outline: solid 2px #3d3e40;
+                            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
+                        }
+                        
+                        .status-miles {
+                            background-color: var(--status-miles);
+                        }
+                        
+                        .status-prompt {
+                            background-color: var(--status-prompt);
+                        }
+                        
+                        .status-action {
+                            background-color: var(--status-action);
+                        }
+                        
+                        .status-processing {
+                            background-color: var(--status-processing);
+                        }
+                        
+                        .user-message {
+                            background-color: #353741;
+                            color: #E0E0F1;
+                            margin: 20px 300px 20px 300px;
+                            box-shadow: -5px 5px 150px black;
+                            white-space: pre-wrap;
+                        }
+                        
+                        .miles-message {
+                            background-color: #444654;
+                            color: #D1D5DB;
+                            margin: 20px 300px 20px 300px;
+                            outline: solid 2px #444654;
+                            overflow-x: auto;
+                            overflow-y: hidden;
+                            box-shadow: -5px 5px 150px black;
+                            white-space: pre-wrap;
+                        }
+                        
+                        .bold-glow {
+                            font-weight: bold;
+                            text-shadow: 0 0 1.5px rgba(255, 255, 255, 0.8);
+                            color: white;
+                            font-size: 17px;
+                        }
+                        
+                        @keyframes rotate {
+                            0%, 100% {
+                                transform: rotate(0deg);
+                            }
+                            
+                            100% {
+                                transform: rotate(360deg);
+                            }
+                        }
+                        
+                        .rotating {
+                            animation: rotate 2s linear infinite;
+                        }
+                        
+                        @keyframes jiggle {
+                            0%, 20%, 25%, 40%, 60%, 100% {
+                                transform: rotate(0deg);
+                            }
+                            
+                            20% {
+                                transform: rotate(-7deg);
+                            }
+                            
+                            40% {
+                                transform: rotate(7deg);
+                            }
+                        }
+                        
+                        .jiggling {
+                            animation: jiggle 1s ease infinite;
+                        }
+                        
+                        @keyframes bounce {
+                            0%, 20%, 50%, 80%, 100% {
+                                transform: translateY(0);
+                            }
+                            
+                            40% {
+                                transform: translateY(-10px);
+                            }
+                            
+                            60% {
+                                transform: translateY(-5px);
+                            }
+                        }
+                        
+                        .bouncing {
+                            animation: bounce 1s;
+                        }
+                        
+                        @keyframes pulse {
+                            0%, 100% {
+                                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
+                            }
+                            
+                            70% {
+                                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+                            }
+                        }
+                        
+                        #status-indicator {
+                            position: fixed;
+                            top: 10px;
+                            left: 10px;
+                            padding: 5px 15px;
+                            border-radius: 20px;
+                            z-index: 100;
+                            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                            backdrop-filter: blur(10px);
+                            background: rgba(255, 255, 255, 0.1);
+                            font-weight: bold;
+                            font-size: 1.1em;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            transition: background-color 0.3s ease;
+                            animation: pulse 2s infinite;
+                        }
+                        
+                        #weather-card {
+                            position: fixed;
+                            top: 60px;
+                            left: 10px;
+                            padding: 5px 15px;
+                            border-radius: 20px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 10px;
+                            font-weight: bold;
+                            font-size: 1.1em;
+                            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                            backdrop-filter: blur(10px);
+                            background: rgba(255, 255, 255, 0.1);
+                            animation: slideInFromLeft 1s forwards, slideOutToLeft 1s 9s forwards;
+                        }
+                        
+                        @keyframes slideInFromLeft {
+                            from {
+                                transform: translateX(-110%);
+                            }
+                            
+                            to {
+                                transform: translateX(0);
+                            }
+                        }
+                        
+                        @keyframes slideOutToLeft {
+                            from {
+                                transform: translateX(0);
+                            }
+                            
+                            to {
+                                transform: translateX(-110%);
+                            }
+                        }
+                        
+                        .weather-icon {
+                            width: 24px;
+                            height: 24px;
+                            font-size: 1.5em;
+                        }
+                        
+                        .hide-weather-card {
+                            transform: translateX(-110%);
+                        }
+                        
+                        @keyframes fadeIn {
+                            to { opacity: 1; }
+                        }
+                        
+                        .welcome-content, .completion-content {
+                            text-align: center;
+                            padding-top: 150px;
+                            font-size: 24px;
+                        }
+                        
+                        .highlighted-text {
+                            font-weight: bold;
+                            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+                        }
+                        
+                        
+                        .nav-button {
+                            cursor: pointer;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            background-color: #1a1a1a;
+                            color: #d1d5db;
+                            border: 1px solid #454545;
+                            border-radius: 18px;
+                            padding: 15px 20px;
+                            font-size: 18px;
+                            margin: 0;
+                            transition: background-color 0.3s ease;
+                            transition: box-shadow 0.65s ease;
+                        }
+                        .nav-button:hover {
+                            background-color: #333;
+                            box-shadow: 0px 0px 100px gray;
+                        }
+                        
+                        .custom-link {
+                            color: #4A90E2;
+                            text-decoration: none;
+                            font-weight: bold;
+                        }
+                        
+                        .custom-link:hover {
+                            color: #2A4B7C;
+                            text-decoration: underline;
+                        }
+                    </style>
+    </head>
+    <body>
         
-        body {
-            font-family: 'Roboto', 'Arial', sans-serif;
-            background-color: #1a1a1a;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 1rem;
-            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
-            padding: 20px;
-        }
-        
-        #app-container {
-            background: #141414;
-            width: auto;
-            height: auto;
-            padding: 20px;
-            overflow: hidden;
-            border-radius: 10px;
-            white-space: pre-wrap;
-            transition: scroll-margin-top 0.5s;
-        }
-        
-        .scroll_enabled {
-            overflow-y: auto !important;
-            height: calc(100vh - 100px) !important;
-            padding: 10px !important;
-            background: #1d1d1d !important;
-            border-radius: 10px !important;
-            box-shadow: -5px 5px 50px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            overflow-anchor: auto !important;
-            transform: translateZ(0);
-        }
-        
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .common-style {
-            margin: 10px 0;
-            margin-bottom: 15px;
-            font-size: 16px;
-            color: #cbcbcb;
-            font-weight: 100;
-            border-radius: 15px;
-            padding: 18px;
-            line-height: 1.75;
-            outline: solid 2px #3d3e40;
-            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .status-miles {
-            background-color: var(--status-miles);
-        }
-        
-        .status-prompt {
-            background-color: var(--status-prompt);
-        }
-        
-        .status-action {
-            background-color: var(--status-action);
-        }
-        
-        .status-processing {
-            background-color: var(--status-processing);
-        }
-        
-        .user-message {
-            background-color: #353741;
-            color: #E0E0F1;
-            margin: 20px 300px 20px 300px;
-            box-shadow: -5px 5px 150px black;
-            white-space: pre-wrap;
-        }
-        
-        .miles-message {
-            background-color: #444654;
-            color: #D1D5DB;
-            margin: 20px 300px 20px 300px;
-            outline: solid 2px #444654;
-            overflow-x: auto;
-            overflow-y: hidden;
-            box-shadow: -5px 5px 150px black;
-            white-space: pre-wrap;
-        }
-        
-        .bold-glow {
-            font-weight: bold;
-            text-shadow: 0 0 1.5px rgba(255, 255, 255, 0.8);
-            color: white;
-            font-size: 17px;
-        }
-        
-        @keyframes rotate {
-            0%, 100% {
-                transform: rotate(0deg);
-            }
-            
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .rotating {
-            animation: rotate 2s linear infinite;
-        }
-        
-        @keyframes jiggle {
-            0%, 20%, 25%, 40%, 60%, 100% {
-                transform: rotate(0deg);
-            }
-            
-            20% {
-                transform: rotate(-7deg);
-            }
-            
-            40% {
-                transform: rotate(7deg);
-            }
-        }
-        
-        .jiggling {
-            animation: jiggle 1s ease infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            
-            40% {
-                transform: translateY(-10px);
-            }
-            
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-        
-        .bouncing {
-            animation: bounce 1s;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
-            }
-            
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-            }
-        }
-        
-        #status-indicator {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            padding: 5px 15px;
-            border-radius: 20px;
-            z-index: 100;
-            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: bold;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background-color 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-        
-        #weather-card {
-            position: fixed;
-            top: 60px;
-            left: 10px;
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-            text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
-            animation: slideInFromLeft 1s forwards, slideOutToLeft 1s 9s forwards;
-        }
-        
-        @keyframes slideInFromLeft {
-            from {
-                transform: translateX(-110%);
-            }
-            
-            to {
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes slideOutToLeft {
-            from {
-                transform: translateX(0);
-            }
-            
-            to {
-                transform: translateX(-110%);
-            }
-        }
-        
-        .weather-icon {
-            width: 24px;
-            height: 24px;
-            font-size: 1.5em;
-        }
-        
-        .hide-weather-card {
-            transform: translateX(-110%);
-        }
-        
-        #api-key-setup-container {
-    background: #141414;
-    padding: 20px;
-    margin: 20px auto;
-    border-radius: 25px;
-    max-width: 500px;
-    box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
-    display: none; 
-    opacity: 0; 
-    animation: fadeIn 0.5s ease-out forwards; 
-}
-
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
-#setup-instructions {
-    color: #cbcbcb;
-    margin-bottom: 20px;
-}
-
-#api-key-inputs input[type="text"], #api-key-inputs select {
-    width: 95%; 
-    padding: 10px; 
-    margin-bottom: 15px; 
-    border-radius: 5px; 
-    border: 1px solid #3d3e40; 
-    background-color: #353741; 
-    color: #E0E0F1; 
-    font-size: 16px; 
-}
-
-#api-key-inputs select {
-    -webkit-appearance: none; 
-    -moz-appearance: none; 
-    appearance: none; 
-    cursor: pointer; 
-}
-
-
-#api-key-setup-container button {
-    width: 48%;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    background-color: var(--status-miles);
-    color: white;
-    margin: 5px;
-}
-
-#api-key-setup-container button:hover {
-    background-color: var(--status-processing);
-    transition: background-color 0.3s; 
-}
-
-#prev-button {
-    float: left;
-}
-
-#next-button {
-    float: right;
-}
-
-/* Clear floats */
-#api-key-setup-container::after {
-    content: "";
-    clear: both;
-    display: table;
-}
-
-.setup-link {
-    color: #ffffff; 
-    text-decoration: none; 
-    font-style: italic;
-    font-weight: bold;
-}
-
-.setup-link:hover {
-    text-decoration: underline;
-    color: #3498db; 
-    transition: color 0.3s; 
-}
-
-
-    </style>
-</head>
-
-<body>
-    <div id="api-key-setup-container" style="display: none;">
-        <div id="setup-instructions">
+        <!-- Welcome Page -->
+        <div id="welcome-page" class="content welcome-content" style="display: none;">
+            <p>Welcome to <span class="highlighted-text">M.I.L.E.S</span></p>
+            <div class="button-flex-container">
+                <button class="nav-button" onclick="showPage('openai')">Start setup</button>
+            </div>
         </div>
-        <div id="api-key-inputs">
+        
+        <!-- Completion Page -->
+        <div id="completion-page" class="content completion-content" style="display: none;">
+            <p>You're all set. Try saying "Miles, are you there?"</p>
         </div>
-        <button id="prev-button" onclick="navigateSetup(-1)">Previous</button>
-        <button id="next-button" onclick="navigateSetup(1)">Next</button>
-    </div>
-    <div id="status-indicator" style="display: block;"></div>
-    <div id="app-container" style="display: block;">
-        <h1>M.I.L.E.S</h1>
-        <div id="output" class="scroll_enabled"></div>
-    </div>
-    <script src="renderer.js"></script>
-</body>
-
+        
+        <!-- Navigation Menu -->
+        <ul class="nav-menu" style="display: none;">
+            <li><a href="#" onclick="showPage('openai')">OpenAI API Key</a></li>
+            <li><a href="#" onclick="showPage('picovoice')">Picovoice API Key</a></li>
+            <li><a href="#" onclick="showPage('spotify-id')">Spotify Client ID</a></li>
+            <li><a href="#" onclick="showPage('spotify-secret')">Spotify Client Secret</a></li>
+            <li><a href="#" onclick="showPage('city')">Preferred City</a></li>
+            <li><a href="#" onclick="showPage('unit')">Default Unit (F/C)</a></li>
+        </ul>
+        
+        <!-- Content for OpenAI API Key -->
+        <div id="openai" class="content" style="display: none;">
+            <p class="content-description">Enter your OpenAI API key here. You can find your API key in your OpenAI dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-openai">
+                    <button id="dynamic-button-openai">Enter your OpenAI API key</button>
+                    <input type="text" id="dynamic-textbox-openai" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Hmm... it seems like this isn't an OpenAI API key.</div>
+                </div>
+                <button id="refresh-button-openai">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Content for Picovoice API Key -->
+        <div id="picovoice" class="content hidden" style="display: none;">
+            <p class="content-description">Enter your Picovoice API key here. You can find your API key in your Picovoice dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-picovoice">
+                    <button id="dynamic-button-picovoice">Enter your Picovoice API key</button>
+                    <input type="text" id="dynamic-textbox-picovoice" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Hmm... it seems like this isn't a Picovoice API key.</div>
+                </div>
+                <button id="refresh-button-picovoice">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Content for Spotify Client ID -->
+        <div id="spotify-id" class="content hidden" style="display: none;">
+            <p class="content-description">Enter your Spotify Client ID here. You can find your Client ID in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-spotify-id">
+                    <button id="dynamic-button-spotify-id">Enter your Spotify Client ID</button>
+                    <input type="text" id="dynamic-textbox-spotify-id" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Hmm... it seems like this isn't a Spotify Client ID.</div>
+                </div>
+                <button id="refresh-button-spotify-id">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Content for Spotify Client Secret -->
+        <div id="spotify-secret" class="content hidden" style="display: none;">
+            <p class="content-description">Enter your Spotify Client Secret here. You can find your Client Secret in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-spotify-secret">
+                    <button id="dynamic-button-spotify-secret">Enter your Spotify Client Secret</button>
+                    <input type="text" id="dynamic-textbox-spotify-secret" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Hmm... it seems like this isn't a Spotify Client Secret.</div>
+                </div>
+                <button id="refresh-button-spotify-secret">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Content for Preferred City -->
+        <div id="city" class="content hidden" style="display: none;">
+            <p class="content-description">Enter your preferred city for weather updates or other location-specific services (Capitolized). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-city">
+                    <button id="dynamic-button-city">Enter your Preferred City</button>
+                    <input type="text" id="dynamic-textbox-city" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Please enter a valid city name (Capitolized).</div>
+                </div>
+                <button id="refresh-button-city">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Content for Default Unit (Metric or Imperial) -->
+        <div id="unit" class="content hidden" style="display: none;">
+            <p class="content-description">Choose your default unit for temperature (Metric or Imperial). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
+            </p>
+            <div class="button-flex-container">
+                <div id="container-unit">
+                    <button id="dynamic-button-unit">Enter your Default Unit (Metric/Imperial)</button>
+                    <input type="text" id="dynamic-textbox-unit" spellcheck="false" autocomplete="new-password">
+                        <div class="tooltip">Please enter 'Imperial' for Fahrenheit or 'Metric' for Celsius.</div>
+                </div>
+                <button id="refresh-button-unit">🔃</button>
+            </div>
+        </div>
+        
+        <!-- Status Indicator and App Container -->
+        <div id="status-indicator" style="display: block;"></div>
+        <div id="app-container" style="display: block;">
+            <h1>M.I.L.E.S</h1>
+            <div id="output" class="scroll_enabled"></div>
+        </div>
+        
+        <!-- Script -->
+        <script src="renderer.js"></script>
+    </body>
+    
 </html>

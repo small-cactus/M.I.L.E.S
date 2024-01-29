@@ -24,7 +24,7 @@ socket.on('pythonOutput', (data) => {
     const messageRegex = /(Miles:|User:|\[.*?\])/g;
     let startIndex = 0;
     let match;
-
+    
     while ((match = messageRegex.exec(data)) !== null) {
         const message = data.substring(startIndex, match.index).trim();
         if (message) {
@@ -41,24 +41,24 @@ const apiKey = "c8b138cd625d476fbdb31921231507";  // My personal FREE weather ap
 
 function fetchWeather() {
     const apiUrl = `http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${applocation}&days=1`;
-
+    
     fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if ('current' in data && 'forecast' in data && data['forecast']['forecastday']) {
-                const conditionText = data.current.condition.text;
-                const temp = data.current.temp_f;
-                const chanceOfRain = data.forecast.forecastday[0].day.daily_chance_of_rain;
-                const isDay = data.current.is_day;
-
-                displayWeatherCard(conditionText, temp, chanceOfRain, isDay);
-            } else {
-                console.error("Unexpected data structure from weather API.");
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching weather data:", error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if ('current' in data && 'forecast' in data && data['forecast']['forecastday']) {
+            const conditionText = data.current.condition.text;
+            const temp = data.current.temp_f;
+            const chanceOfRain = data.forecast.forecastday[0].day.daily_chance_of_rain;
+            const isDay = data.current.is_day;
+            
+            displayWeatherCard(conditionText, temp, chanceOfRain, isDay);
+        } else {
+            console.error("Unexpected data structure from weather API.");
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching weather data:", error);
+    });
 }
 
 function getWeatherIcon(conditionText, isDay) {
@@ -76,7 +76,7 @@ function getWeatherIcon(conditionText, isDay) {
 
 function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
     const weatherIconClass = getWeatherIcon(conditionText, isDay);
-
+    
     const weatherDiv = document.createElement('div');
     weatherDiv.id = 'weather-card';
     weatherDiv.innerHTML = `
@@ -85,9 +85,9 @@ function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
         <div>${temp}°F</div>
         <div>${chanceOfRain}% chance of rain</div>
     `;
-
+    
     document.body.appendChild(weatherDiv);
-
+    
     setTimeout(() => {
         weatherDiv.classList.add('hide-weather-card');
     }, 10000);
@@ -95,7 +95,7 @@ function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
 
 function processMessage(message) {
     let messageClass = '';
-
+    
     if (message.includes("Listening for 'Miles'")) {
         setStatus("Listening for 'Miles'", 'status-miles', 'fas fa-microphone');
         return;
@@ -112,7 +112,7 @@ function processMessage(message) {
     } else if (message.startsWith("[Miles is")) {
         const actionText = message.match(/\[Miles is (.+)\]/)[1];
         let iconClass;
-
+        
         if (actionText.startsWith('calculating')) {
             iconClass = 'fas fa-calculator';
         } else if (actionText.startsWith('finding the current weather')) {
@@ -146,12 +146,12 @@ function processMessage(message) {
         } else {
             iconClass = 'fas fa-robot';
         }
-
-
+        
+        
         setStatus(actionText.charAt(0).toUpperCase() + actionText.slice(1), 'status-action', iconClass);
         return;
     }
-
+    
     function setStatus(text, className, iconClass = '') {
         if (iconClass === 'fas fa-microphone' || iconClass === 'fas fa-user' ||
             iconClass === 'fas fa-comment-dots' ||
@@ -166,135 +166,199 @@ function processMessage(message) {
         }
         statusIndicator.className = className;
     }
-
+    
     if (messageClass === 'miles' || messageClass === 'user') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = messageClass + ' common-style';
-
-            const formattedText = message
-                .replace(/(User:|Miles:)/g, '<span class="bold-glow">$1</span>')
-                .replace(/\n/g, '<br>');
-            
-            messageDiv.innerHTML = formattedText;
-            messageDiv.style.minHeight = '40px';
-            outputDiv.appendChild(messageDiv);
-            scrollToBottom();
-        }
+        const messageDiv = document.createElement('div');
+        messageDiv.className = messageClass + ' common-style';
+        
+        const formattedText = message
+        .replace(/(User:|Miles:)/g, '<span class="bold-glow">$1</span>')
+        .replace(/\n/g, '<br>');
+        
+        messageDiv.innerHTML = formattedText;
+        messageDiv.style.minHeight = '40px';
+        outputDiv.appendChild(messageDiv);
+        scrollToBottom();
     }
+}
 
-// Define the setup steps
-const setupSteps = [
-    {
-        instruction: "Welcome to <b>Miles</b>!. You'll have to go through some setup before you can use <b>Miles<b/>. <br><br>Please enter your <b>OpenAI API key</b>. You can obtain it <a href='https://openai.com/api/' target='_blank' class='setup-link'>here</a>:<br><br><b>1. Sign in</b> <br><b>2. Navigate to your account</b> <br><b>3. Click API keys</b> <br><b>4. Click 'Create new secret key'</b> <br><b>5. Copy and paste it here</b>.",
-        field: { name: "api_key", label: "OpenAI API key"}
-    },
-    {
-        instruction: "Please enter your <b>Picovoice API key</b>. You can obtain it <a href='https://console.picovoice.ai' target='_blank' class='setup-link'>here</a>:<br><br><b>1. To sign in, find the passion project sign in button <br>(CMD+f then type 'passion').</b> <br><b>2. Type your name</b> <br><b>3. In the dropdown box, choose 'Porcupine Wake Word'</b> <br><b>4. For where did you hear about it, type 'GitHub'</b> <br><b>5. For project description, type 'Voice assistant'.</b> <br><b>6. Wait for the key to generate and then copy and paste it here.</b>.",
-        field: { name: "wake_word_key", label: "Picovoice wake word key"}
-    },
-    {
-        instruction: "Enter your <b>Spotify Client ID</b>:<br><br>" +
-                     "<b>1.</b> Create or access your Spotify account at the <a href='https://developer.spotify.com/dashboard/' target='_blank' class='setup-link'>Spotify Developer Dashboard</a>.<br>" +
-                     "<b>2.</b> Create a new app with:<br>" +
-                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- App Name:</b> Miles<br>" +
-                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- App Description:</b> Helpful voice assistant<br>" +
-                     "&nbsp;&nbsp;&nbsp;&nbsp;<b>- Redirect URL:</b> http://localhost:8080/callback<br>" +
-                     "<b>3.</b> Your Client ID is located on your app's dashboard.",
-        field: { name: "spotify_client_id", label: "Spotify Client ID" }
-    },    
-    {
-        instruction: "Enter your <b>Spotify Client Secret</b>:<br><br>" +
-                     "<b>1.</b> In the <a href='https://developer.spotify.com/dashboard/' target='_blank' class='setup-link'>Spotify Developer Dashboard</a>, select your 'Miles' app.<br>" +
-                     "<b>2.</b> Click 'Show Client Secret' on your app's dashboard to retrieve your Client Secret.",
-        field: { name: "spotify_client_secret", label: "Spotify Client Secret" }
-    },
-    {
-        instruction: "Please enter your <b>Default Location</b>: <br><br>(The default city you want Miles to get the weather for)",
-        field: { name: "DEFAULT_LOCATION", label: "Default Location" }
-    },
-    {
-        instruction: "Please choose your preferred <b>unit</b> <br><br>(Drop down menu click blank field to populate it):",
-        field: { name: "UNIT", label: "Unit", type: "select", options: ["Imperial", "Metric"] }
-    },
-    // other setup pages here
-];
+var isCurrentPageValid = true;
+var currentPageId = 'openai'; // Initialize with the default page ID
+var setupValues = {};
+var textboxValidity = {}; // Object to keep track of each textbox's validity
 
-let currentStep = 0;
-let setupValues = {};
-
-// Function to initialize the setup screen
-function initializeSetupScreen() {
-    document.getElementById('status-indicator').style.display = 'none';
-    document.getElementById('app-container').style.display = 'none';
-    document.getElementById('api-key-setup-container').style.display = 'block';
-    const instructionsDiv = document.getElementById('setup-instructions');
-    const inputsDiv = document.getElementById('api-key-inputs');
-
-    // Function to update the setup screen based on the current step
-    function updateSetupScreen() {
-        const step = setupSteps[currentStep];
-        instructionsDiv.innerHTML = `<p>${step.instruction}</p>`;
-
-        inputsDiv.innerHTML = '';
-        const inputField = document.createElement(step.field.type === "select" ? 'select' : 'input');
-        inputField.id = step.field.name;
-
-        if (step.field.type === "select") {
-            step.field.options.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                inputField.appendChild(optionElement);
-            });
-        } else {
-            inputField.type = 'text';
-            inputField.placeholder = step.field.label;
+// Function to show the selected page and hide others
+function showPage(pageId) {
+    if (currentPageId === pageId) return; // No action if already on the page
+    
+    var pages = document.querySelectorAll('.content');
+    pages.forEach(function(page) {
+        // Set display to 'none' for all pages except the one to be shown
+        if (page.id !== pageId) {
+            page.style.display = 'none';
         }
-
-        inputField.value = setupValues[step.field.name] || '';
-        inputsDiv.appendChild(inputField);
+    });
+    
+    var requestedPage = document.getElementById(pageId);
+    if (requestedPage) {
+        requestedPage.style.display = 'block'; // Show the requested page
     }
-
-    updateSetupScreen();
-
-    // Function to navigate through setup steps
-window.navigateSetup = function(direction) {
-    const inputField = document.getElementById(setupSteps[currentStep].field.name);
-    setupValues[setupSteps[currentStep].field.name] = inputField.value;
-
-    currentStep += direction;
-
-    // Prevent going before the first step or beyond the last step
-    if (currentStep < 0) {
-        currentStep = 0;
-        return; // Exit the function early
-    } else if (currentStep >= setupSteps.length) {
-        // All steps completed, save the API keys
-        saveApiKeys();
+    
+    // Handle navigation menu visibility
+    const navMenu = document.querySelector('.nav-menu');
+    if (pageId === 'welcome-page' || pageId === 'completion-page') {
+        navMenu.style.display = 'none';
     } else {
-        updateSetupScreen();
+        navMenu.style.display = 'flex';
     }
-}};
+    
+    // Play incorrect animation if the current page is invalid
+    // This part is now moved here to be checked after the page change
+    if (!isCurrentPageValid && pageId !== 'welcome-page' && pageId !== 'completion-page') {
+        document.querySelectorAll('.nav-menu li').forEach(function(li) {
+            li.classList.add('incorrect-animation');
+            setTimeout(function() { li.classList.remove('incorrect-animation'); }, 500);
+        });
+    }
+    
+    currentPageId = pageId; // Update the current page ID
+}
 
+
+const totalInputs = 6; // Update this if the number of inputs changes
+Object.keys(textboxValidity).forEach(key => textboxValidity[key] = false);
+
+function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipText) {
+    var button = document.getElementById(buttonId);
+    var textbox = document.getElementById(textboxId);
+    var tooltip = button.nextElementSibling.nextElementSibling;
+    var originalText = '';
+    var refreshButtonId = 'refresh-button-' + buttonId.split('-').slice(2).join('-');
+    
+    button.addEventListener('click', function() {
+        textbox.style.display = 'block';
+        textbox.value = originalText;
+        textbox.focus();
+        button.style.display = 'none';
+        tooltip.style.display = 'none';
+    });
+    
+    textbox.addEventListener('blur', function() {
+        // Check if the textbox is empty and reset if necessary
+        if (textbox.value.trim() === '') {
+            originalText = '';
+            button.textContent = defaultText;
+            button.style.display = 'block';
+            textbox.style.display = 'none';
+            tooltip.style.display = 'none';
+            return; // Exit the function early since no further validation is needed
+        }
+        
+        originalText = textbox.value.trim();
+        let isValid = false;
+        
+        // Custom validation logic
+        if (buttonId.includes('openai')) {
+            isValid = originalText.startsWith('sk-');
+        } else if (buttonId.includes('picovoice')) {
+            isValid = originalText.endsWith('==');
+        } else if (buttonId.includes('unit')) {
+            let lowerCaseText = originalText.toLowerCase();
+            isValid = lowerCaseText === 'metric' || lowerCaseText === 'imperial';
+        } else if (buttonId.includes('city')) {
+            isValid = /^[A-Z]/.test(originalText);
+        } else {
+            // For Spotify ID and Secret, since no format is specified
+            isValid = true; // Consider always valid
+        }
+        
+        // Update button text and tooltip based on validation
+        isCurrentPageValid = isValid;
+        textboxValidity[textboxId] = isValid; // Update validity status
+        
+        if (isValid) {
+            setupValues[textboxId] = originalText;
+        } else {
+            setupValues[textboxId] = null;
+        }
+        
+        // Update UI based on validation
+        let verificationSymbol = isValid ? '✅ ' : '❌ ';
+        button.textContent = verificationSymbol + (originalText.length > 10 ? originalText.substring(0, 10) + "..." : originalText);
+        tooltip.textContent = tooltipText;
+        tooltip.style.display = isValid ? 'none' : 'block';
+        textbox.style.display = 'none';
+        button.style.display = 'block';
+        
+        // Check if all inputs are valid
+        if (Object.values(textboxValidity).filter(Boolean).length === totalInputs) {
+            saveApiKeys();
+        }
+    });
+    
+    document.getElementById(refreshButtonId).addEventListener('click', function() {
+        originalText = '';
+        textbox.value = '';
+        textbox.style.display = 'none';
+        button.style.display = 'block';
+        button.textContent = defaultText;
+        tooltip.style.display = 'none';
+        isCurrentPageValid = false;
+        textboxValidity[textboxId] = false; // Reset validity on refresh
+    });
+}
+
+// Initialize all buttons and textboxes
+initializeButtonAndTextbox('dynamic-button-openai', 'dynamic-textbox-openai', 'Enter your OpenAI API key', 'Hmm... it seems like this isn\'t an OpenAI API key.');
+initializeButtonAndTextbox('dynamic-button-picovoice', 'dynamic-textbox-picovoice', 'Enter your Picovoice API key', 'Hmm... it seems like this isn\'t a Picovoice API key.');
+initializeButtonAndTextbox('dynamic-button-spotify-id', 'dynamic-textbox-spotify-id', 'Enter your Spotify Client ID', 'Hmm... it seems like this isn\'t a Spotify Client ID.');
+initializeButtonAndTextbox('dynamic-button-spotify-secret', 'dynamic-textbox-spotify-secret', 'Enter your Spotify Client Secret', 'Hmm... it seems like this isn\'t a Spotify Client Secret.');
+initializeButtonAndTextbox('dynamic-button-city', 'dynamic-textbox-city', 'Enter your Preferred City', 'Please enter a valid city name (Capitalized).');
+initializeButtonAndTextbox('dynamic-button-unit', 'dynamic-textbox-unit', 'Enter your Default Unit (Metric or Imperial)', 'Please enter \'Imperial\' for Fahrenheit or \'Metric\' for Celsius.');
+
+function onSetupComplete() {
+    showPage('completion-page');
+    setTimeout(() => {
+        document.getElementById('completion-page').style.display = 'none';
+    }, 5000); // Hide the completion page after 5 seconds
+}
 
 // Function to save API keys
 function saveApiKeys() {
+    onSetupComplete();
     const { ipcRenderer } = require('electron');
     ipcRenderer.send('saveApiKeys', setupValues);
-
-    document.getElementById('api-key-setup-container').style.display = 'none';
-    document.getElementById('app-container').style.display = 'block';
+    
+    // Hide API key related elements and show main app content
+    document.querySelector('.nav-menu').style.display = 'none';
+    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
     document.getElementById('status-indicator').style.display = 'block';
-
+    document.getElementById('app-container').style.display = 'block';
 }
 
+// IPC Renderer Listeners
 const { ipcRenderer } = require('electron');
-
 ipcRenderer.on('initialize-setup', () => {
-    initializeSetupScreen();
+    // Hide main app content
+    document.getElementById('status-indicator').style.display = 'none';
+    document.getElementById('app-container').style.display = 'none';
+    
+    // Hide all content sections
+    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+    
+    // Show only the welcome page
+    showPage('welcome-page');
+    document.getElementById('welcome-page').style.display = 'block';
 });
 
 ipcRenderer.on('setup-complete', (event, message) => {
-    console.log(message); 
-    fetch('http://localhost:3000/triggerPython');
+    console.log(message);
+    
+    // Delay the fetch request by 5 seconds (5000 milliseconds)
+    setTimeout(() => {
+        fetch('http://localhost:3000/triggerPython')
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error fetching:', error));
+    }, 5000); // 5000 milliseconds delay
 });
