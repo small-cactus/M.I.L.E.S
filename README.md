@@ -61,18 +61,30 @@ The Setup page walks users through the process of entering their API keys and ot
   ```
   brew install python@3.11
   ```
-3. **Install Git:**
+3. **Create Virtual Environment:**
+  ```
+  python3.11 -m venv Miles-env
+  ```
+4. **Activate Virtual Environment:**
+  ```
+  source Miles-env/bin/activate
+  ```
+5. **Go to created folder:**
+  ```
+  cd ~/Miles-env
+  ```
+6. **Install Git:**
   ```
   brew install git
   ```
 
-4. **Clone the Repo:**
+7. **Clone the Repo:**
   ```
   git clone https://github.com/small-cactus/M.I.L.E.S.git
   ```
-5. **Run setup script:**
+8. **Run setup script:**
   ```
-   cd ~/M.I.L.E.S/Miles-V2
+   cd ~/Miles-env/M.I.L.E.S/Miles-V2
   ```
    **Next, run:**
   ```
@@ -82,7 +94,7 @@ The Setup page walks users through the process of entering their API keys and ot
   ```
    ./setup.sh
   ```
-6. **Config:**
+9. **Config:**
 
   🥳 The app will guide you through setup once it's open. (You need an `OpenAI API` key, `Picovoice API` key, `Spotify client ID`, `Spotify Client Secret`, `Your city`, and `Your preferred Unit`.) **`All have steps in the app`**.
   
