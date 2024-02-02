@@ -26,7 +26,7 @@
   2. Rewrite his system prompt to `reduce the token count by 700 tokens`.
   3. However, in doing both of these things, he will lose most of his functinality and will be less helpful, he `does NOT actually lose any functinality` in doing this, but he may hallucinate that he can't do some of the things you ask him to do. Asking him to write a custom system prompt for a specific list of instructions will help.
 
-💡 **Note:** Before diving in, make sure you have your **`OpenAI API key`**. Place this key within the quotes in the `apikey.py` file.
+💡 **Note:** You need several API keys to use Miles, there are instructions in the app to get them, all of them are free, except OpenAI..
 
 ## 📄 **What commands are there?**
 `There are no commands`, Miles is powered by a language model, not code, say anything however you like and it will work, want to play Spotify? You can just say this:
