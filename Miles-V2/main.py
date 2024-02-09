@@ -776,19 +776,36 @@ def is_spotify_playing():
         print("Failed to get Spotify playback state:", e)
         return None
         
+import os
+import platform
+import winsound
+
 def play_beep():
-    os.system("afplay beep_sound.wav")
+    if platform.system() == 'Darwin':  # macOS
+        os.system("afplay beep_sound.wav")
+    elif platform.system() == 'Windows':
+        winsound.PlaySound("beep_sound.wav", winsound.SND_FILENAME)
+    else:
+        print("Unsupported operating system for beep sound.")
 
 from apikey import wake_word_key
+import platform
 
 def main():
     global was_spotify_playing, original_volume, user_requested_pause
     miles_folder = os.path.join(os.path.dirname(__file__), 'Miles')
     original_volume = None
-    ppn_files = [f for f in os.listdir(miles_folder) if f.endswith('.ppn')]
+    # Check the operating system
+    is_windows = platform.system() == 'Windows'
+
+    # Filter .ppn files based on the operating system
+    if is_windows:
+        ppn_files = [f for f in os.listdir(miles_folder) if f.endswith('.ppn') and 'windows' in f.lower()]
+    else:
+        ppn_files = [f for f in os.listdir(miles_folder) if f.endswith('.ppn') and not 'windows' in f.lower()]
 
     if not ppn_files:
-        print("No .ppn files found in the Miles folder.")
+        print("No suitable .ppn files found in the Miles folder.")
         return
 
     ppn_file_path = os.path.join(miles_folder, ppn_files[0])

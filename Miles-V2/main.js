@@ -10,18 +10,23 @@ const fs = require('fs');
 let win;
 let pythonProcess = null;
 
+// Helper function to get the correct Python command based on the platform
+function getPythonCommand() {
+    return process.platform === 'win32' ? 'python' : 'python3';
+}
+
 function createWindow() {
     win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
-    webPreferences: {
-    nodeIntegration: true,
-    contextIsolation: false
-    },
-    icon: path.join(__dirname, 'miles_logo.icns')
+        width: 1920,
+        height: 1080,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        },
+        icon: path.join(__dirname, 'miles_logo.icns')
     });
     win.loadFile('index.html');
-    
+
     win.on('close', (event) => {
         if (pythonProcess !== null) {
             pythonProcess.kill('SIGTERM');
@@ -30,7 +35,6 @@ function createWindow() {
     });
 }
 
-// Function to check the API keys
 function checkApiKeys() {
     try {
         const apiKeysContent = fs.readFileSync(path.join(__dirname, 'apikey.py'), 'utf8');
@@ -41,62 +45,60 @@ function checkApiKeys() {
     }
 }
 
-// Function to start the server and backend
 function startServerAndBackend() {
     const expressApp = express();
     const server = http.createServer(expressApp);
     const io = socketIo(server);
-    
+
     server.listen(PORT, () => {
         console.log(`Server started on http://localhost:${PORT}`);
-        // Start Python process here if API keys are not empty
         if (!checkApiKeys()) {
             try {
-                const python = spawn('python3', ['-u', path.join(__dirname, 'main.py')]);
+                const python = spawn(getPythonCommand(), ['-u', path.join(__dirname, 'main.py')]);
                 pythonProcess = python;
-                
+
                 python.stdout.on('data', (data) => {
                     console.log("Python Output:", data.toString());
                     io.emit('pythonOutput', data.toString());
                 });
-                
+
                 python.stderr.on('data', (data) => {
                     console.error("Python Error:", data.toString());
                 });
-                
+
                 python.on('close', (code) => {
                     console.log(`Python script exited with code: ${code}`);
                     pythonProcess = null;
                 });
-                
+
             } catch (error) {
                 console.error("Failed to start Python script:", error);
             }
         }
     });
-    
+
     expressApp.get('/triggerPython', (req, res) => {
         if (pythonProcess === null) {
             console.log("Attempting to trigger Python script...");
-            
+
             try {
-                const python = spawn('python3', ['-u', path.join(__dirname, 'main.py')]);
+                const python = spawn(getPythonCommand(), ['-u', path.join(__dirname, 'main.py')]);
                 pythonProcess = python;
-                
+
                 python.stdout.on('data', (data) => {
                     console.log("Python Output:", data.toString());
                     io.emit('pythonOutput', data.toString());
                 });
-                
+
                 python.stderr.on('data', (data) => {
                     console.error("Python Error:", data.toString());
                 });
-                
+
                 python.on('close', (code) => {
                     console.log(`Python script exited with code: ${code}`);
                     pythonProcess = null;
                 });
-                
+
                 res.send("Python script triggered");
             } catch (error) {
                 console.error("Failed to trigger Python script:", error);
@@ -117,19 +119,19 @@ spotify_client_id="${apiKeys['dynamic-textbox-spotify-id'] || 'empty'}"
 spotify_client_secret="${apiKeys['dynamic-textbox-spotify-secret'] || 'empty'}"
 wake_word_key="${apiKeys['dynamic-textbox-picovoice'] || 'empty'}"
 `;
-    
+
     fs.writeFileSync(path.join(__dirname, 'apikey.py'), apiKeyContent);
 }
 
 // IPC listener for saving API keys
 ipcMain.on('saveApiKeys', (event, apiKeys) => {
     writeApiKeys(apiKeys);
-    
+
     // Check again if API keys are now set
     if (!checkApiKeys()) {
         startServerAndBackend();
     }
-    
+
     // Send a response back to the renderer indicating success
     event.reply('setup-complete', 'Setup completed successfully');
 });
@@ -137,7 +139,7 @@ ipcMain.on('saveApiKeys', (event, apiKeys) => {
 app.whenReady().then(() => {
     // Create the window in all cases
     createWindow();
-    
+
     if (checkApiKeys()) {
         console.log("API keys are empty, initializing setup screen...");
         win.webContents.on('did-finish-load', () => {
