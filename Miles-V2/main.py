@@ -778,12 +778,12 @@ def is_spotify_playing():
         
 import os
 import platform
-import winsound
 
 def play_beep():
     if platform.system() == 'Darwin':  # macOS
         os.system("afplay beep_sound.wav")
     elif platform.system() == 'Windows':
+        import winsound  # Import winsound only on Windows
         winsound.PlaySound("beep_sound.wav", winsound.SND_FILENAME)
     else:
         print("Unsupported operating system for beep sound.")
