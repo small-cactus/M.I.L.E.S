@@ -51,7 +51,9 @@ The Setup page walks users through the process of entering their API keys and ot
 <br><br>
 
 
-## 🚀 **Download and Install (Mac easy install)**
+## 🚀 **Download and Install for Mac (easy install)**
+
+### Or [Download and install on Windows (seperate page)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
 
 1. **Install Homebrew:**
   ```
