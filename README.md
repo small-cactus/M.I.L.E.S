@@ -51,54 +51,13 @@ The Setup page walks users through the process of entering their API keys and ot
 <br><br>
 
 
-## 🚀 **Download and Install for Mac (easy install)**
+## 🚀 **Download and Installation**
 
-### Or [Download and install on Windows (seperate page)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
+### M.I.L.E.S is designed to be fully cross-platform, ensuring a seamless experience on both macOS and Windows. Depending on your operating system, follow the corresponding guide for installation instructions:
 
-1. **Install Homebrew:**
-  ```
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  ```
-2. **Install Python 3.11:**
-  ```
-  brew install python@3.11
-  ```
-3. **Create Virtual Environment:**
-  ```
-  python3.11 -m venv Miles-env
-  ```
-4. **Activate Virtual Environment:**
-  ```
-  source Miles-env/bin/activate
-  ```
-5. **Go to created folder:**
-  ```
-  cd ~/Miles-env
-  ```
-6. **Install Git:**
-  ```
-  brew install git
-  ```
+- **macOS Users**: Enjoy a straightforward installation with our easy install script. [Install on macOS (easy install guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-on-MacOS-(Easy-Install-method))
 
-7. **Clone the Repo:**
-  ```
-  git clone https://github.com/small-cactus/M.I.L.E.S.git
-  ```
-8. **Run setup script:**
-  ```
-   cd ~/Miles-env/M.I.L.E.S/Miles-V2
-  ```
-   **Next, run:**
-  ```
-   chmod +x setup.sh
-  ```
-   **Finally, run:**
-  ```
-   ./setup.sh
-  ```
-9. **Config:**
-
-  🥳 The app will guide you through setup once it's open. (You need an `OpenAI API` key, `Picovoice API` key, `Spotify client ID`, `Spotify Client Secret`, `Your city`, and `Your preferred Unit`.) **`All have steps in the app`**.
+- **Windows Users**: Due to platform limitations, the installation process involves a few more steps. But don't worry, we've got you covered with a detailed guide. [Install on Windows (detailed guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
   
   - **Do I have to pay?** The only API that requires payment is OpenAI, it is a pay per use model so you won't have unnecessary charges. You also need Spotify Premimum to use Miles` Spotify features, but to get the API key I believe it's free.
 
