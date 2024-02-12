@@ -1,6 +1,6 @@
 # **Miles - GPT 4 Turbo powered voice assistant**
 
-> **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by the same technology used in ChatGPT. Enhance your day with magical voice commands and state-of-the-art language processing.
+> **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by the same technology used in ChatGPT (GPT-4-Turbo and GPT-3.5-Turbo, it adapts to whichever model automatically). Enhance your day with magical voice commands and state-of-the-art language processing.
 
 <p align="center">
   <img src="miles_logo.png" width="200">
@@ -63,39 +63,78 @@ The Setup page walks users through the process of entering their API keys and ot
 
 <br><br>
 
-## 🔍 **Troubleshooting**
-**This is a beta release, troubleshooting steps are based off of nothing but `hopes and dreams` of what I think might go wrong, submit issues in `githubs issue tracker` for now if the steps don't help.**
-### **It won't start**
-1. Check if you have access to the model this project uses, if you don't, follow the instructions in `OpenAI section` above.
-2. Check if you have `python 3.11`, open terminal and run `brew search python`. Check for a `green checkmark` next to `python 3.11`, if there isn't, refer to `inital setup instructions`.
+## 🔍 Troubleshooting Guide
 
-### **Nothing works and I'm going crazy!!!**
-1. `Calm down`
-2. Using the `same commands` in the inital setup, replace `install` with `uninstall` and click enter.
-3. Now we're going to make a `virtual environment`, this seperates my project from anything on your Mac that might be conflicting with it, don't worry, this is easy.
-4. **First,** `make a new folder anywhere`, name it anything you want, but let's call it `virtual-env`.
-5. **Next,** `right click the folder and click open in terminal`, next enter the following command `python3.11 -m venv myenv`.
-6. **Next,** now that we have the environment created, we need to activate it, **run the command** `source myenv/bin/activate`.
-7. **Lastly,** if you can see the little (myenv) on the left of the command line, you did it right! if not, delete the folder and try again.
-8. **What next?** Now that you have the virtual environment set up, just go through the setup as normal like it's written above. Just make sure you use the `cd` command followed by a file or folder directory instead of opening the terminal directly from the file. Good luck!
+**Disclaimer:** This guide is the product of a collaboration between the world's most advanced AI, which powers M.I.L.E.S, and a human expert who has meticulously reviewed it for accuracy and clarity.
 
-### **All hope is lost, I am so lost.**
-1. No worries!
-2. Log into `ChatGPT`.
-3. Paste the entirety of this text into `ChatGPT`. You may need to do small portions and go 1 at a time.
-4. Ask ChatGPT "`How do I install this? I'm so confused!`"
-5. Hope and pray that it understands.
-6. Good luck.
+### Before You Begin
 
-### **All I ask for is mercy, these funny magic words are nonsense, what even is a command????????**
-1. **Beginner's Quest:** Google "`Free online coding courses for beginners`" and pick one.
-2. **Three-Month Challenge:** Spend the next three months learning the basics of coding.
-3. **Immerse Yourself:** Surround your workspace with coding notes and `inspirational quotes`.
-4. **YouTube Marathon:** Watch as many coding tutorials as you can until you dream in code.
-5. **Community Engagement:** Join online coding forums and share your journey.
-6. **The Return:** Armed with knowledge, revisit this project and conquer the commands.
-7. **Wisdom of the Ages:** If stuck, seek advice from the `oldest tech wizard` you know.
-8. **Celebrate Your Triumph:** Regardless of the outcome, treat yourself for embarking on this coding adventure.
+- Run command lines as Administrator on Windows or prefix commands with `sudo` on Mac/Linux.
+- Ensure a stable internet connection.
+- Verify there's enough disk space and you have the necessary permissions for installations.
+- Keep your operating system updated to prevent compatibility issues.
+
+### Specific Issues and Solutions
+
+1. **Chocolatey Installation Failure:**
+   - **Error:** "Cannot connect to Chocolatey website."
+     - **Solution:** Check your internet connection. For proxy users, configure Chocolatey to utilize your proxy settings.
+   - **Error:** "ExecutionPolicy restriction."
+     - **Solution:** Execute `Set-ExecutionPolicy AllSigned` or `Set-ExecutionPolicy Bypass -Scope Process` in PowerShell as Administrator.
+
+2. **Python Installation Failure via Chocolatey:**
+   - **Error:** "Python package not found."
+     - **Solution:** Update Chocolatey with `choco upgrade chocolatey`. If unresolved, install Python manually from its official website and adjust your PATH accordingly.
+   - **Error:** "Error during installation."
+     - **Solution:** Consult the Chocolatey logs at `C:\ProgramData\chocolatey\logs\chocolatey.log`. Retry the installation ensuring a stable internet connection.
+
+3. **Virtual Environment Activation Error:**
+   - **Error:** "Virtual environment not activating."
+     - **Solution:** Confirm you're in the directory where `Miles-env` was created before attempting activation. Reinstall Python with the 'Add Python to PATH' option selected if issues persist.
+
+4. **Git Installation Failure:**
+   - **Error:** "Git is not recognized as an internal or external command."
+     - **Solution:** Check Git installation with `choco install git -y`. For persistent issues, add Git manually to your system PATH.
+
+5. **Node.js and npm Installation Issues:**
+   - **Error:** "npm commands not recognized."
+     - **Solution:** Reinstall Node.js through Chocolatey using an Administrator PowerShell window. Add Node.js to your PATH manually if necessary.
+
+6. **Project Repository Clone Failure:**
+   - **Error:** "Repository not found."
+     - **Solution:** Verify the repository URL. Ensure Git is installed and you have an active internet connection.
+
+7. **Setup Script Execution Error:**
+   - **Error:** "Setup script fails to execute."
+     - **Solution:** Change execution policy with `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`. Ensure the script's path is correct before retrying.
+
+8. **Node.js/npm Dependency Installation Failure:**
+   - **Error:** "npm ERR! code EACCESS."
+     - **Solution:** Operate your terminal as Administrator or use `sudo` on Mac/Linux. Consider using nvm for easier version and permission management.
+
+9. **API Key Configuration Issues:**
+   - **Error:** "Invalid API Key."
+     - **Solution:** Recheck your API keys for accuracy. Ensure they're correctly placed in your configuration files or environment variables.
+
+10. **Spotify API Connection Failure:**
+    - **Error:** "Could not reach Spotify API."
+      - **Solution:** Confirm your Spotify client ID and secret. Check if your firewall or antivirus is blocking the connection. For proxy users, adjust your system or application settings accordingly.
+
+### Advanced Troubleshooting
+
+- **Reinstalling Chocolatey Packages:** Uninstall problematic packages with `choco uninstall package-name` and reinstall them.
+- **Firewall/Antivirus Interference:** Temporarily disable these to check if they're blocking installations, remembering to enable them afterward.
+- **Updating System Dependencies:** Ensure all necessary system libraries are up to date by running system updates.
+
+### Final Resort
+
+- **Log Analysis:** Check installation logs for specific error messages. For Chocolatey, refer to `C:\ProgramData\chocolatey\logs\chocolatey.log`.
+- **Seek Help Online:** Use error messages to search for solutions on platforms like Stack Overflow, official documentation, or through the GitHub issues page of the software.
+
+**Note:** The AI and I have combined our knowledge and expertise to provide you with detailed solutions. Yet, some issues may require adjustments based on your specific system setup.
+
+For further assistance, feel encouraged to use the GitHub issues tab to report unresolved problems.
+
 
 
 
