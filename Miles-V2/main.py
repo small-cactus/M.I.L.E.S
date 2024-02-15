@@ -387,7 +387,7 @@ def ask(question):
     global conversation_history
     print("[Processing request...]")
     if not question:
-        return "Sorry, I didn't receive a valid query."
+        return "Sorry, I heard you but I couldn't make out any words, either talk louder or move to a quieter space."
 
     if conversation_history and conversation_history[0]['role'] == 'system':
         conversation_history[0]['content'] = system_prompt
