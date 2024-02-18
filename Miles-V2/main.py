@@ -8,6 +8,7 @@ import math
 import os
 from apikey import weather_api_key, DEFAULT_LOCATION, UNIT, spotify_client_id, spotify_client_secret
 from datetime import datetime
+import sympy as smpy
 
 was_spotify_playing = False
 original_volume = None
@@ -66,49 +67,39 @@ def show_weather_message():
     
     return json.dumps(response)
     
-def perform_math(operations, operands_sets):
+def perform_math(input_string):
     print("[Miles is calculating math...]")
     print(" ")
 
-    if not isinstance(operations, list) or not isinstance(operands_sets, list):
-        return json.dumps({"content": "Error: Both operations and operands_sets should be lists."})
-
-    if len(operations) != len(operands_sets):
-        return json.dumps({"content": "Error: Mismatch between number of operations and number of operand sets."})
-
+    tasks = input_string.split(', ')
     responses = []
 
-    for operation, operands in zip(operations, operands_sets):
-        if not operands or not all(isinstance(op, (int, float)) for op in operands):
-            responses.append("Error: Invalid operands provided.")
-            continue
-
+    for task in tasks:
         try:
-            if operation == "add":
-                result = sum(operands)
-            elif operation == "subtract":
-                result = operands[0] - sum(operands[1:])
-            elif operation == "multiply":
-                result = math.prod(operands)
-            elif operation == "divide":
-                result = operands[0]
-                for op in operands[1:]:
-                    result /= op
-            elif operation == "power":
-                result = math.pow(operands[0], operands[1])
-            elif operation == "square_root":
-                if operands[0] < 0:
-                    raise ValueError("Cannot take the square root of a negative number.")
-                result = math.sqrt(operands[0])
+            # Check if the task is an equation (contains '=')
+            if '=' in task:
+                # Split the equation into lhs and rhs
+                lhs, rhs = task.split('=')
+                lhs_expr = smpy.sympify(lhs)
+                rhs_expr = smpy.sympify(rhs)
+
+                # Identify all symbols (variables) in the equation
+                symbols = lhs_expr.free_symbols.union(rhs_expr.free_symbols)
+
+                # Solve the equation
+                # For multiple symbols, solve() returns a list of solution dictionaries
+                result = smpy.solve(lhs_expr - rhs_expr, *symbols)
             else:
-                raise ValueError("Invalid operation specified.")
-        except (ArithmeticError, ValueError) as e:
-            responses.append(f"Error in {operation}: {str(e)}")
-            continue
+                # If not an equation, directly evaluate the expression
+                expression = smpy.sympify(task)
+                result = expression.evalf()
 
-        responses.append(f"{operation.capitalize()} result is {result}.")
+            responses.append(f"Result of '{task}' is {result}.")
 
-    final_response = " ".join(responses)
+        except Exception as e:
+            responses.append(f"Error in '{task}': {str(e)}")
+    note = "Format the following in LaTeX code format:"
+    final_response = note + " ".join(responses)
     return json.dumps({"content": final_response})
 
 memory_file_path = None
@@ -301,16 +292,16 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance."
+system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance. Do NOT generate code."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance."
+        system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance. Do NOT generate code."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
-        system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats."
+        system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
         message = "System prompt changed to short, cheap version. Notify the user that all responses after this explaining response will be very concise and less helpful, and the user can alwways ask you to change it back to normal."
         print(f"[Miles is changing system prompt to be shorter and cheaper...]")
     elif prompt_type == "custom" and custom_prompt:
@@ -439,35 +430,21 @@ def ask(question):
         }
     },
     {
-        "type": "function",
-        "function": {
-            "name": "perform_math",
-            "description": "Perform multiple math operations. Specify the operations and the sets of numbers to perform them on.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "operations": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "enum": ["add", "subtract", "multiply", "divide", "power", "square_root"]
-                        },
-                        "description": "The list of math operations to perform"
-                    },
-                    "operands_sets": {
-                        "type": "array",
-                        "items": {
-                            "type": "array",
-                            "items": {
-                                "type": "number"
-                            }
-                        },
-                        "description": "The list of number sets to perform the operations on. Use decimals and whole numbers only."
-                    }
-                },
-                "required": ["operations", "operands_sets"]
-            }
+    "type": "function",
+    "function": {
+        "name": "perform_math",
+        "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "input_string": {
+                    "type": "string",
+                    "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations."
+                }
+            },
+            "required": ["input_string"]
         }
+    }
     },
     {
         "type": "function",

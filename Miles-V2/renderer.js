@@ -96,6 +96,11 @@ function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
 function processMessage(message) {
     let messageClass = '';
     
+    // Detect and wrap LaTeX with spans for MathJax processing
+    message = message.replace(/\\\(.*?\\\)/g, function(match) {
+        return `<span class="mathjax-latex">${match}</span>`;
+    });
+    
     if (message.includes("Listening for 'Miles'")) {
         setStatus("Listening for 'Miles'", 'status-miles', 'fas fa-microphone');
         return;
@@ -179,6 +184,8 @@ function processMessage(message) {
         messageDiv.style.minHeight = '40px';
         outputDiv.appendChild(messageDiv);
         scrollToBottom();
+        
+        MathJax.typesetPromise().catch((err) => console.error('MathJax processing error:', err));
     }
 }
 
