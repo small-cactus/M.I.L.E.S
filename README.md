@@ -172,7 +172,12 @@ For further assistance, feel encouraged to use the GitHub issues tab to report u
 
 
 ## 🆕 **In Progess Features**
+### Progress on feature: 0% (Not prioritized)
 - ⚙️ **Graphical settings and config menu** As much as I want the users of Miles to speak their every command and desire to him without ever clicking buttons or typing, I also don't want people to have to physically change lines of code to get Miles to work. Let's say someone doesn't have access to GPT-4-Turbo, most people don't, since you wouldn't be able to ask Miles to switch the model by himself, you'd have to dig into the main code, so instead, right after I get the api key interface working, i'll be putting both the api key interface, and any config settings including speed and cost optimizing features in a settings menu that will be located in the top right of the app.
+
+### Progress on feature: 50% (Missing front end code to implement)
+- 🪙 **Real time response streaming** I am "trying" to add real time streaming on a token by token basis for all responeses, now this by itself doesn't seem like a hard task, but no, this is the most challenging part of Miles that I have ever attempted. Right now, (future employers look away) I literally take print statements and format them to appear on the main interface, this works with responeses that show all at once, but this is "probably" not gonna work with streaming, typically each chunk would be printed at a time, and I would have to print a start and end token, as well as a tool call token to infer when to start and stop the stream on the front end, which is literally not possible with my skill level, it's just too over engineered. So I have to learn socket io management and figure out how to implement that into the app to replace the current method, I *REALLY* don't wanna do this, so I'm just gonna wait for GPT-5 so it can do it for me :).
+
 
 
 ## 🚀 **Future Roadmap**
