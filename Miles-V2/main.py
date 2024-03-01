@@ -354,18 +354,27 @@ def speak(text):
         
         
         
+import speech_recognition as sr
+
 def listen():
-  r = sr.Recognizer()
-  with sr.Microphone() as source:
-    print("Listening for prompt...")
-    print(" ")
-    audio = r.listen(source)
-    
-  try:
-    return r.recognize_google(audio)
-  except:
-    print("Didn't get that. Try again")
-    return ""
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening for prompt...")
+        # Adjust the recognizer settings if necessary
+        r.adjust_for_ambient_noise(source)
+        audio = r.listen(source)
+
+    try:
+        # Using Google's speech recognition to process the audio
+        return r.recognize_google(audio)
+    except sr.UnknownValueError:
+        # Handle the case where Google could not understand the audio
+        print("Google Speech Recognition could not understand audio")
+        return ""
+    except sr.RequestError as e:
+        # Handle the case where there was a request error
+        print(f"Could not request results from Google Speech Recognition service; {e}")
+        return ""
 
 conversation_history = []
 
@@ -678,14 +687,52 @@ import pvporcupine
 
 import os
 
-def open_audio_stream(porcupine, pa):
-    return pa.open(
+import pyaudio
+
+def get_device_index(pa, preferred_device_name=None):
+    """
+    Attempt to find an audio device index by name, or return the default
+    input device index if not found or if preferred_device_name is None.
+    """
+    device_index = None
+    num_devices = pa.get_device_count()
+
+    for i in range(num_devices):
+        device_info = pa.get_device_info_by_index(i)
+        if device_info['maxInputChannels'] > 0:  # Checks if device is an input device
+            # If a preferred device name is given, look for it
+            if preferred_device_name and preferred_device_name in device_info['name']:
+                print(f"Found preferred input device: {device_info['name']}")
+                return i
+            # Otherwise, just return the default input device index
+            if device_index is None:
+                device_index = i
+    
+    if device_index is None:
+        print("No suitable input device found.")
+    return device_index
+
+def open_audio_stream(porcupine, pa, preferred_device_name=None):
+    """
+    Open an audio stream with a device that matches the preferred_device_name,
+    or with the default input device if no preference is specified or if the preferred device is not found.
+    """
+    device_index = get_device_index(pa, preferred_device_name)
+    
+    if device_index is None:
+        raise Exception("Failed to find a suitable audio input device.")
+
+    stream = pa.open(
         rate=porcupine.sample_rate,
         channels=1,
         format=pyaudio.paInt16,
         input=True,
+        input_device_index=device_index,
         frames_per_buffer=porcupine.frame_length
     )
+
+    return stream
+
 import threading
 
 def pause_spotify_playback():

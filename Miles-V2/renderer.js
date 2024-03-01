@@ -5,6 +5,8 @@ const statusIndicator = document.getElementById('status-indicator');
 const { shell } = require('electron');
 const applocation = "Clearwater"; //This is a beta release, change this city to your city otherwise weather popups won't display the correct info. This doesn't affect Miles' speech or responses.
 
+let isErrorDetected = false; // Global flag to track error state
+
 document.addEventListener('click', function(event) {
     if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
         event.preventDefault();
@@ -24,18 +26,36 @@ socket.on('pythonOutput', (data) => {
     const messageRegex = /(Miles:|User:|\[.*?\])/g;
     let startIndex = 0;
     let match;
-    
+
     while ((match = messageRegex.exec(data)) !== null) {
         const message = data.substring(startIndex, match.index).trim();
         if (message) {
-            processMessage(message);
+            processMessage(message, false);
         }
         startIndex = match.index;
     }
     if (startIndex < data.length) {
-        processMessage(data.substring(startIndex).trim());
+        processMessage(data.substring(startIndex).trim(), false);
     }
 });
+
+socket.on('pythonError', (errorMessage) => {
+    let customMessage;
+    const rateLimitErrorPattern = /openai\.RateLimitError/;
+
+    // Setting the flag to true regardless of the error type for simplicity
+    isErrorDetected = true;
+
+    if (rateLimitErrorPattern.test(errorMessage)) {
+        customMessage = "Error Detected: No more OpenAI Credits";
+    } else {
+        customMessage = "Error Detected: Please Restart Miles";
+    }
+
+    // Process the message with the error flag set to true
+    processMessage(customMessage, true);
+});
+
 
 const apiKey = "c8b138cd625d476fbdb31921231507";  // My personal FREE weather api key, don't steal it.
 
@@ -93,7 +113,16 @@ function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
     }, 10000);
 }
 
-function processMessage(message) {
+function processMessage(message, isError) {
+    if (isError) {
+        setStatus(message, 'status-error', 'fas fa-exclamation-triangle');
+        return;
+    }
+    // Check if an error has been detected previously
+    if (isErrorDetected) {
+        console.log("Blocking message due to prior error.");
+        return; // Exit early
+    }
     let messageClass = '';
     
     // Detect and wrap LaTeX with spans for MathJax processing
@@ -184,7 +213,7 @@ function processMessage(message) {
         messageDiv.style.minHeight = '40px';
         outputDiv.appendChild(messageDiv);
         scrollToBottom();
-        
+
         MathJax.typesetPromise().catch((err) => console.error('MathJax processing error:', err));
     }
 }

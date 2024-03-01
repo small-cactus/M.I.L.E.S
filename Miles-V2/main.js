@@ -64,6 +64,7 @@ function startServerAndBackend() {
 
                 python.stderr.on('data', (data) => {
                     console.error("Python Error:", data.toString());
+                    io.emit('pythonError', data.toString());
                 });
 
                 python.on('close', (code) => {
