@@ -26,14 +26,16 @@ choco install python --version=3.11 -y
 if %ERRORLEVEL% neq 0 exit /b
 echo Python installation completed.
 
+Echo Installing ffmpeg...
+choco install ffmpeg
+if %ERRORLEVEL% neq 0 exit /b
+echo ffmpeg installation completed.
+
 :: Suggest reboot here if Git was installed for the first time
 echo A reboot is recommended to ensure all changes take effect. Please reboot your system and rerun the script if necessary.
 
 :: Pause here to let the user decide on reboot
 pause
-exit /b
-
-:: Assuming the script is rerun after reboot or no reboot was necessary
 
 :: Change directory to the script's directory
 cd /d "%~dp0"
@@ -41,7 +43,13 @@ cd /d "%~dp0"
 :: Install Python dependencies, ensuring 'wheel' is installed first
 echo Installing Python dependencies...
 pip install wheel
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio winsound platform sympy
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio pvporcupine socketio sympy
 echo Python dependencies installation completed.
+echo Installing Electron...
+call npm install electron
+if %ERRORLEVEL% neq 0 exit /b
+echo Electron install completed.
 
 echo Setup completed.
+
+call npm start
