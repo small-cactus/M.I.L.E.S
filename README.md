@@ -168,17 +168,19 @@ For further assistance, feel encouraged to use the GitHub issues tab to report u
 - 🪪 **Internal Automatic Personality switching** M.I.L.E.S can now change his own `system prompt` from what you ask, or by himself. This lets him or you specify `personality traits`, `ways of responding`, and `topics to talk about or avoid`. Think of it like a `instruction set` combined with a `personality desctiption`.
 - ⚙️ **Graphical Setup Process** Once you start the app, it will `automaticaly show a setup screen` if you don't already have API keys setup.
 - 🧠 **Default Model Change** The **default LLM is now `GPT-3.5-Turbo`**, the only reason for this is that most people `don't have access to GPT-4-Turbo` so `Miles would crash instantly`. If you have access and want to use `GPT-4-Turbo` just **ask Miles to change it to `GPT-4-Turbo`**.
+- 🐛 **Error Handling on Front End**: Errors will now display in the action notification when they occur, enhancing user experience by providing immediate feedback.
+- 🎧 **Better Audio Input Management**: Automatically switches without giving errors and allows low bitrate devices to work, improving accessibility and reliability.
+- 🧮 **LaTeX Math Formatting**: Miles will reply to all math questions in LaTeX format, ensuring that mathematical expressions are displayed correctly and are easy to read.
 
-
-
-## 🆕 **In Progess Features**
+## 🆕 **In Progress Features**
 ### Progress on feature: 0% (Not prioritized)
 - ⚙️ **Graphical settings and config menu** As much as I want the users of Miles to speak their every command and desire to him without ever clicking buttons or typing, I also don't want people to have to physically change lines of code to get Miles to work. Let's say someone doesn't have access to GPT-4-Turbo, most people don't, since you wouldn't be able to ask Miles to switch the model by himself, you'd have to dig into the main code, so instead, right after I get the api key interface working, i'll be putting both the api key interface, and any config settings including speed and cost optimizing features in a settings menu that will be located in the top right of the app.
 
 ### Progress on feature: 50% (Missing front end code to implement)
 - 🪙 **Real time response streaming** I am "trying" to add real time streaming on a token by token basis for all responeses, now this by itself doesn't seem like a hard task, but no, this is the most challenging part of Miles that I have ever attempted. Right now, (future employers look away) I literally take print statements and format them to appear on the main interface, this works with responeses that show all at once, but this is "probably" not gonna work with streaming, typically each chunk would be printed at a time, and I would have to print a start and end token, as well as a tool call token to infer when to start and stop the stream on the front end, which is literally not possible with my skill level, it's just too over engineered. So I have to learn socket io management and figure out how to implement that into the app to replace the current method, I *REALLY* don't wanna do this, so I'm just gonna wait for GPT-5 so it can do it for me :).
 
-
+### Upcoming feature: 100% (Awaiting testing)
+- 🌐 **Internet Browsing via Google Search Results**: Completely free, allows Miles to search Google for any search query and get the recommended answer, as well as 3500 characters from the first linked website. 100% complete, but awaiting testing.
 
 ## 🚀 **Future Roadmap**
 
