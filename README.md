@@ -189,9 +189,6 @@ For further assistance, feel encouraged to use the GitHub issues tab to report u
 ### Progress on feature: 50% (Missing front end code to implement)
 - 🪙 **Real time response streaming** I am "trying" to add real time streaming on a token by token basis for all responeses, now this by itself doesn't seem like a hard task, but no, this is the most challenging part of Miles that I have ever attempted. Right now, (future employers look away) I literally take print statements and format them to appear on the main interface, this works with responeses that show all at once, but this is "probably" not gonna work with streaming, typically each chunk would be printed at a time, and I would have to print a start and end token, as well as a tool call token to infer when to start and stop the stream on the front end, which is literally not possible with my skill level, it's just too over engineered. So I have to learn socket io management and figure out how to implement that into the app to replace the current method, I *REALLY* don't wanna do this, so I'm just gonna wait for GPT-5 so it can do it for me :).
 
-### Upcoming feature: 100% (Awaiting testing)
-- 🌐 **Internet Browsing via Google Search Results**: Completely free, allows Miles to search Google for any search query and get the recommended answer, as well as 3500 characters from the first linked website. 100% complete, but awaiting testing.
-
 ## 🚀 **Future Roadmap**
 
 As we continue to push the boundaries of voice assistant technology with M.I.L.E.S, here's a sneak peek into the exciting journey ahead:
