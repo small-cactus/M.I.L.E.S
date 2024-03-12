@@ -287,18 +287,119 @@ def set_system_volume(volume_level):
         return json.dumps({"message": f"System volume set to {volume_level}"})
     except Exception as e:
         return json.dumps({"message": str(e)})
+    
+import requests
+from bs4 import BeautifulSoup
+import json
+
+def fetch_main_content(url):
+    print(f"[Miles is browsing {url} for more info...]")
+    try:
+        response = requests.get(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+        })
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        special_div = soup.find('div', class_='BNeawe iBp4i AP7Wnd')
+        special_message = ''
+        if special_div and special_div.get_text(strip=True):
+            special_message = f"[This is the most accurate and concise response]: {special_div.get_text()} "
+
+        content_selectors = ['article', 'main', 'section', 'p', 'h1', 'h2', 'h3', 'ul', 'ol']
+        content_elements = [special_message]
+
+        for selector in content_selectors:
+            for element in soup.find_all(selector):
+                text = element.get_text(separator=' ', strip=True)
+                if text:
+                    content_elements.append(text)
+
+        main_content = ' '.join(content_elements)
+        
+        if len(main_content) > 3500:
+            main_content_limited = main_content[:3497-len(special_message)] + "..."
+        else:
+            main_content_limited = main_content
+            
+        return main_content_limited if main_content_limited else "Main content not found or could not be extracted."
+    except Exception as e:
+        return f"Error fetching main content: {str(e)}"
+
+def get_google_direct_answer(searchquery):
+    try:
+        url = "https://www.google.com/search"
+        params = {"q": searchquery, "hl": "en"}
+        response = requests.get(url, params=params, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+        })
+
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            answer_box = soup.find('div', class_="BNeawe iBp4i AP7Wnd")
+            if answer_box:
+                return answer_box.text.strip()
+    except Exception as e:
+        print(f"Error getting direct answer: {str(e)}")
+    return None
+
+def search_google_and_return_json_with_content(searchquery):
+    print(f"[Miles is looking up {searchquery} on google...]")
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+    }
+    
+    direct_answer = get_google_direct_answer(searchquery)
+
+    url = f'https://www.google.com/search?q={searchquery}&ie=utf-8&oe=utf-8&num=10'
+    html = requests.get(url, headers=headers)
+    soup = BeautifulSoup(html.text, 'html.parser')
+    
+    allData = soup.find_all("div", {"class": "g"})
+    
+    results = []
+    for data in allData:
+        link = data.find('a').get('href')
+        
+        if link and link.startswith('http') and 'aclk' not in link:
+            result = {"link": link}
+            
+            title = data.find('h3', {"class": "DKV0Md"})
+            description = data.select_one(".VwiC3b, .MUxGbd, .yDYNvb, .lyLwlc")
+            
+            result["title"] = title.text if title else None
+            result["description"] = description.text if description else None
+            
+            results.append(result)
+            break
+    
+    if results:
+        first_link_content = fetch_main_content(results[0]['link'])
+    else:
+        first_link_content = "No valid links found."
+    
+    output = {
+        "search_results": results,
+        "first_link_content": first_link_content,
+        "direct_answer": direct_answer if direct_answer else "Direct answer not found."
+    }
+    
+    final_response = {
+        "content": output
+    }
+    
+    return json.dumps(final_response, indent=4)
 
 import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance. Do NOT generate code."
+system_prompt = "I'm Miles, a helpful voice assistant. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a voice based AI assistant. I will write ALL responses as CONCISE as possible. I'm the creation of a high school student, Anthony, using OpenAI's GPT-3.5-Turbo Model or GPT-4-Turbo Model if changed by the user. My name, 'Machine Intelligent Language Enabled System', reflects my AI nature. In conversations, I avoid tool usage until the user replies. If queried about tools, I'll respond normally and remind users to check the top left of the screen for active tools. I can simultaneously use up to three tools, like fetching weather, calculating, and searching songs. For weather queries, I use get_current_weather function and I WILL ALWAYS SUMMARIZE the information I get back from the response, I do not have to include all of the info given to me if its not relevant, I will always write out temps like this: '78.9 degrees Fahrenheit'. For music, I use search_and_play_song function and choose songs fitting the user's request, even if not exact. My memory manager stores and retrieves personal data. I can switch between AI models for cost-effectiveness and adjust my system prompt accordingly. I also control Spotify playback and system volume. Key communication principles: use natural, conversational language, be concise, clarify ambiguities, engage in relevant follow-ups, and avoid format-specific elements like lists or markdown. In voice conversations, I will spell out numbers and assume any confusion is due to mishearing. Tool usage is initiated at the start of interactions and paused during typing responses. KEEP IN MIND: If I do not know up to date info or are not smart enough for the task at hand, I will switch my AI model to GPT-4-Turbo, and then I will switch it back to the cheap one after, ONLY if I am 100% sure that I changed my owm AI model for that very reason. Remember, I can use a maximum of three tools concurrently for effective assistance. Do NOT generate code."
+        system_prompt = "I'm Miles, a helpful voice assistant. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
@@ -387,7 +488,7 @@ def ask(question):
     global conversation_history
     print("[Processing request...]")
     if not question:
-        return "Sorry, I heard you but I couldn't make out any words, either talk louder or move to a quieter space."
+        return "I didn't hear you, please talk louder or move to a quieter space."
 
     if conversation_history and conversation_history[0]['role'] == 'system':
         conversation_history[0]['content'] = system_prompt
@@ -406,74 +507,17 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "search_and_play_song",
-            "description": "Search for a song on Spotify using a given name and play it. The song name can vary from the exact user input.",
+            "name": "search_google",
+            "description": "Search Google for all information you don't know, and for up to date information.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "song_name": {
+                    "searchquery": {
                         "type": "string",
-                        "description": "The name of the song to search for"
+                        "description": "The search query to use for the Google search"
                     }
                 },
-                "required": ["song_name"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_current_datetime",
-            "description": "Retrieve the current date and/or time. Options: date, time, or both.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "mode": {
-                        "type": "string",
-                        "enum": ["date", "time", "date & time"],
-                        "description": "Choose whether to get date, time, or both"
-                    }
-                },
-                "required": ["mode"]
-            }
-        }
-    },
-    {
-    "type": "function",
-    "function": {
-        "name": "perform_math",
-        "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "input_string": {
-                    "type": "string",
-                    "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations."
-                }
-            },
-            "required": ["input_string"]
-        }
-    }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "memory_manager",
-            "description": "Store, retrieve, or clear data in a file. Be specific when storing data.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "operation": {
-                        "type": "string",
-                        "enum": ["store", "retrieve", "clear"],
-                        "description": "Operation to perform"
-                    },
-                    "data": {
-                        "type": "string",
-                        "description": "The data to store (required for 'store' operation)"
-                    }
-                },
-                "required": ["operation"]
+                "required": ["searchquery"]
             }
         }
     },
@@ -501,11 +545,95 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "show_weather_message",
-            "description": "Display a popup with the current weather on the user's screen.",
+            "name": "perform_math",
+            "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more.",
             "parameters": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "input_string": {
+                        "type": "string",
+                        "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations."
+                    }
+                },
+                "required": ["input_string"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "memory_manager",
+            "description": "Store, retrieve, or clear data in a file. Be specific when storing data.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "operation": {
+                        "type": "string",
+                        "enum": ["store", "retrieve", "clear"],
+                        "description": "Operation to perform"
+                    },
+                    "data": {
+                        "type": "string",
+                        "description": "The data to store (required for 'store' operation)"
+                    }
+                },
+                "required": ["operation"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "switch_ai_model",
+            "description": "Switch between OpenAI API models: 'gpt-4-0125-preview' or 'gpt-3.5-turbo-0125'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 20 times cheaper.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "model_name": {
+                        "type": "string",
+                        "description": "Name of the OpenAI AI model to switch to"
+                    }
+                },
+                "required": ["model_name"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "change_system_prompt",
+            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt_type": {
+                        "type": "string",
+                        "enum": ["default", "short_cheap", "custom"],
+                        "description": "Type of prompt to set. Options are 'default', 'short_cheap', 'custom'."
+                    },
+                    "custom_prompt": {
+                        "type": "string",
+                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name."
+                    }
+                },
+                "required": ["prompt_type"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_and_play_song",
+            "description": "Search for a song on Spotify using a given name and play it. The song name can vary from the exact user input.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "song_name": {
+                        "type": "string",
+                        "description": "The name of the song to search for"
+                    }
+                },
+                "required": ["song_name"]
             }
         }
     },
@@ -524,23 +652,6 @@ def ask(question):
                     }
                 },
                 "required": ["action"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "switch_ai_model",
-            "description": "Switch between OpenAI API models: 'gpt-4-0125-preview' or 'gpt-3.5-turbo-0125'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 20 times cheaper.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "model_name": {
-                        "type": "string",
-                        "description": "Name of the OpenAI AI model to switch to"
-                    }
-                },
-                "required": ["model_name"]
             }
         }
     },
@@ -581,22 +692,19 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "change_system_prompt",
-            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'.",
+            "name": "get_current_datetime",
+            "description": "Retrieve the current date and/or time. Options: date, time, or both.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "prompt_type": {
+                    "mode": {
                         "type": "string",
-                        "enum": ["default", "short_cheap", "custom"],
-                        "description": "Type of prompt to set. Options are 'default', 'short_cheap', 'custom'."
-                    },
-                    "custom_prompt": {
-                        "type": "string",
-                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name."
+                        "enum": ["date", "time", "date & time"],
+                        "description":
+                        "Choose whether to get date, time, or both"
                     }
                 },
-                "required": ["prompt_type"]
+                "required": ["mode"]
             }
         }
     }
@@ -628,7 +736,8 @@ def ask(question):
             "switch_ai_model": switch_ai_model,
             "set_spotify_volume": set_spotify_volume,
             "set_system_volume": set_system_volume,
-            "change_system_prompt": change_system_prompt
+            "change_system_prompt": change_system_prompt,
+            "search_google": search_google_and_return_json_with_content,
         }
 
         for tool_call in tool_calls:
@@ -694,12 +803,15 @@ def get_device_index(pa, preferred_device_name=None):
     Attempt to find an audio device index by name, or return the default
     input device index if not found or if preferred_device_name is None.
     """
+    print("Starting to search for audio device...")
     device_index = None
     num_devices = pa.get_device_count()
+    print(f"Total devices found: {num_devices}")
 
     for i in range(num_devices):
         device_info = pa.get_device_info_by_index(i)
         if device_info['maxInputChannels'] > 0:  # Checks if device is an input device
+            print(f"Checking device: {device_info['name']}")
             # If a preferred device name is given, look for it
             if preferred_device_name and preferred_device_name in device_info['name']:
                 print(f"Found preferred input device: {device_info['name']}")
@@ -707,9 +819,12 @@ def get_device_index(pa, preferred_device_name=None):
             # Otherwise, just return the default input device index
             if device_index is None:
                 device_index = i
-    
+                print(f"Default input device set to: {device_info['name']}")
+
     if device_index is None:
         print("No suitable input device found.")
+    else:
+        print(f"Using device index: {device_index} for input.")
     return device_index
 
 def open_audio_stream(porcupine, pa, preferred_device_name=None):
@@ -717,11 +832,14 @@ def open_audio_stream(porcupine, pa, preferred_device_name=None):
     Open an audio stream with a device that matches the preferred_device_name,
     or with the default input device if no preference is specified or if the preferred device is not found.
     """
+    print("Attempting to open audio stream...")
     device_index = get_device_index(pa, preferred_device_name)
     
     if device_index is None:
+        print("Failed to find a suitable audio input device.")
         raise Exception("Failed to find a suitable audio input device.")
 
+    print(f"Opening audio stream with device index: {device_index}")
     stream = pa.open(
         rate=porcupine.sample_rate,
         channels=1,
@@ -730,6 +848,7 @@ def open_audio_stream(porcupine, pa, preferred_device_name=None):
         input_device_index=device_index,
         frames_per_buffer=porcupine.frame_length
     )
+    print("Audio stream opened successfully.")
 
     return stream
 
