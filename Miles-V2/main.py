@@ -384,7 +384,7 @@ def search_google_and_return_json_with_content(searchquery):
     }
     
     final_response = {
-        "content": output
+        "website_content": output
     }
     
     return json.dumps(final_response, indent=4)
@@ -393,13 +393,13 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
+system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a helpful voice assistant. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
+        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
@@ -508,7 +508,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "search_google",
-            "description": "Search Google for all information you don't know, and for up to date information.",
+            "description": "Search Google for all information you don't know, and for up to date information. Don't ask user for permission.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -726,19 +726,18 @@ def ask(question):
     tool_calls = response_message.tool_calls
     if tool_calls:
         available_functions = {
-            "search_and_play_song": search_and_play_song,
-            "get_current_weather": get_current_weather,
-            "get_current_datetime": get_current_datetime,
-            "perform_math": perform_math,
-            "memory_manager": memory_manager,
-            "show_weather_message": show_weather_message,
-            "toggle_spotify_playback": toggle_spotify_playback,
-            "switch_ai_model": switch_ai_model,
-            "set_spotify_volume": set_spotify_volume,
-            "set_system_volume": set_system_volume,
-            "change_system_prompt": change_system_prompt,
-            "search_google": search_google_and_return_json_with_content,
-        }
+        "search_google": search_google_and_return_json_with_content,
+        "get_current_weather": get_current_weather,
+        "perform_math": perform_math,
+        "memory_manager": memory_manager,
+        "switch_ai_model": switch_ai_model,
+        "change_system_prompt": change_system_prompt,
+        "search_and_play_song": search_and_play_song,
+        "toggle_spotify_playback": toggle_spotify_playback,
+        "set_spotify_volume": set_spotify_volume,
+        "set_system_volume": set_system_volume,
+        "get_current_datetime": get_current_datetime,
+}
 
         for tool_call in tool_calls:
             function_name = tool_call.function.name
@@ -778,18 +777,6 @@ def reply(question):
     print("Listening for 'Miles'...")
     
     return response_content
-
-def handle_special_commands(query):
-    if "always listen" in query.lower():
-        print("Miles is now always listening")
-        return False
-    elif "silent mode" in query.lower():
-        print("Miles is now in silent mode")
-        return True
-    return None
-
-def is_break_command(query):
-    return any(keyword in query.lower() for keyword in ["bye", "that's all", "shutdown", "shut down", "exit", "stop listening", "thats all"])
 
 import pyaudio
 import pvporcupine
@@ -984,18 +971,8 @@ def main():
 
                 query = listen()
 
-                special_command_response = handle_special_commands(query)
-                if special_command_response is not None:
-                    silent_mode = special_command_response
-                    continue
-
-                if is_break_command(query):
-                    print("Goodbye!")
-                    break
-
-                if not silent_mode:
-                    reply(query)
-                    
+                reply(query)
+                
                 if original_volume is not None and not user_requested_pause:
                     set_spotify_volume(original_volume)
 
@@ -1008,9 +985,9 @@ def main():
     finally:
         if audio_stream.is_active():
             audio_stream.stop_stream()
-        audio_stream.close()
-        pa.terminate()
-        porcupine.delete()
+            audio_stream.close()
+            pa.terminate()
+            porcupine.delete()
 
 if __name__ == '__main__':
     main()

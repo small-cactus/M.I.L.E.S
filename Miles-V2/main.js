@@ -9,6 +9,7 @@ const fs = require('fs');
 
 let win;
 let pythonProcess = null;
+let server = null;
 
 // Helper function to get the correct Python command based on the platform
 function getPythonCommand() {
@@ -31,6 +32,11 @@ function createWindow() {
         if (pythonProcess !== null) {
             pythonProcess.kill('SIGTERM');
         }
+        if (server !== null) {
+            server.close(() => {
+                console.log('Server stopped');
+            });
+        }
         app.quit();
     });
 }
@@ -47,7 +53,7 @@ function checkApiKeys() {
 
 function startServerAndBackend() {
     const expressApp = express();
-    const server = http.createServer(expressApp);
+    server = http.createServer(expressApp);
     const io = socketIo(server);
 
     server.listen(PORT, () => {
