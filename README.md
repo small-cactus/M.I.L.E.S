@@ -1,40 +1,50 @@
 # **Miles - GPT 4 Turbo powered voice assistant**
 
-> **M.I.L.E.S (Machine Intelligent Language Enabled System)** is a cutting-edge voice assistant powered by the same technology used in ChatGPT (GPT-4-Turbo and GPT-3.5-Turbo, it adapts to whichever model automatically). Enhance your day with magical voice commands and state-of-the-art language processing.
+> Miles, or the **Machine Intelligent Language Enabled System**, is a revolutionary voice assistant powered by the cutting-edge GPT-4 Turbo and GPT-3.5 Turbo AI models from ChatGPT. Get ready to experience magical voice commands and state-of-the-art language processing! 🔥
 
 <p align="center">
   <img src="miles_logo.png" width="200">
 </p>
 
-## 🌐 **Core Features**
-- 📡 **Powered by AI language models:** Operated by **`GPT-3.5-Turbo`** and **`GPT-4-Turbo`** model out of the box for maximum compatibility, but easily switchable to `any other OpenAI model` via asking Miles to change it.
-- 🎵 **Integrated with Spotify:** Enjoy `seamless Spotify controls` right from your voice. *(Requires Spotify Premium)*
-- ☀️ **Weather Capabilities:** Stay updated with `real-time weather data`.
-- 🧠 **Persistant Selective Memory:** Ask Miles to `remember something, ask him to forget it`.
-- 🧮 **Calculator:** Don't rely on language model math, Miles can use a `real calculator`.
-- 🧩 **Multi-tasker:** Miles can use up to `3 tools at the same time`.
-- 🤔 **Context:** `Miles has context` about him, who made him, the app he's in, and who you are through things you ask him to remember.
-- 🎙️ **Realistic Voice:** Miles `doesn't sound like a robot, he sounds real`. (Both faster and cheaper than eleven labs for the same quality - OpenAI TTS)
-- 🔊 **Wake word:** Our wake word detection is `on par with smart home assistants`.
+## 🌟 Core Features
 
-## 🔥 **Tips and Tricks**
-- ‼️ **I strongly recommend you `ask Miles what he can do and what tools he can use`, he is aware of everything he can do when using the `default system prompt`.**
-- 💰 **Find it too expensive to run?** Just `ask Miles to be cheaper` and he will switch his language model and ask him to make his system prompt cheaper and he will be more cost effective for you.
-- 🪪 **Ask Miles to be Anything** Miles can `manipulate his own personality and instructions`, just ask him to be anything and he will rewrite himself to comply.
-- ⚠️ **Things to Note**: When you ask Miles to be cheaper, he will do both of these things:
-  1. Switch his model to `GPT-3.5-Turbo`.
-  2. Rewrite his system prompt to `reduce the token count by 700 tokens`.
-  3. However, in doing both of these things, he will lose most of his functinality and will be less helpful, he `does NOT actually lose any functinality` in doing this, but he may hallucinate that he can't do some of the things you ask him to do. Asking him to write a custom system prompt for a specific list of instructions will help.
+- 🧠 **AI Language Models**: Miles is powered by the advanced GPT-4 Turbo and GPT-3.5 Turbo models from OpenAI, providing state-of-the-art natural language understanding and generation capabilities. You can easily switch between models as needed just by asking.
 
-💡 **Note:** You need several API keys to use Miles, there are instructions in the app to get them, all of them are free, except OpenAI..
+- 🎵 **Spotify Integration**: Control Spotify entirely with your voice. Miles can play, pause, skip tracks, adjust volume, and more, all through your voice. (Requires Spotify Premium)
 
-## 📄 **What commands are there?**
-`There are no commands`, Miles is powered by a language model, not code, say anything however you like and it will work, want to play Spotify? You can just say this:
-- `"Miles, prithee, lend thine ear to Spotify's sweet melodies and grace us with a song that doth stir the soul."`
-  ### or this:
-- `"Miles, play that one song that was in the spongebob movie."`
-  ### or this:
-- `"Miles, in yonder digital realm of Spotify, embark thou upon a quest to unleash the timeless lay 'Never Gonna Give You Up', that we may be ensnared in its melodious rapture most unexpected."`
+- ☔ **Weather Data**: Get real-time weather information by casually mentioning it in your requests. No need to use specific prompts or keywords – Miles will understand the context.
+
+- 💾 **Persistent Memory**: Ask Miles to remember important details, dates, or information, and he'll store it in his memory for easy retrieval later on.
+
+- ➕ **Built-in Calculator**: Miles can use a real calculator and will provide math results in LaTeX format.
+
+- 👨‍💻 **Multi-tasking**: Miles can handle up to 3 tools or tasks simultaneously, streamlining your productivity.
+
+- 🔍 **Contextual Awareness**: Miles understands context about himself, his creator, the app he's in, and you – based on the information you provide him.
+
+- 🎤 **Realistic Voice**: Powered by OpenAI's Text-to-Speech technology, Miles has a natural, human-like voice that enhances the overall experience.
+
+- 👂 **Wake Word Detection**: Miles responds accurately to Miles, hey Miles, Yo Miles or just anything you want, as long as it ends with Miles.
+
+## 💡 Tips and Tricks
+
+- 🤔 **Ask About Capabilities**: Not sure what Miles can do? Just ask him! He'll tell you everything.
+
+- 💰 **Cost-Effective Mode**: Find Miles too pricey? Ask him to be cheaper, and he'll switch to a more cost-effective model and system prompt. 💸
+
+- 🎭 **Personality Customization**: Miles can rewrite his own personality and instructions on command! Tell him to be anything you want. 🤯
+
+- 🔑 **API Keys**: You'll need a few API keys to use Miles, but the app will guide you. Only OpenAI requires payment. 💳
+
+## 🗣️ Natural Language Commands
+
+Miles is powered by a language model, so no specific commands are needed. Just speak naturally, and he'll understand! For example:
+
+- 🎶 "Miles, play that funky tune that gets me groovin'!" 
+- 💃 "Yo Miles, what's the weather gonna be like for my pool party this weekend?"
+- 🤖 "Miles, please store the date of my bestie's birthday so I don't forget it again!" 
+
+Let your imagination run wild with Miles!
 
   <br><br>
   ## 🖥️ M.I.L.E.S Conversation screen
