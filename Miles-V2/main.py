@@ -429,6 +429,8 @@ client = OpenAI(api_key=api_key)
 
 current_audio_thread = None
 
+recognizer = sr.Recognizer()
+
 
 def speak(text):
     print("[Miles is generating speech...]")
@@ -458,22 +460,19 @@ def speak(text):
 import speech_recognition as sr
 
 def listen():
+
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening for prompt...")
-        # Adjust the recognizer settings if necessary
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
     try:
-        # Using Google's speech recognition to process the audio
         return r.recognize_google(audio)
     except sr.UnknownValueError:
-        # Handle the case where Google could not understand the audio
         print("Google Speech Recognition could not understand audio")
         return ""
     except sr.RequestError as e:
-        # Handle the case where there was a request error
         print(f"Could not request results from Google Speech Recognition service; {e}")
         return ""
 
@@ -814,7 +813,7 @@ def get_device_index(pa, preferred_device_name=None):
         print(f"Using device index: {device_index} for input.")
     return device_index
 
-def open_audio_stream(porcupine, pa, preferred_device_name=None):
+def open_audio_stream(pa, preferred_device_name=None):
     """
     Open an audio stream with a device that matches the preferred_device_name,
     or with the default input device if no preference is specified or if the preferred device is not found.
@@ -828,12 +827,12 @@ def open_audio_stream(porcupine, pa, preferred_device_name=None):
 
     print(f"Opening audio stream with device index: {device_index}")
     stream = pa.open(
-        rate=porcupine.sample_rate,
+        rate=16000,  # Common rate for speech recognition
         channels=1,
         format=pyaudio.paInt16,
         input=True,
         input_device_index=device_index,
-        frames_per_buffer=porcupine.frame_length
+        frames_per_buffer=1024  # Adjusted for general audio processing
     )
     print("Audio stream opened successfully.")
 
@@ -905,80 +904,73 @@ def is_spotify_playing():
     except Exception as e:
         print("Failed to get Spotify playback state:", e)
         return None
-        
+    
 import os
 import platform
+import pyaudio
+import numpy as np
+from openwakeword.model import Model
+import subprocess
+import speech_recognition as sr
+
+MODEL_PATH = "Miles/miles.tflite"
+INFERENCE_FRAMEWORK = 'tflite'
+BEEP_SOUND_PATH = "beep_sound.wav"
 
 def play_beep():
     if platform.system() == 'Darwin':  # macOS
-        os.system("afplay beep_sound.wav")
+        subprocess.run(["afplay", BEEP_SOUND_PATH])
     elif platform.system() == 'Windows':
         import winsound  # Import winsound only on Windows
-        winsound.PlaySound("beep_sound.wav", winsound.SND_FILENAME)
+        winsound.PlaySound(BEEP_SOUND_PATH, winsound.SND_FILENAME)
     else:
         print("Unsupported operating system for beep sound.")
 
-from apikey import wake_word_key
-import platform
+def initialize_wake_word_model():
+    # Load the specified openwakeword model
+    owwModel = Model(wakeword_models=[MODEL_PATH], inference_framework=INFERENCE_FRAMEWORK)
+    return owwModel
 
 def main():
     global was_spotify_playing, original_volume, user_requested_pause
-    miles_folder = os.path.join(os.path.dirname(__file__), 'Miles')
-    original_volume = None
-    # Check the operating system
-    is_windows = platform.system() == 'Windows'
 
-    # Filter .ppn files based on the operating system
-    if is_windows:
-        ppn_files = [f for f in os.listdir(miles_folder) if f.endswith('.ppn') and 'windows' in f.lower()]
-    else:
-        ppn_files = [f for f in os.listdir(miles_folder) if f.endswith('.ppn') and not 'windows' in f.lower()]
-
-    if not ppn_files:
-        print("No suitable .ppn files found in the Miles folder.")
-        return
-
-    ppn_file_path = os.path.join(miles_folder, ppn_files[0])
-
-    try:
-        porcupine = pvporcupine.create(
-            access_key=wake_word_key,
-            keyword_paths=[ppn_file_path]
-        )
-    except Exception as e:
-        print(f"Error initializing Porcupine: {e}")
-        return
-
+    # Initialize microphone stream and wake word model
     pa = pyaudio.PyAudio()
-    audio_stream = open_audio_stream(porcupine, pa)
+    audio_stream = pa.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1280)
+    owwModel = initialize_wake_word_model()
+
+    # Detection thresholds
+    detection_threshold = 0.5
+    reset_threshold = 0.1
+
+    listening_for_wakeword = True
 
     print("Listening for 'Miles'...")
-    silent_mode = False
 
     try:
         while True:
-            if not audio_stream.is_active():
-                audio_stream = open_audio_stream(porcupine, pa)
+            audio_data = np.frombuffer(audio_stream.read(1280, exception_on_overflow=False), dtype=np.int16)
+            prediction = owwModel.predict(audio_data)
 
-            pcm = audio_stream.read(porcupine.frame_length, exception_on_overflow=False)
-            pcm = [int.from_bytes(pcm[i:i+2], 'little') for i in range(0, len(pcm), 2)]
-            keyword_index = porcupine.process(pcm)
+            for mdl, score in prediction.items():
+                if listening_for_wakeword and score > detection_threshold:
+                    threading.Thread(target=play_beep).start()
+                    threading.Thread(target=control_spotify_playback).start()
 
-            if keyword_index >= 0:
-                threading.Thread(target=play_beep).start()
+                    query = listen()
+                    reply(query)
 
-                threading.Thread(target=control_spotify_playback).start()
+                    if original_volume is not None and not user_requested_pause:
+                        set_spotify_volume(original_volume)
 
-                query = listen()
+                    if was_spotify_playing and not user_requested_pause:
+                        resume_spotify_playback()
+                        set_spotify_volume(original_volume)
 
-                reply(query)
-                
-                if original_volume is not None and not user_requested_pause:
-                    set_spotify_volume(original_volume)
+                    listening_for_wakeword = False
 
-                if was_spotify_playing and not user_requested_pause:
-                    resume_spotify_playback()
-                    set_spotify_volume(original_volume)
+                elif not listening_for_wakeword and score < reset_threshold:
+                    listening_for_wakeword = True
 
     except KeyboardInterrupt:
         print("Stopping...")
@@ -986,8 +978,7 @@ def main():
         if audio_stream.is_active():
             audio_stream.stop_stream()
             audio_stream.close()
-            pa.terminate()
-            porcupine.delete()
+        pa.terminate()
 
 if __name__ == '__main__':
     main()
