@@ -54,7 +54,7 @@ cd "$(dirname "$0")" || exit
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy BeautifulSoup setuptools bs4
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy BeautifulSoup setuptools bs4 TensorFlow
 update_progress "Python dependencies installation"
 
 # Install Node.js dependencies

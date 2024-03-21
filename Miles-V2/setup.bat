@@ -43,7 +43,7 @@ cd /d "%~dp0"
 :: Install Python dependencies, ensuring 'wheel' is installed first
 echo Installing Python dependencies...
 pip install wheel
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools BeautifulSoup bs4
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools BeautifulSoup bs4 TensorFlow
 echo Python dependencies installation completed.
 echo Installing Electron...
 call npm install electron
