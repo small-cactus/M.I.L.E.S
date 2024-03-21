@@ -24,7 +24,7 @@
 
 - 🎤 **Realistic Voice**: Powered by OpenAI's Text-to-Speech technology, Miles has a natural, human-like voice that enhances the overall experience.
 
-- 👂 **Wake Word Detection**: Miles responds accurately to "Miles". The AI model I made for Miles is trained on 50,000 samples of "Miles".
+- 👂 **Wake Word Detection**: Miles accurately recognizes "Miles," trained on 50,000 samples.
   
 - 🌐 **Internet Browsing:** Miles can search the internet for anything you ask about, you don't even have to be direct.
 
