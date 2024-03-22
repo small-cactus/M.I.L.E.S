@@ -971,13 +971,10 @@ def main():
                 audio_stream = open_stream()
 
             audio_data = np.frombuffer(audio_stream.read(1280, exception_on_overflow=False), dtype=np.int16)
-            prediction = owwModel.predict(audio_data, debounce_time=90, threshold={'default': DETECTION_THRESHOLD})
+            prediction = owwModel.predict(audio_data, debounce_time=0, threshold={'default': DETECTION_THRESHOLD})
 
             for mdl, score in prediction.items():
                 if score > detection_threshold:
-                    # Close the stream when the wake word is detected
-                    audio_stream.stop_stream()
-                    audio_stream.close()
 
                     # Trigger your response functions
                     threading.Thread(target=play_beep).start()
