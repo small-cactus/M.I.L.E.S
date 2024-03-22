@@ -41,14 +41,17 @@ pause
 cd /d "%~dp0"
 
 :: Install Python dependencies, ensuring 'wheel' is installed first
-echo Installing Python dependencies...
+echo This script will now try to install python dependecies, this will not work on most systems, follow the instructions on the windows setup page for Miles to download these...
+pause
 pip install wheel
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools BeautifulSoup bs4 TensorFlow
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools bs4 TensorFlow
 echo Python dependencies installation completed.
 echo Installing Electron...
 call npm install electron
 if %ERRORLEVEL% neq 0 exit /b
 echo Electron install completed.
+
+call python download-model.py
 
 echo Setup completed.
 

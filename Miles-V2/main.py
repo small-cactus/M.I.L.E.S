@@ -207,7 +207,7 @@ def search_and_play_song(song_name: str):
 
     return json.dumps(response)
     
-current_model = "gpt-3.5-turbo-0125" #default model to start the program with, change this.
+current_model = "gpt-3.5-turbo-0125" # default model to start the program with, you can change this.
 
 def toggle_spotify_playback(action):
     global was_spotify_playing, user_requested_pause
@@ -291,6 +291,7 @@ def set_system_volume(volume_level):
 import requests
 from bs4 import BeautifulSoup
 import json
+import webbrowser
 
 def fetch_main_content(url):
     print(f"[Miles is browsing {url} for more info...]")
@@ -320,7 +321,9 @@ def fetch_main_content(url):
             main_content_limited = main_content[:3497-len(special_message)] + "..."
         else:
             main_content_limited = main_content
-            
+
+        # webbrowser.open(url)  # Open the URL in the default web browser if you want, this will happen everytime Miles searches anything.
+
         return main_content_limited if main_content_limited else "Main content not found or could not be extracted."
     except Exception as e:
         return f"Error fetching main content: {str(e)}"
@@ -393,7 +396,7 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
+system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
@@ -501,13 +504,13 @@ def ask(question):
     
     timeout_timer = threading.Timer(7.0, display_timeout_message)
     timeout_timer.start()
-        
+
     tools = [
     {
         "type": "function",
         "function": {
             "name": "search_google",
-            "description": "Search Google for all information you don't know, and for up to date information. Don't ask user for permission.",
+            "description": "Search Google for all information you don't know, and for up to date information. Don't ask user for permission. This might open the webpage on the users device if they set it to do that.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -777,11 +780,7 @@ def reply(question):
     
     return response_content
 
-import pyaudio
-import pvporcupine
-
 import os
-
 import pyaudio
 
 def get_device_index(pa, preferred_device_name=None):
@@ -827,7 +826,7 @@ def open_audio_stream(pa, preferred_device_name=None):
 
     print(f"Opening audio stream with device index: {device_index}")
     stream = pa.open(
-        rate=16000,  # Common rate for speech recognition
+        rate=16000,
         channels=1,
         format=pyaudio.paInt16,
         input=True,
@@ -911,10 +910,21 @@ import pyaudio
 import numpy as np
 from openwakeword.model import Model
 import subprocess
+import threading
 import speech_recognition as sr
 
-MODEL_PATH = "Miles/miles.tflite"
-INFERENCE_FRAMEWORK = 'tflite'
+if platform.system() == 'Windows':
+    MODEL_PATH = "Miles/miles-50k.onnx"
+    INFERENCE_FRAMEWORK = 'onnx'
+    DETECTION_THRESHOLD = 0.1
+elif platform.system() == 'Darwin':  # macOS
+    print("User is on macOS, using tflite model.")
+    MODEL_PATH = "Miles/miles-50k.tflite"
+    INFERENCE_FRAMEWORK = 'tflite'
+    DETECTION_THRESHOLD = 0.1
+else:
+    raise Exception("Unsupported operating system for this application.")
+
 BEEP_SOUND_PATH = "beep_sound.wav"
 
 def play_beep():
@@ -927,36 +937,54 @@ def play_beep():
         print("Unsupported operating system for beep sound.")
 
 def initialize_wake_word_model():
-    # Load the specified openwakeword model
+    # Load the specified model with the appropriate inference framework
     owwModel = Model(wakeword_models=[MODEL_PATH], inference_framework=INFERENCE_FRAMEWORK)
     return owwModel
 
 def main():
     global was_spotify_playing, original_volume, user_requested_pause
 
-    # Initialize microphone stream and wake word model
+    # Initialize PyAudio
     pa = pyaudio.PyAudio()
-    audio_stream = pa.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1280)
+
     owwModel = initialize_wake_word_model()
+    
+    # Function to open the stream
+    def open_stream():
+        return pa.open(format=pyaudio.paInt16,
+                       channels=1,
+                       rate=16000,
+                       input=True,
+                       frames_per_buffer=1280)
 
-    # Detection thresholds
-    detection_threshold = 0.5
-    reset_threshold = 0.1
+    # Start with the stream opened
+    audio_stream = open_stream()
 
-    listening_for_wakeword = True
+    detection_threshold = DETECTION_THRESHOLD
 
     print("Listening for 'Miles'...")
 
     try:
         while True:
+            # Check if the stream is stopped; if so, reopen it
+            if not audio_stream.is_active():
+                audio_stream = open_stream()
+
             audio_data = np.frombuffer(audio_stream.read(1280, exception_on_overflow=False), dtype=np.int16)
-            prediction = owwModel.predict(audio_data)
+            prediction = owwModel.predict(audio_data, debounce_time=90, threshold={'default': DETECTION_THRESHOLD})
 
             for mdl, score in prediction.items():
-                if listening_for_wakeword and score > detection_threshold:
+                if score > detection_threshold:
+                    # Close the stream when the wake word is detected
+                    audio_stream.stop_stream()
+                    audio_stream.close()
+
+                    # Trigger your response functions
                     threading.Thread(target=play_beep).start()
                     threading.Thread(target=control_spotify_playback).start()
 
+                    # Reset model when the wake word is detected
+                    owwModel.reset()
                     query = listen()
                     reply(query)
 
@@ -967,10 +995,8 @@ def main():
                         resume_spotify_playback()
                         set_spotify_volume(original_volume)
 
-                    listening_for_wakeword = False
-
-                elif not listening_for_wakeword and score < reset_threshold:
-                    listening_for_wakeword = True
+                    # Clear or flush the buffer here by reopening the stream
+                    audio_stream = open_stream()
 
     except KeyboardInterrupt:
         print("Stopping...")

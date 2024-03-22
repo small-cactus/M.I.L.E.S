@@ -54,13 +54,16 @@ cd "$(dirname "$0")" || exit
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy BeautifulSoup setuptools bs4 TensorFlow
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools bs4 TensorFlow
 update_progress "Python dependencies installation"
 
 # Install Node.js dependencies
 echo "Installing Node.js dependencies..."
 npm install
 update_progress "Node.js dependencies installation"
+
+echo "Downloading Wake Word model for 'Miles'..."
+python3 download-model.py
 
 # Start the Node.js application
 echo "Starting the Node.js application..."
