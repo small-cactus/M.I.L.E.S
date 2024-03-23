@@ -28,6 +28,9 @@
   
 - 🌐 **Internet Browsing:** Miles can search the internet for anything you ask about, you don't even have to be direct.
 
+- 📷 **Image Recognition**: Utilizing your webcam, Miles can analyze and describe images in real-time, offering insights and information about what it sees. This feature enhances interactions by bringing visual understanding into conversations.
+
+
 
 ## 💡 Tips and Tricks
 
@@ -38,6 +41,27 @@
 - 🎭 **Personality Customization**: Miles can rewrite his own personality and instructions on command! Tell him to be anything you want. 🤯
 
 - 🔑 **API Keys**: You'll need a few API keys to use Miles, but the app will guide you. Only OpenAI requires payment. 💳
+
+🧠 **Miles Can Help!**  
+Ask away! Miles is here to answer your questions, big or small. Wondering about something? Just ask! Here are some examples of what you can inquire about:  
+
+- "How many fingers am I holding up?"  
+- "Remember my name as Anthony."  
+- "Who is Mike Tyson's next opponent?"  
+- "Play that famous Rick Astley song."  
+- "I'm holding up a paper to the camera, what does it say?"  
+- "Should I wear a jacket?"  
+- "Miles, should I choose the red or blue pill?"  
+- "What's the date today, Miles?"  
+- "Adopt a pirate persona, Miles!"  
+- "Switch to GPT-4, you're not making sense."  
+- "Switch back to the less expensive version, please."  
+- "Does this outfit look okay, Miles?"  
+- "Miles, do you think I have Resting B**** Face?"  
+- "What does your name stand for?"  
+
+Miles is ready for your queries, suggestions, and commands.
+
 
 ## 🗣️ Natural Language Commands
 
