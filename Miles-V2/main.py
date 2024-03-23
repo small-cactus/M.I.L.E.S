@@ -171,14 +171,16 @@ def get_current_datetime(mode="date & time"):
     if mode == "date":
         print("[Miles is finding the Date...]")
         response = {"datetime": date_str}
+        datetime_response="This is today's date, use this to answer the users question, if it is not relevant, do not say it: " + response
     elif mode == "time":
         print("[Miles is finding the Time...]")
         response = {"datetime": time_str}
+        datetime_response="This is the current time, use this to answer the users question, if it is not relevant, do not say it: " + response
     else:
         print("[Miles is finding the Date and Time...]")
         response = {"datetime": f"{date_str} {time_str}"}
-
-    return json.dumps(response)
+        datetime_response="This is today's date and time, use this to answer the users question, if it is not relevant, do not say it: " + response
+    return json.dumps(datetime_response)
 
 from openai import OpenAI
 from apikey import api_key
@@ -392,17 +394,19 @@ def search_google_and_return_json_with_content(searchquery):
     
     return json.dumps(final_response, indent=4)
 
+
+
 import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google."
+system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
 
 def change_system_prompt(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. IMPORTANT!!!: When asked a question you don't know, search for the answer on google. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant."
+        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
@@ -427,13 +431,100 @@ from pydub import AudioSegment
 from pydub.playback import play
 from apikey import api_key
 
-openai.api_key = api_key
-client = OpenAI(api_key=api_key)
+
+import requests
+from openai import OpenAI
+
+import time
+import base64
+from PIL import Image
+import io
+import imageio
+
+def capture_and_encode_image():
+    print("[Miles is viewing the webcam...]")
+    # Initialize the webcam
+    try:
+        cap = imageio.get_reader('<video0>')
+    except Exception as e:
+        print("[Miles failed to open webcam, check permissions...]")
+        print(e)
+        return None
+    
+    # Wait for 1 second to let camera light adjust
+    time.sleep(1)
+
+    # Capture an image
+    try:
+        frame = cap.get_next_data()
+    except Exception as e:
+        print("[Miles is Failed to capture image...]")
+        print(e)
+        return None
+    finally:
+        cap.close()
+
+    # Convert the image to PIL format then to a byte buffer
+    img = Image.fromarray(frame)
+    buf = io.BytesIO()
+    img.save(buf, format='JPEG')
+
+    # Encode the byte buffer to base64
+    base64_image = base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    return base64_image
+
+
+def view_webcam(focus, detail_mode='normal'):
+    print("[Miles is describing the image...]")
+    # Capture and encode image from webcam
+    base64_image = capture_and_encode_image()
+    if base64_image is None:
+        return
+    print(f"[Miles is describing the image with '{detail_mode}' detail...]")
+    # Define the prompt
+    if detail_mode == 'extreme':
+        prompt = f"What’s in this image, especially focusing on the prompt '{focus}'? Describe it with as much detail as physically possible. Include product names and models if applicable from the image. For example, if the image shows a red Nike Air Jordan shoe, write a long description specifically stating the brand, model of the shoe, who made the shoe, and any other details physically possible to get from the image including time of day, art style, etc. Just be EXTREMELY specific, unless the prompt '{focus}' in the image is so recognizable that it does not need a detailed description. But DO explain in great detail if there is something different about it, e.g., a sign on the Burj skyscraper, any text in the image, any symbols in the image, any custom painted shoe."
+        max_tokens=1000
+    else:  # Normal detail mode
+        prompt = f"Please describe what’s in this image with a focus on the prompt '{focus}'. Provide a clear and concise description, including notable objects, colors, and any visible text or symbols. Highlight any specific details relevant to the prompt '{focus}' without delving into extreme specifics."
+        max_tokens=300
+    
+    openai.api_key = api_key
+    client = OpenAI(api_key=api_key)
+    
+    # Setup the API request with the base64 image
+    response = client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
+                    },
+                ],
+            }
+        ],
+        max_tokens=max_tokens,
+    )
+    pre_message="This is an image desciption of the users webcam, state back to the user any specific detiails mentioned like text, objects, and symbols: "
+    message_text = pre_message + response.choices[0].message.content
+
+    # Return the serialized JSON string
+    return json.dumps({"message": message_text})
 
 current_audio_thread = None
 
 recognizer = sr.Recognizer()
 
+
+openai.api_key = api_key
+client = OpenAI(api_key=api_key)
 
 def speak(text):
     print("[Miles is generating speech...]")
@@ -463,7 +554,7 @@ def speak(text):
 import speech_recognition as sr
 
 def listen():
-
+    time.sleep(0.1)
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening for prompt...")
@@ -580,6 +671,28 @@ def ask(question):
                     }
                 },
                 "required": ["operation"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "view_webcam",
+            "description": "Access the user's default webcam to scan an item. NEVER access the users webcam without explicit permission.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "focus": {
+                        "type": "string",
+                        "description": "The primary subject or object to focus on in the image analysis. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding'."
+                    },
+                    "detail_mode": {
+                        "type": "string",
+                        "enum": ["normal", "extreme"],
+                        "description": "The level of detail to return in the image description. 'normal' provides a concise overview, while 'extreme' offers a comprehensive analysis."
+                    }
+                },
+                "required": ["focus"]
             }
         }
     },
@@ -732,6 +845,7 @@ def ask(question):
         "get_current_weather": get_current_weather,
         "perform_math": perform_math,
         "memory_manager": memory_manager,
+        "view_webcam": view_webcam,
         "switch_ai_model": switch_ai_model,
         "change_system_prompt": change_system_prompt,
         "search_and_play_song": search_and_play_song,
@@ -916,12 +1030,12 @@ import speech_recognition as sr
 if platform.system() == 'Windows':
     MODEL_PATH = "Miles/miles-50k.onnx"
     INFERENCE_FRAMEWORK = 'onnx'
-    DETECTION_THRESHOLD = 0.1
+    DETECTION_THRESHOLD = 0.01
 elif platform.system() == 'Darwin':  # macOS
     print("User is on macOS, using tflite model.")
     MODEL_PATH = "Miles/miles-50k.tflite"
     INFERENCE_FRAMEWORK = 'tflite'
-    DETECTION_THRESHOLD = 0.1
+    DETECTION_THRESHOLD = 0.01
 else:
     raise Exception("Unsupported operating system for this application.")
 
@@ -982,6 +1096,7 @@ def main():
 
                     # Reset model when the wake word is detected
                     owwModel.reset()
+                    audio_stream.stop_stream()
                     query = listen()
                     reply(query)
 
