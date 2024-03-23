@@ -124,7 +124,6 @@ DEFAULT_LOCATION="${apiKeys['dynamic-textbox-city'] || 'empty'}"
 UNIT="${apiKeys['dynamic-textbox-unit'] || 'empty'}"
 spotify_client_id="${apiKeys['dynamic-textbox-spotify-id'] || 'empty'}"
 spotify_client_secret="${apiKeys['dynamic-textbox-spotify-secret'] || 'empty'}"
-wake_word_key="${apiKeys['dynamic-textbox-picovoice'] || 'empty'}"
 `;
 
     fs.writeFileSync(path.join(__dirname, 'apikey.py'), apiKeyContent);

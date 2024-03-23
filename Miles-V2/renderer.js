@@ -261,7 +261,7 @@ function showPage(pageId) {
 }
 
 
-const totalInputs = 6; // Update this if the number of inputs changes
+const totalInputs = 5; // Update this if the number of inputs changes
 Object.keys(textboxValidity).forEach(key => textboxValidity[key] = false);
 
 function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipText) {
@@ -296,7 +296,7 @@ function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipTex
         // Custom validation logic
         if (buttonId.includes('openai')) {
             isValid = originalText.startsWith('sk-');
-        } else if (buttonId.includes('picovoice')) {
+        //} else if (buttonId.includes('picovoice')) {
             isValid = originalText.endsWith('==');
         } else if (buttonId.includes('unit')) {
             let lowerCaseText = originalText.toLowerCase();
@@ -346,7 +346,7 @@ function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipTex
 
 // Initialize all buttons and textboxes
 initializeButtonAndTextbox('dynamic-button-openai', 'dynamic-textbox-openai', 'Enter your OpenAI API key', 'Hmm... it seems like this isn\'t an OpenAI API key.');
-initializeButtonAndTextbox('dynamic-button-picovoice', 'dynamic-textbox-picovoice', 'Enter your Picovoice API key', 'Hmm... it seems like this isn\'t a Picovoice API key.');
+// initializeButtonAndTextbox('dynamic-button-picovoice', 'dynamic-textbox-picovoice', 'Enter your Picovoice API key', 'Hmm... it seems like this isn\'t a Picovoice API key.');
 initializeButtonAndTextbox('dynamic-button-spotify-id', 'dynamic-textbox-spotify-id', 'Enter your Spotify Client ID', 'Hmm... it seems like this isn\'t a Spotify Client ID.');
 initializeButtonAndTextbox('dynamic-button-spotify-secret', 'dynamic-textbox-spotify-secret', 'Enter your Spotify Client Secret', 'Hmm... it seems like this isn\'t a Spotify Client Secret.');
 initializeButtonAndTextbox('dynamic-button-city', 'dynamic-textbox-city', 'Enter your Preferred City', 'Please enter a valid city name (Capitalized).');
