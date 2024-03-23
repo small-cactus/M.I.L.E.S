@@ -171,16 +171,18 @@ def get_current_datetime(mode="date & time"):
     if mode == "date":
         print("[Miles is finding the Date...]")
         response = {"datetime": date_str}
-        datetime_response="This is today's date, use this to answer the users question, if it is not relevant, do not say it: " + response
+        datetime_response = "This is today's date, use this to answer the users question, if it is not relevant, do not say it: " + response["datetime"]
     elif mode == "time":
         print("[Miles is finding the Time...]")
         response = {"datetime": time_str}
-        datetime_response="This is the current time, use this to answer the users question, if it is not relevant, do not say it: " + response
+        datetime_response = "This is the current time, use this to answer the users question, if it is not relevant, do not say it: " + response["datetime"]
     else:
         print("[Miles is finding the Date and Time...]")
         response = {"datetime": f"{date_str} {time_str}"}
-        datetime_response="This is today's date and time, use this to answer the users question, if it is not relevant, do not say it: " + response
-    return json.dumps(datetime_response)
+        datetime_response = "This is today's date and time, use this to answer the users question, if it is not relevant, do not say it: " + response["datetime"]
+    
+    # Return the datetime response as a JSON string
+    return json.dumps({"message": datetime_response})
 
 from openai import OpenAI
 from apikey import api_key
@@ -558,7 +560,6 @@ def listen():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening for prompt...")
-        r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
     try:
@@ -581,7 +582,7 @@ def ask(question):
     global conversation_history
     print("[Processing request...]")
     if not question:
-        return "I didn't hear you, please talk louder or move to a quieter space."
+        return "I didn't hear you."
 
     if conversation_history and conversation_history[0]['role'] == 'system':
         conversation_history[0]['content'] = system_prompt
@@ -663,11 +664,11 @@ def ask(question):
                     "operation": {
                         "type": "string",
                         "enum": ["store", "retrieve", "clear"],
-                        "description": "Operation to perform"
+                        "description": "Operation to perform. Clear will erase everything."
                     },
                     "data": {
                         "type": "string",
-                        "description": "The data to store (required for 'store' operation)"
+                        "description": "The data to store, it must be very specific, like: 'Users birthday is January 1st, 1990.' (Only srequired for 'store' operation)."
                     }
                 },
                 "required": ["operation"]
@@ -684,7 +685,7 @@ def ask(question):
                 "properties": {
                     "focus": {
                         "type": "string",
-                        "description": "The primary subject or object to focus on in the image analysis. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding'."
+                        "description": "The primary subject or object to focus on in the image analysis. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding', or 'thing in image'."
                     },
                     "detail_mode": {
                         "type": "string",
@@ -717,7 +718,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "change_system_prompt",
-            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'.",
+            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'. This controls your personality.",
             "parameters": {
                 "type": "object",
                 "properties": {
