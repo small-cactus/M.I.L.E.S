@@ -247,7 +247,6 @@ ipcMain.on('start-server-backend', (event) => {
 app.whenReady().then(() => {
     // Create the window in all cases
     win = createWindow();
-    createWindow();
 
     if (checkApiKeys()) {
         console.log("API keys are empty, initializing setup screen...");
@@ -263,11 +262,5 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
-    }
-});
-
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
     }
 });

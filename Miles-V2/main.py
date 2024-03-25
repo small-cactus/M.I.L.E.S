@@ -398,7 +398,7 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
+system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more. Format all numbers in LaTeX."
 
 def change_personality(prompt_type, custom_prompt=None):
     global system_prompt
@@ -636,7 +636,7 @@ def ask(question):
     messages = conversation_history
     messages.append({"role": "user", "content": question})
     print("Messages before API call:")
-    print(json.dumps(messages, indent=4))
+    print(messages)
     
     timeout_timer = threading.Timer(7.0, display_timeout_message)
     timeout_timer.start()
@@ -871,21 +871,31 @@ def ask(question):
 ]
 
 
-    response = openai.chat.completions.create(
-        model=current_model,
-        messages=messages,
-        tools=tools,
-        tool_choice="auto",
-    )
-    
-    timeout_timer.cancel()
+    try:
+    # Sending the initial request
+        response = openai.chat.completions.create(
+            model=current_model,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+        )
+    finally:
+            # Cancel the initial timeout timer regardless of success or failure
+        timeout_timer.cancel()
+
+        # Start a second timer for subsequent operations
     timeout_timer_second = threading.Timer(12.0, display_timeout_message)
     timeout_timer_second.start()
 
-    response_message = response.choices[0].message
-    tool_calls = response_message.tool_calls
-    if tool_calls:
-        available_functions = {
+    try:
+        response_message = response.choices[0].message
+        # Assuming response_message.tool_calls might be None
+        tool_calls = response_message.tool_calls if response_message.tool_calls is not None else []
+
+        
+
+        if tool_calls:
+             available_functions = {
         "search_google": search_google_and_return_json_with_content,
         "get_current_weather": get_current_weather,
         "use_calculator": perform_math,
@@ -899,30 +909,35 @@ def ask(question):
         "set_system_volume": set_system_volume,
         "get_current_datetime": get_current_datetime,
 }
+             messages.append({
+            "role": "assistant",
+            "tool_calls": tool_calls
+        })
 
+        # Your existing loop to process each tool call
         for tool_call in tool_calls:
             function_name = tool_call.function.name
-            function_args = json.loads(tool_call.function.arguments)
             function_to_call = available_functions.get(function_name)
-
             if function_to_call:
+                function_args = json.loads(tool_call.function.arguments)
                 function_response = function_to_call(**function_args)
 
+                # Append the function response to the messages list
                 messages.append({
                     "tool_call_id": tool_call.id,
-                    "role": "function",
+                    "role": "tool",
                     "name": function_name,
                     "content": function_response,
                 })
 
-    final_response = openai.chat.completions.create(
-        model=current_model,
-        messages=messages,
-        tools=tools,
-        tool_choice="none"
-    )
-    
-    timeout_timer_second.cancel()
+        # Make a final API call with the updated messages list
+        final_response = openai.chat.completions.create(
+            model=current_model,
+            messages=messages,
+        )
+    finally:
+
+        timeout_timer_second.cancel()
 
     print(f"{response.json()}")
     final_response_message = final_response.choices[0].message.content

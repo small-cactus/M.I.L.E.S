@@ -80,6 +80,10 @@ function processMessage(message, isError) {
     message = message.replace(/\\\(.*?\\\)/g, function(match) {
         return `<span class="mathjax-latex">${match}</span>`;
     });
+
+    MathJax.typesetPromise().then(() => {
+        console.log('MathJax has processed the new content.');
+      }).catch((err) => console.log('Error in MathJax processing:', err));
     
     if (message.includes("Listening for 'Miles'")) {
         setStatus("Listening for 'Miles'", 'status-miles', 'fas fa-microphone');

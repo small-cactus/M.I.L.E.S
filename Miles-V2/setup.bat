@@ -44,7 +44,7 @@ cd /d "%~dp0"
 echo This script will now try to install python dependecies, this will not work on most systems, follow the instructions on the windows setup page for Miles to download these...
 pause
 pip install wheel
-pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openwakeword socketio sympy setuptools bs4 TensorFlow imageio imageio-ffmpeg Pillow openai-whisper
+pip install requests openai spotipy SpeechRecognition gTTS pydub PyAudio openWakeWord socketio sympy setuptools bs4 TensorFlow imageio imageio-ffmpeg Pillow openai-whisper
 echo Python dependencies installation completed.
 echo Installing Electron...
 call npm install electron
