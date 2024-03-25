@@ -68,7 +68,7 @@ Miles is ready for your queries, suggestions, and commands.
 Miles is powered by a language model, so no specific commands are needed. Just speak naturally, and he'll understand! For example:
 
 - 🎶 "Miles, play that funky tune that gets me groovin'!" 
-- 💃 "Yo Miles, what's the weather gonna be like for my pool party this weekend?"
+- 💃 "Miles, what's the weather gonna be like for my pool party this weekend?"
 - 🤖 "Miles, please store the date of my bestie's birthday so I don't forget it again!" 
 
 Let your imagination run wild with Miles!
@@ -95,8 +95,6 @@ The Setup page walks users through the process of entering their API keys and ot
 - **macOS Users**: Enjoy a straightforward installation with our easy install script. [Install on macOS (easy install guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-on-MacOS-(Easy-Install-method))
 
 - **Windows Users**: Due to platform limitations, the installation process involves a few more steps. But it's still simple. [Install on Windows (easy install guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
-
-- **03-25-24:** as of now, the app does not work, because the setup process is not triggered when API keys are empty, it will be fixed later today. (message from 8:01 AM EST)
   
   - **Do I have to pay?** The only API that requires payment is OpenAI, it is a pay per use model so you won't have unnecessary charges. You also need Spotify Premimum to use Miles` Spotify features, but to get the API key I believe it's free.
 
