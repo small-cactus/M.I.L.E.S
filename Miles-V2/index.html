@@ -113,7 +113,7 @@
                         }
                         
                         /* Styles for all dynamic buttons */
-                        #dynamic-button-openai, #dynamic-button-picovoice, #dynamic-button-spotify-id, #dynamic-button-spotify-secret, #dynamic-button-city, #dynamic-button-unit {
+                        #dynamic-button-openai, #dynamic-button-picovoice, #dynamic-button-spotify-id, #dynamic-button-spotify-secret, #dynamic-button-city, #dynamic-button-unit, #start-config-script {
                             cursor: pointer;
                             white-space: nowrap;
                             overflow: hidden;
@@ -128,7 +128,7 @@
                             transition: background-color 0.3s ease;
                         }
                         
-                        #dynamic-button-openai:hover, #dynamic-button-picovoice:hover, #dynamic-button-spotify-id:hover, #dynamic-button-spotify-secret:hover, #dynamic-button-city:hover, #dynamic-button-unit:hover {
+                        #dynamic-button-openai:hover, #dynamic-button-picovoice:hover, #dynamic-button-spotify-id:hover, #dynamic-button-spotify-secret:hover, #dynamic-button-city:hover, #dynamic-button-unit:hover, #start-config-script:hover {
                             background-color: #333;
                         }
                         
@@ -532,6 +532,7 @@
             </div>
         </div>
         -->
+
         <!-- Content for Spotify Client ID -->
         <div id="spotify-id" class="content hidden" style="display: none;">
             <p class="content-description">Enter your Spotify Client ID here. You can find your Client ID in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
@@ -594,6 +595,25 @@
             <h1>M.I.L.E.S</h1>
             <div id="output" class="scroll_enabled"></div>
         </div>
+
+        <!-- Config Setup -->
+<div id="config-page" class="content" style="display: none;">
+    <h2>Configuration</h2>
+    <p class ="content-description">Please wait for the downloads, then stay for a quick speech recognition test.</p>
+    <div class="button-flex-container">
+        <div id="container-unit">
+    <button id="start-config-script">Start Downloads</button>
+        </div>
+    </div>
+    <div id="config-output"></div>
+</div>
+
+ <!-- Restart App Page -->
+ <div id="restart-page" class="content" style="display: none;">
+    <h2>Restart Needed to Save Preferences</h2>
+    <p class ="content-description">Please restart Miles for the best experience. <br> <br/> Just close the app and run the setup script again.</p>
+    <div id="restart-output"></div>
+</div>
         
         <!-- Script -->
         <script src="renderer.js"></script>

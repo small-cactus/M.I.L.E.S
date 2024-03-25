@@ -1,15 +1,40 @@
-const PORT = 3000;
-const { app, BrowserWindow, ipcMain } = require('electron');
+// Main process entry point
+const PORT=3000
 const express = require('express');
-const { spawn } = require('child_process');
-const path = require('path');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const { spawn } = require('child_process');
 const fs = require('fs');
+
+
+const expressApp = express();
+const server = http.createServer(expressApp); // HTTP server based on express
+const io = require('socket.io')(server);
 
 let win;
 let pythonProcess = null;
-let server = null;
+
+let configServer;
+let configSocketIO;
+
+function createConfigServer() {
+  configServer = http.createServer();
+  configSocketIO = require('socket.io')(configServer, {
+    cors: {
+      origin: '*',
+    },
+  });
+
+  configServer.listen(3000, () => {
+    console.log(`Config server started on port ${3000}`);
+  });
+
+  configSocketIO.on('connection', (socket) => {
+    console.log('Config socket connection established');
+  });
+}
 
 // Helper function to get the correct Python command based on the platform
 function getPythonCommand() {
@@ -38,6 +63,7 @@ function createWindow() {
             });
         }
         app.quit();
+        win = null;
     });
 }
 
@@ -52,37 +78,59 @@ function checkApiKeys() {
 }
 
 function startServerAndBackend() {
-    const expressApp = express();
-    server = http.createServer(expressApp);
-    const io = socketIo(server);
-
-    server.listen(PORT, () => {
-        console.log(`Server started on http://localhost:${PORT}`);
-        if (!checkApiKeys()) {
-            try {
-                const python = spawn(getPythonCommand(), ['-u', path.join(__dirname, 'main.py')]);
-                pythonProcess = python;
-
-                python.stdout.on('data', (data) => {
-                    console.log("Python Output:", data.toString());
-                    io.emit('pythonOutput', data.toString());
-                });
-
-                python.stderr.on('data', (data) => {
-                    console.error("Python Error:", data.toString());
-                    io.emit('pythonError', data.toString());
-                });
-
-                python.on('close', (code) => {
-                    console.log(`Python script exited with code: ${code}`);
-                    pythonProcess = null;
-                });
-
-            } catch (error) {
-                console.error("Failed to start Python script:", error);
-            }
-        }
+    const io = require('socket.io')(server, {
+        cors: {
+            origin: '*',
+        },
     });
+
+    function startPython() {
+        if (pythonProcess) {
+            console.log('Python backend is already running.');
+            return;
+        }
+        try {
+            const python = spawn(getPythonCommand(), ['-u', path.join(__dirname, 'main.py')]);
+            pythonProcess = python;
+
+            python.stdout.on('data', (data) => {
+                const output = data.toString();
+                console.log("Python Output:", output);
+                io.emit('pythonOutput', output);
+            });
+
+            python.stderr.on('data', (data) => {
+                console.error("Python Error:", data.toString());
+                io.emit('pythonError', data.toString());
+            });
+
+            python.on('close', (code) => {
+                console.log(`Python script exited with code: ${code}`);
+                pythonProcess = null;
+            });
+
+        } catch (error) {
+            console.error("Failed to start Python script:", error);
+        }
+    }
+
+    if (!server.listening) {
+        server.listen(PORT, () => {
+            console.log(`Server started on http://localhost:${PORT}`);
+            win.webContents.send('server-ready');
+            // Server has started, now start Python backend if API keys are set
+            if (!checkApiKeys()) {
+                startPython();
+            }
+        });
+    } else {
+        // Server is already running, check if we need to start Python backend
+        console.log('Server is already running on port ' + PORT);
+        if (!checkApiKeys()) {
+            startPython();
+        }
+    }
+}
 
     expressApp.get('/triggerPython', (req, res) => {
         if (pythonProcess === null) {
@@ -113,7 +161,60 @@ function startServerAndBackend() {
             }
         }
     });
-}
+let configProcess = null;
+
+function triggerConfigScript() {
+    if (configProcess) {
+      console.log('Config script is already running.');
+      return;
+    }
+  
+    const pythonCommand = getPythonCommand();
+    configProcess = spawn(pythonCommand, ['-u', path.join(__dirname, 'config.py')]);
+  
+    configProcess.stdout.on('data', (data) => {
+        const output = data.toString();
+        console.log("Python Output:", output);
+    
+        // Check if win is defined and not destroyed
+        if (win && !win.isDestroyed()) {
+            win.webContents.send('pythonOutput', output);
+        }
+    
+        io.emit('pythonOutput', output);
+    });
+  
+    configProcess.stderr.on('data', (data) => {
+      const errorMessage = data.toString();
+      console.error("Config Python Error:", errorMessage);
+  
+      // Check if win is defined and not destroyed
+      if (win && !win.isDestroyed()) {
+        win.webContents.send('configpythonError', errorMessage);
+      }
+  
+      // Emit the error event using the configSocketIO instance
+      io.emit('configpythonError', errorMessage);
+    });
+  
+    configProcess.on('close', (code) => {
+      console.log(`Config script exited with code ${code}`);
+      configProcess = null;
+    });
+  }
+
+ipcMain.on('start-config', () => {
+    triggerConfigScript();
+  });
+
+  // Make sure the server listens on the specified port
+server.listen(PORT, () => {
+    console.log(`Server started on http://localhost:${PORT}`);
+    if (win && !win.isDestroyed() && win.webContents) {
+        win.webContents.send('server-ready');
+        // Other code that uses win.webContents
+      }
+  });
 
 // Function to write API keys to a file
 function writeApiKeys(apiKeys) {
@@ -133,17 +234,19 @@ spotify_client_secret="${apiKeys['dynamic-textbox-spotify-secret'] || 'empty'}"
 ipcMain.on('saveApiKeys', (event, apiKeys) => {
     writeApiKeys(apiKeys);
 
-    // Check again if API keys are now set
-    if (!checkApiKeys()) {
-        startServerAndBackend();
-    }
-
     // Send a response back to the renderer indicating success
     event.reply('setup-complete', 'Setup completed successfully');
+    // Note: Don't automatically start the server here
+});
+
+ipcMain.on('start-server-backend', (event) => {
+    console.log('Configuration is complete, starting server and backend...');
+    startServerAndBackend();
 });
 
 app.whenReady().then(() => {
     // Create the window in all cases
+    win = createWindow();
     createWindow();
 
     if (checkApiKeys()) {

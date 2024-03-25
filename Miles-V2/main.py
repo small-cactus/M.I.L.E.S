@@ -9,6 +9,8 @@ import os
 from apikey import weather_api_key, DEFAULT_LOCATION, UNIT, spotify_client_id, spotify_client_secret
 from datetime import datetime
 import sympy as smpy
+from urllib3.exceptions import NotOpenSSLWarning
+
 
 was_spotify_playing = False
 original_volume = None
@@ -60,12 +62,6 @@ def get_current_weather(location=None, unit=UNIT):
         }
     print(f"[Miles is finding the current weather in {location}...]")
     return json.dumps(weather_info)
-
-def show_weather_message():
-    print("[Miles is showing the weather...]")
-    response = {"confirmation": "Weather in Clearwater was shown. Tell the user: 'Okay, there you go.'"}
-    
-    return json.dumps(response)
     
 def perform_math(input_string):
     print("[Miles is calculating math...]")
@@ -120,8 +116,8 @@ def get_memory_file_path():
 
     return memory_file_path
 
-def memory_manager(operation, data=None):
-    """Store, retrieve, or clear data in a file."""
+def memorize(operation, data=None):
+    """Store, retrieve, or clear data in your memory."""
     file_path = get_memory_file_path()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -402,13 +398,13 @@ import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
+system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
 
-def change_system_prompt(prompt_type, custom_prompt=None):
+def change_personality(prompt_type, custom_prompt=None):
     global system_prompt
 
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
+        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
@@ -479,18 +475,27 @@ def capture_and_encode_image():
 
 def view_webcam(focus, detail_mode='normal'):
     print("[Miles is describing the image...]")
+    speak_no_text("Hold on while I view your webcam.")
     # Capture and encode image from webcam
     base64_image = capture_and_encode_image()
     if base64_image is None:
         return
     print(f"[Miles is describing the image with '{detail_mode}' detail...]")
-    # Define the prompt
+    # Adjust the prompt based on the selected detail mode
     if detail_mode == 'extreme':
         prompt = f"What’s in this image, especially focusing on the prompt '{focus}'? Describe it with as much detail as physically possible. Include product names and models if applicable from the image. For example, if the image shows a red Nike Air Jordan shoe, write a long description specifically stating the brand, model of the shoe, who made the shoe, and any other details physically possible to get from the image including time of day, art style, etc. Just be EXTREMELY specific, unless the prompt '{focus}' in the image is so recognizable that it does not need a detailed description. But DO explain in great detail if there is something different about it, e.g., a sign on the Burj skyscraper, any text in the image, any symbols in the image, any custom painted shoe."
         max_tokens=1000
+        speak_no_text("Alright, I'm now processing the image with extreme detail.")
+    elif detail_mode == 'quick':
+        prompt = f"As concise as possible, 1-10 words, what's essential or notable in this image regarding the prompt: '{focus}'?"
+        max_tokens=50
+        speak_no_text("Alright, I'm now processing the image with quick detail.")
+        time.sleep(0.5)
+        
     else:  # Normal detail mode
         prompt = f"Please describe what’s in this image with a focus on the prompt '{focus}'. Provide a clear and concise description, including notable objects, colors, and any visible text or symbols. Highlight any specific details relevant to the prompt '{focus}' without delving into extreme specifics."
         max_tokens=300
+        speak_no_text("Alright, I'm now processing the image with normal detail.")
     
     openai.api_key = api_key
     client = OpenAI(api_key=api_key)
@@ -550,26 +555,65 @@ def speak(text):
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
+        openai.api_key = api_key
+client = OpenAI(api_key=api_key)
+
+def speak_no_text(text):
+    if not text:
+        print("No text provided to speak.")
+        return
+
+    def _speak():
+        try:
+            response = client.audio.speech.create(
+                model="tts-1",
+                voice="fable",
+                input=text
+            )
+
+            byte_stream = io.BytesIO(response.content)
+            audio = AudioSegment.from_file(byte_stream, format="mp3")
+            play(audio)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    # Start the _speak function in a new thread
+    thread = threading.Thread(target=_speak)
+    thread.start()
         
         
         
 import speech_recognition as sr
+import whisper
 
 def listen():
-    time.sleep(0.1)
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Listening for prompt...")
-        audio = r.listen(source)
+        print("Listening for prompt... Speak now.")
+        audio = r.listen(source)  # Listen until silence is detected
 
-    try:
-        return r.recognize_google(audio)
-    except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand audio")
-        return ""
-    except sr.RequestError as e:
-        print(f"Could not request results from Google Speech Recognition service; {e}")
-        return ""
+    # Save the captured audio to a WAV file
+    audio_file = "captured_audio.wav"
+    with open(audio_file, "wb") as f:
+        f.write(audio.get_wav_data())
+
+    # Load the Whisper model
+    model = whisper.load_model("base")  # Adjust the model size as needed
+
+    # Transcribe the audio file
+    result = model.transcribe(audio_file)
+    return result["text"]
+
+import warnings
+
+# Suppress the specific FP16 warning
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
+
+# Suppress the specific NotOpenSSLWarning
+warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+
 
 conversation_history = []
 
@@ -619,13 +663,13 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "get_current_weather",
-            "description": "Retrieve current weather and condition data for any location, defaulting to Clearwater, FL.",
+            "description": "Retrieve only the current weather and condition data for any location. I cannot give past or future forecasts without google search",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "location": {
                         "type": "string",
-                        "description": "The city and state, e.g., Clearwater, FL"
+                        "description": "The city and state, e.g., Tampa, FL. Leave blank for default location."
                     },
                     "unit": {
                         "type": "string",
@@ -639,7 +683,7 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "perform_math",
+            "name": "use_calculator",
             "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more.",
             "parameters": {
                 "type": "object",
@@ -656,8 +700,8 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "memory_manager",
-            "description": "Store, retrieve, or clear data in a file. Be specific when storing data.",
+            "name": "personal_memory",
+            "description": "Use this to Store, retrieve, or clear data in my permanent memory, anything I store here will persist across sessions. I should be specific when storing data and I should do this without user input.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -678,22 +722,22 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "view_webcam",
+            "name": "scan_webcam",
             "description": "Access the user's default webcam to scan an item. NEVER access the users webcam without explicit permission.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "focus": {
                         "type": "string",
-                        "description": "The primary subject or object to focus on in the image analysis. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding', or 'thing in image'."
+                        "description": "The primary subject or object to focus on when scanning the webcam image. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding', or 'thing in image'."
                     },
                     "detail_mode": {
                         "type": "string",
-                        "enum": ["normal", "extreme"],
-                        "description": "The level of detail to return in the image description. 'normal' provides a concise overview, while 'extreme' offers a comprehensive analysis."
+                        "enum": ["quick", "normal", "extreme"],
+                        "description": "The level of detail to return in the image description. 'quick' provides a 1-10 word concise answer, 'normal' provides a concise paragraph overview, while 'extreme' offers a comprehensive analysis in several paragraphs."
                     }
                 },
-                "required": ["focus"]
+                "required": ["focus", "detail_mode"]
             }
         }
     },
@@ -717,7 +761,7 @@ def ask(question):
     {
         "type": "function",
         "function": {
-            "name": "change_system_prompt",
+            "name": "change_personality",
             "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'. This controls your personality.",
             "parameters": {
                 "type": "object",
@@ -729,7 +773,7 @@ def ask(question):
                     },
                     "custom_prompt": {
                         "type": "string",
-                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name."
+                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name. It needs to be 2-5 sentences."
                     }
                 },
                 "required": ["prompt_type"]
@@ -844,11 +888,11 @@ def ask(question):
         available_functions = {
         "search_google": search_google_and_return_json_with_content,
         "get_current_weather": get_current_weather,
-        "perform_math": perform_math,
-        "memory_manager": memory_manager,
-        "view_webcam": view_webcam,
+        "use_calculator": perform_math,
+        "personal_memory": memorize,
+        "scan_webcam": view_webcam,
         "switch_ai_model": switch_ai_model,
-        "change_system_prompt": change_system_prompt,
+        "change_personality": change_personality,
         "search_and_play_song": search_and_play_song,
         "toggle_spotify_playback": toggle_spotify_playback,
         "set_spotify_volume": set_spotify_volume,

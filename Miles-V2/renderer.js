@@ -1,11 +1,16 @@
 const io = require('socket.io-client');
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:3000', {
+    reconnection: true, // Default is true, but being explicit for clarity
+    reconnectionDelay: 1000, // Attempt to reconnect every 1 second
+    reconnectionAttempts: Infinity // Keep trying to reconnect
+});
 const outputDiv = document.getElementById('output');
 const statusIndicator = document.getElementById('status-indicator');
 const { shell } = require('electron');
 const applocation = "Clearwater"; //This is a beta release, change this city to your city otherwise weather popups won't display the correct info. This doesn't affect Miles' speech or responses.
 
 let isErrorDetected = false; // Global flag to track error state
+
 
 document.addEventListener('click', function(event) {
     if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
@@ -22,7 +27,9 @@ function scrollToBottom() {
     }
 }
 
+
 socket.on('pythonOutput', (data) => {
+    console.log('Received pythonOutput:', data);
     const messageRegex = /(Miles:|User:|\[.*?\])/g;
     let startIndex = 0;
     let match;
@@ -40,6 +47,7 @@ socket.on('pythonOutput', (data) => {
 });
 
 socket.on('pythonError', (errorMessage) => {
+    console.log('Received pythonError:', errorMessage);
     let customMessage;
     const rateLimitErrorPattern = /openai\.RateLimitError/;
 
@@ -55,63 +63,6 @@ socket.on('pythonError', (errorMessage) => {
     // Process the message with the error flag set to true
     processMessage(customMessage, true);
 });
-
-
-const apiKey = "c8b138cd625d476fbdb31921231507";  // My personal FREE weather api key, don't steal it.
-
-function fetchWeather() {
-    const apiUrl = `http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${applocation}&days=1`;
-    
-    fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-        if ('current' in data && 'forecast' in data && data['forecast']['forecastday']) {
-            const conditionText = data.current.condition.text;
-            const temp = data.current.temp_f;
-            const chanceOfRain = data.forecast.forecastday[0].day.daily_chance_of_rain;
-            const isDay = data.current.is_day;
-            
-            displayWeatherCard(conditionText, temp, chanceOfRain, isDay);
-        } else {
-            console.error("Unexpected data structure from weather API.");
-        }
-    })
-    .catch(error => {
-        console.error("Error fetching weather data:", error);
-    });
-}
-
-function getWeatherIcon(conditionText, isDay) {
-    switch (conditionText.toLowerCase()) {
-        case "clear":
-            return isDay ? "fas fa-sun" : "fas fa-moon";
-        case "cloudy":
-            return "fas fa-cloud";
-        case "rain":
-            return "fas fa-cloud-rain";
-        default:
-            return "fas fa-cloud";
-    }
-}
-
-function displayWeatherCard(conditionText, temp, chanceOfRain, isDay) {
-    const weatherIconClass = getWeatherIcon(conditionText, isDay);
-    
-    const weatherDiv = document.createElement('div');
-    weatherDiv.id = 'weather-card';
-    weatherDiv.innerHTML = `
-        <i class="${weatherIconClass} weather-icon"></i>
-        <div>${applocation}</div>
-        <div>${temp}°F</div>
-        <div>${chanceOfRain}% chance of rain</div>
-    `;
-    
-    document.body.appendChild(weatherDiv);
-    
-    setTimeout(() => {
-        weatherDiv.classList.add('hide-weather-card');
-    }, 10000);
-}
 
 function processMessage(message, isError) {
     if (isError) {
@@ -177,6 +128,13 @@ function processMessage(message, isError) {
             iconClass = 'fas fa-comment-dots';
         } else if (actionText.startsWith('taking longer than expected')) {
             iconClass = 'fas fa-hourglass-half';
+        } else if (actionText.startsWith('Config Complete!')) {
+            console.log('Configuration is complete.');
+            document.getElementById('config-page').style.display = 'none';
+            document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+            document.getElementById('status-indicator').style.display = 'none';
+            document.getElementById('app-container').style.display = 'none';
+            showPage('restart-page');
         } else {
             iconClass = 'fas fa-robot';
         }
@@ -218,6 +176,9 @@ function processMessage(message, isError) {
     }
 }
 
+// Ensure 'require' is available for Electron's ipcRenderer
+const { ipcRenderer } = require('electron');
+
 var isCurrentPageValid = true;
 var currentPageId = 'openai'; // Initialize with the default page ID
 var setupValues = {};
@@ -242,7 +203,7 @@ function showPage(pageId) {
     
     // Handle navigation menu visibility
     const navMenu = document.querySelector('.nav-menu');
-    if (pageId === 'welcome-page' || pageId === 'completion-page') {
+    if (pageId === 'welcome-page' || pageId === 'completion-page' || pageId === 'restart-page') {
         navMenu.style.display = 'none';
     } else {
         navMenu.style.display = 'flex';
@@ -297,7 +258,7 @@ function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipTex
         if (buttonId.includes('openai')) {
             isValid = originalText.startsWith('sk-');
         //} else if (buttonId.includes('picovoice')) {
-            isValid = originalText.endsWith('==');
+            //isValid = originalText.endsWith('==');
         } else if (buttonId.includes('unit')) {
             let lowerCaseText = originalText.toLowerCase();
             isValid = lowerCaseText === 'metric' || lowerCaseText === 'imperial';
@@ -344,57 +305,69 @@ function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipTex
     });
 }
 
-// Initialize all buttons and textboxes
+// Initialize all buttons and textboxes with their respective IDs and messages
 initializeButtonAndTextbox('dynamic-button-openai', 'dynamic-textbox-openai', 'Enter your OpenAI API key', 'Hmm... it seems like this isn\'t an OpenAI API key.');
-// initializeButtonAndTextbox('dynamic-button-picovoice', 'dynamic-textbox-picovoice', 'Enter your Picovoice API key', 'Hmm... it seems like this isn\'t a Picovoice API key.');
 initializeButtonAndTextbox('dynamic-button-spotify-id', 'dynamic-textbox-spotify-id', 'Enter your Spotify Client ID', 'Hmm... it seems like this isn\'t a Spotify Client ID.');
 initializeButtonAndTextbox('dynamic-button-spotify-secret', 'dynamic-textbox-spotify-secret', 'Enter your Spotify Client Secret', 'Hmm... it seems like this isn\'t a Spotify Client Secret.');
 initializeButtonAndTextbox('dynamic-button-city', 'dynamic-textbox-city', 'Enter your Preferred City', 'Please enter a valid city name (Capitalized).');
 initializeButtonAndTextbox('dynamic-button-unit', 'dynamic-textbox-unit', 'Enter your Default Unit (Metric or Imperial)', 'Please enter \'Imperial\' for Fahrenheit or \'Metric\' for Celsius.');
 
+
+
+// Function to navigate to the configuration page
+function navigateToConfigPage() {
+    showPage('config-page');
+}
+
+// Function triggered upon setup completion
 function onSetupComplete() {
-    showPage('completion-page');
-    setTimeout(() => {
-        document.getElementById('completion-page').style.display = 'none';
-    }, 5000); // Hide the completion page after 5 seconds
+    navigateToConfigPage(); // Navigate to the config page directly
 }
 
-// Function to save API keys
-function saveApiKeys() {
-    onSetupComplete();
-    const { ipcRenderer } = require('electron');
-    ipcRenderer.send('saveApiKeys', setupValues);
-    
-    // Hide API key related elements and show main app content
-    document.querySelector('.nav-menu').style.display = 'none';
-    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
-    document.getElementById('status-indicator').style.display = 'block';
-    document.getElementById('app-container').style.display = 'block';
-}
-
-// IPC Renderer Listeners
-const { ipcRenderer } = require('electron');
+// IPC listener for initialization signal from the main process
 ipcRenderer.on('initialize-setup', () => {
-    // Hide main app content
-    document.getElementById('status-indicator').style.display = 'none';
-    document.getElementById('app-container').style.display = 'none';
-    
-    // Hide all content sections
-    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
-    
-    // Show only the welcome page
-    showPage('welcome-page');
-    document.getElementById('welcome-page').style.display = 'block';
+        // Hide main app content
+        document.getElementById('status-indicator').style.display = 'none';
+        document.getElementById('app-container').style.display = 'none';
+        
+        // Hide all content sections
+        document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+        
+        // Show only the welcome page
+        showPage('welcome-page');
+        document.getElementById('welcome-page').style.display = 'block';
 });
 
-ipcRenderer.on('setup-complete', (event, message) => {
-    console.log(message);
-    
-    // Delay the fetch request by 5 seconds (5000 milliseconds)
-    setTimeout(() => {
-        fetch('http://localhost:3000/triggerPython')
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error fetching:', error));
-    }, 5000); // 5000 milliseconds delay
+// Function to save API keys, called when setup form is submitted
+function saveApiKeys(apiKeys) {
+    // Example of how apiKeys might be used or stored
+    console.log('API Keys:', apiKeys);
+
+    // Signal the main process that API keys have been saved
+    ipcRenderer.send('saveApiKeys', setupValues);
+
+    // Mark setup as complete and navigate to the config page
+    onSetupComplete();
+    ipcRenderer.send('saveApiKeys', setupValues);
+    document.querySelector('.nav-menu').style.display = 'none';
+}
+
+// Listening for the 'config-complete' event from the main process
+ipcRenderer.on('config-complete', () => {
+    // Disconnect and reconnect the socket connection
+    socket.disconnect();
+    socket.connect();
+    console.log('Configuration is complete.');
+    document.getElementById('config-page').style.display = 'none';
+    document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+    document.getElementById('status-indicator').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    isErrorDetected = false;
+    showPage('restart-page');
+    // Potential actions to take after configuration is complete
+});
+
+document.getElementById('start-config-script').addEventListener('click', function() {
+    ipcRenderer.send('start-config');
+    document.getElementById('status-indicator').style.display = 'block';
 });
