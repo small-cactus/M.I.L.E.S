@@ -94,7 +94,9 @@ The Setup page walks users through the process of entering their API keys and ot
 
 - **macOS Users**: Enjoy a straightforward installation with our easy install script. [Install on macOS (easy install guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-on-MacOS-(Easy-Install-method))
 
-- **Windows Users**: Due to platform limitations, the installation process involves a few more steps. But don't worry, we've got you covered with a detailed guide. [Install on Windows (detailed guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
+- **Windows Users**: Due to platform limitations, the installation process involves a few more steps. But it's still simple. [Install on Windows (easy install guide)](https://github.com/small-cactus/M.I.L.E.S/wiki/Install-Miles-On-Windows)
+
+- **03-25-24:** as of now, the app does not work, because the setup process is not triggered when API keys are empty, it will be fixed later today. (message from 8:01 AM EST)
   
   - **Do I have to pay?** The only API that requires payment is OpenAI, it is a pay per use model so you won't have unnecessary charges. You also need Spotify Premimum to use Miles` Spotify features, but to get the API key I believe it's free.
 
