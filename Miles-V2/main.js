@@ -246,7 +246,6 @@ ipcMain.on('start-server-backend', (event) => {
 
 app.whenReady().then(() => {
     // Create the window in all cases
-    win = createWindow();
     createWindow();
 
     if (checkApiKeys()) {
