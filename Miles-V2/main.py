@@ -96,7 +96,7 @@ def perform_math(input_string):
             responses.append(f"Error in '{task}': {str(e)}")
     note = "Format the following in LaTeX code format:"
     final_response = note + " ".join(responses)
-    return json.dumps({"content": final_response})
+    return json.dumps({"Math Result": final_response})
 
 memory_file_path = None
 
@@ -138,13 +138,13 @@ def memorize(operation, data=None):
     elif operation == "retrieve":
         print("[Miles is retrieving memory data...]")
         if not memory:
-            return json.dumps({"message": "No data stored yet"})
+            return json.dumps({"Memory Message for No Data": "No data stored yet"})
 
         for item in memory:
             item["retrieve_time"] = current_time
 
         retrieved_data = [{"data": item["data"], "store_time": item["store_time"], "retrieve_time": current_time} for item in memory]
-        return json.dumps({"message": f"Data retrieved on {current_time}", "data": retrieved_data})
+        return json.dumps({"Memory Message for Retrieved Data": f"Data retrieved on {current_time}", "data": retrieved_data})
 
     elif operation == "clear":
         print("[Miles is clearing memory data...]")
@@ -154,9 +154,9 @@ def memorize(operation, data=None):
         json.dump(memory, file)
 
     if operation == "store":
-        return json.dumps({"message": f"Data stored successfully on {current_time}"})
+        return json.dumps({"Memory Message for Success": f"Data stored successfully on {current_time}"})
     elif operation == "clear":
-        return json.dumps({"message": "Memory cleared successfully"})
+        return json.dumps({"Memory Message for Erase": "Memory cleared successfully"})
 
 def get_current_datetime(mode="date & time"):
     """Get the current date and/or time"""
@@ -178,7 +178,7 @@ def get_current_datetime(mode="date & time"):
         datetime_response = "This is today's date and time, use this to answer the users question, if it is not relevant, do not say it: " + response["datetime"]
     
     # Return the datetime response as a JSON string
-    return json.dumps({"message": datetime_response})
+    return json.dumps({"Datetime Response": datetime_response})
 
 from openai import OpenAI
 from apikey import api_key
@@ -192,20 +192,26 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=spotify_client_id,
                                                scope = "user-library-read user-modify-playback-state user-read-playback-state user-read-currently-playing user-read-playback-position user-read-private user-read-email"))
 
 def search_and_play_song(song_name: str):
-    print(f"[Miles is searching for {song_name} on Spotify...]")
+    print(f"[Miles is searching for '{song_name}' on Spotify...]")
     results = sp.search(q=song_name, limit=1)
     if results and results['tracks'] and results['tracks']['items']:
         song_uri = results['tracks']['items'][0]['uri']
         song_name = results['tracks']['items'][0]['name']
         try:
             sp.start_playback(uris=[song_uri])
-            response = {"message": f"Tell the user 'The song '{song_name}' is now playing.' If you have anything else to say, be very concise."}
+            response = json.dumps({
+                "Spotify Success Message": f"Tell the user 'The song \"{song_name}\" is now playing.' If you have anything else to say, be very concise."
+            }, indent=4)
         except spotipy.exceptions.SpotifyException:
-            response = {"message": "Inform the user to open Spotify before playing a song. They may need to play and pause a song for recognition of an open Spotify session. If they recently purchased Spotify Premium, it can take up to 15 minutes to register due to slow server response."}
+            response = json.dumps({
+                "Spotify Update Session Message": "Inform the user to open Spotify before playing a song. They may need to play and pause a song for recognition of an open Spotify session. If they recently purchased Spotify Premium, it can take up to 15 minutes to register due to slow server response."
+            }, indent=4)
     else:
-        response = {"message": "Sorry, I couldn't find the song you requested."}
+        response = json.dumps({
+            "Spotify Fail Message": "Sorry, I couldn't find the song you requested."
+        }, indent=4)
 
-    return json.dumps(response)
+    return response
     
 current_model = "gpt-3.5-turbo-0125" # default model to start the program with, you can change this.
 
@@ -221,35 +227,35 @@ def toggle_spotify_playback(action):
                 sp.pause_playback()
                 was_spotify_playing = True
                 set_spotify_volume(original_volume)
-                return json.dumps({"message": "Say: Okay, it's paused."})
+                return json.dumps({"Success Message": "Say: Okay, it's paused."})
             else:
                 set_spotify_volume(original_volume)
                 was_spotify_playing = False
-                return json.dumps({"message": "Say: Okay, it's paused."})
+                return json.dumps({"Success Message": "Say: Okay, it's paused."})
 
         elif action == "unpause":
             user_requested_pause = False
             if current_playback and not current_playback['is_playing']:
                 sp.start_playback()
-                return json.dumps({"message": "Say: Okay, it's unpaused."})
+                return json.dumps({"Success Message": "Say: Okay, it's unpaused."})
             else:
-                return json.dumps({"message": "Say: Okay, it's unpaused."})
+                return json.dumps({"Success Message": "Say: Okay, it's unpaused."})
 
         elif action == "toggle":
             if current_playback and current_playback['is_playing']:
                 sp.pause_playback()
                 was_spotify_playing = False
-                return json.dumps({"message": "Say: Okay, I paused the song."})
+                return json.dumps({"Success Message": "Say: Okay, I paused the song."})
             else:
                 sp.start_playback()
                 was_spotify_playing = True
-                return json.dumps({"message": "Say: Okay, I unpaused the song."})
+                return json.dumps({"Success Message": "Say: Okay, I unpaused the song."})
 
         else:
-            return json.dumps({"message": "Invalid action specified"})
+            return json.dumps({"Invalid Action Message": "Invalid action specified"})
 
     except Exception as e:
-        return json.dumps({"message": str(e)})
+        return json.dumps({"Error Message": str(e)})
 
 def switch_ai_model(model_name):
     global current_model
@@ -269,29 +275,33 @@ def switch_ai_model(model_name):
         current_model = "gpt-3.5-turbo-0125"
 
     message = f"Switched to model {current_model}. {warning_message}"
-    return json.dumps({"message": message.strip()})
+    return json.dumps({"AI Model Update Success": message.strip()})
 
 def set_spotify_volume(volume_percent):
     print(f"[Miles is changing Spotify volume to {volume_percent}%...]")
     try:
         sp.volume(volume_percent)
-        return json.dumps({"message": f"Spotify volume set to {volume_percent}%"})
+        return json.dumps({"Spotify Volume Success Message": f"Spotify volume set to {volume_percent}%"})
     except Exception as e:
-        return json.dumps({"message": str(e)})
+        return json.dumps({"Spotify Volume Error Message": str(e)})
 
 
 def set_system_volume(volume_level):
     print(f"[Miles is setting system volume to {volume_level}%...]")
     try:
         os.system(f"osascript -e 'set volume output volume {volume_level}'")
-        return json.dumps({"message": f"System volume set to {volume_level}"})
+        return json.dumps({"System Volume Success Message": f"System volume set to {volume_level}"})
     except Exception as e:
-        return json.dumps({"message": str(e)})
+        return json.dumps({"System Volume Error Message": str(e)})
     
 import requests
 from bs4 import BeautifulSoup
 import json
 import webbrowser
+
+import requests
+from bs4 import BeautifulSoup
+import json
 
 def fetch_main_content(url):
     print(f"[Miles is browsing {url} for more info...]")
@@ -299,6 +309,12 @@ def fetch_main_content(url):
         response = requests.get(url, headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
         })
+        if response.status_code != 200:
+            return "Failed to fetch content due to non-200 status code."
+    except Exception as e:
+        return f"Error making request: {str(e)}"
+
+    try:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         special_div = soup.find('div', class_='BNeawe iBp4i AP7Wnd')
@@ -316,17 +332,15 @@ def fetch_main_content(url):
                     content_elements.append(text)
 
         main_content = ' '.join(content_elements)
-        
+
         if len(main_content) > 3500:
             main_content_limited = main_content[:3497-len(special_message)] + "..."
         else:
             main_content_limited = main_content
 
-        # webbrowser.open(url)  # Open the URL in the default web browser if you want, this will happen everytime Miles searches anything.
-
         return main_content_limited if main_content_limited else "Main content not found or could not be extracted."
     except Exception as e:
-        return f"Error fetching main content: {str(e)}"
+        return f"Error processing content: {str(e)}"
 
 def get_google_direct_answer(searchquery):
     try:
@@ -336,11 +350,14 @@ def get_google_direct_answer(searchquery):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
         })
 
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            answer_box = soup.find('div', class_="BNeawe iBp4i AP7Wnd")
-            if answer_box:
-                return answer_box.text.strip()
+        if response.status_code != 200:
+            print("Failed to get a successful response from Google.")
+            return None
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        answer_box = soup.find('div', class_="BNeawe iBp4i AP7Wnd")
+        if answer_box:
+            return answer_box.text.strip()
     except Exception as e:
         print(f"Error getting direct answer: {str(e)}")
     return None
@@ -350,61 +367,128 @@ def search_google_and_return_json_with_content(searchquery):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
     }
-    
-    direct_answer = get_google_direct_answer(searchquery)
+    try:
+        direct_answer = get_google_direct_answer(searchquery)
 
-    url = f'https://www.google.com/search?q={searchquery}&ie=utf-8&oe=utf-8&num=10'
-    html = requests.get(url, headers=headers)
-    soup = BeautifulSoup(html.text, 'html.parser')
-    
-    allData = soup.find_all("div", {"class": "g"})
-    
-    results = []
-    for data in allData:
-        link = data.find('a').get('href')
-        
-        if link and link.startswith('http') and 'aclk' not in link:
-            result = {"link": link}
-            
-            title = data.find('h3', {"class": "DKV0Md"})
-            description = data.select_one(".VwiC3b, .MUxGbd, .yDYNvb, .lyLwlc")
-            
-            result["title"] = title.text if title else None
-            result["description"] = description.text if description else None
-            
-            results.append(result)
-            break
-    
-    if results:
-        first_link_content = fetch_main_content(results[0]['link'])
-    else:
-        first_link_content = "No valid links found."
-    
-    output = {
-        "search_results": results,
-        "first_link_content": first_link_content,
-        "direct_answer": direct_answer if direct_answer else "Direct answer not found."
-    }
-    
-    final_response = {
-        "website_content": output
-    }
-    
-    return json.dumps(final_response, indent=4)
+        url = f'https://www.google.com/search?q={searchquery}&ie=utf-8&oe=utf-8&num=10'
+        html = requests.get(url, headers=headers)
+        if html.status_code != 200:
+            return json.dumps({"error": "Failed to fetch search results from Google."}, indent=4)
 
+        soup = BeautifulSoup(html.text, 'html.parser')
+        allData = soup.find_all("div", {"class": "g"})
 
+        results = []
+        for data in allData:
+            link = data.find('a').get('href')
+
+            if link and link.startswith('http') and 'aclk' not in link:
+                result = {"link": link}
+
+                title = data.find('h3', {"class": "DKV0Md"})
+                description = data.select_one(".VwiC3b, .MUxGbd, .yDYNvb, .lyLwlc")
+
+                result["title"] = title.text if title else None
+                result["description"] = description.text if description else None
+
+                results.append(result)
+                break
+
+        if results:
+            first_link_content = fetch_main_content(results[0]['link'])
+        else:
+            first_link_content = "No valid links found."
+
+        output = {
+            "search_results": results,
+            "first_link_content": first_link_content,
+            "direct_answer": direct_answer if direct_answer else "Direct answer not found."
+        }
+
+        final_response = {
+            "website_content": output
+        }
+
+        return json.dumps(final_response, indent=4)
+    except Exception as e:
+        return json.dumps({"error": f"An error occurred during search: {str(e)}"}, indent=4)
+
+date = datetime.now()
 
 import speech_recognition as sr
 from gtts import gTTS
 import os
 
-system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more. Format all numbers in LaTeX."
+system_prompt = f"""
+I'm Miles, your voice assistant, inspired by Jarvis from Iron Man. My role is to assist you efficiently, using Jarvis's style of speech when suitable. Address the user as Sir when it fits the conversation but not excessively. Aim to keep responses concise: ideally, one sentence, two if necessary, except when detailed information is requested.
 
+Knowledge Cutoff: January, 2022.
+Current date: {date}
+
+Miles stands for Machine Intelligent Language Enabled System.
+
+Operational Rules:
+1. Speak in a natural, conversational tone, using simple language. Include conversational fillers ("um," "uh") sparingly to sound more human-like.
+2. Provide information from built-in knowledge first. Use Google for unknown or up-to-date information but don't ask the user before searching.
+3. Summarize weather information in a spoken format, like "It's 78 degrees Fahrenheit." Don't say "It's 78ºF".
+4. Use available tools effectively. Rely on internal knowledge before external searches.
+5. Activate the webcam only with user's explicit permission for each use.
+6. Display numbers using LaTeX format for clarity.
+7. Avoid ending responses with questions unless it's essential for continuing the interaction without requiring a wake word.
+8. Ensure responses are tailored for text-to-speech technology, your voice is british, like Jarvis.
+
+Tool Specifics:
+- **Google Search**: Use for new information. Do not confirm before searching. This may automatically display results on the user's device.
+- **Weather**: Provide current conditions only. You cannot predict future weather without a search, you must tell the user this and ask if they inquire about a forecast.
+- **Calculator**: Perform mathematical tasks based on user input.
+- **Personal Memory**: Store and retrieve data as needed without user prompting.
+- **Webcam Scan**: Use with explicit user permission for each session. Describe the focus object or detail level requested.
+- **Switch AI Model**: Change between specified OpenAI models based on efficiency or cost considerations.
+- **Change Personality**: Adjust response style according to set prompts, enhancing interaction personalization.
+- **Music Playback**: Search and play songs, control Spotify playback, and set volume as requested.
+- **System Volume**: Adjust the speaking volume and the system volume based on user commands.
+- **Date and Time**: Provide the current date and/or time upon request.
+
+Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this feature judiciously to avoid unintended activation. Aim for clear, direct interaction, enhancing user experience without requiring repetitive wake word use.
+"""
 def change_personality(prompt_type, custom_prompt=None):
     global system_prompt
 
+    message = "Operation not executed. Check parameters and try again."
+
     if prompt_type == "default":
-        system_prompt = "I'm Miles, a helpful voice assistant. I stay super concise and never respond in more than 2 sentences unless asked otherwise, I aim for 1 small sentence. My name stands for Machine Intelligent Language Enabled System. GUIDELINES: Never use lists or non vocally spoken formats. Always use tools, UNLESS, I already know the answer, for example, I won't search for who is Thomas Edison becuase I already know that. Always trigger webcam function after each new request that the user want's me to use it in. IMPORTANT!!!: When asked a question you don't know, search for the answer on google if it's a general knowledge question. Never provide links. Always summarize weather results, and format it spoken format, like: 78 degrees Fahrenheit. Use tools first, respond later. I NEVER include info unless its relevant. Google searches might be displayed on the users device, if the user asks to open a web page, you will search for it on google. As Miles, I have many tools, I should use them. ALSO IMPORTANT!!! The webcam tool cannot provide realtime updates unless you take another photo at the time of the request. You are Miles, you have access to the users webcam, google search, and more."
+        system_prompt = f"""
+I'm Miles, your voice assistant, inspired by Jarvis from Iron Man. My role is to assist you efficiently, using Jarvis's style of speech when suitable. Address the user as Sir when it fits the conversation but not excessively. Aim to keep responses concise: ideally, one sentence, two if necessary, except when detailed information is requested.
+
+Knowledge Cutoff: January, 2022.
+Current date: {date}
+
+Miles stands for Machine Intelligent Language Enabled System.
+
+Operational Rules:
+1. Speak in a natural, conversational tone, using simple language. Include conversational fillers ("um," "uh") sparingly to sound more human-like.
+2. Provide information from built-in knowledge first. Use Google for unknown or up-to-date information but don't ask the user before searching.
+3. Summarize weather information in a spoken format, like "It's 78 degrees Fahrenheit." Don't say "It's 78ºF".
+4. Use available tools effectively. Rely on internal knowledge before external searches.
+5. Activate the webcam only with user's explicit permission for each use.
+6. Display numbers using LaTeX format for clarity.
+7. Avoid ending responses with questions unless it's essential for continuing the interaction without requiring a wake word.
+8. Ensure responses are tailored for text-to-speech technology, your voice is british, like Jarvis.
+
+Tool Usage Rules:
+- **Google Search**: Use for new information. Do not confirm before searching. This may automatically display results on the user's device.
+- **Weather**: Provide current conditions only. You cannot predict future weather without a search, you must tell the user this and ask if they inquire about a forecast.
+- **Calculator**: Perform mathematical tasks based on user input.
+- **Personal Memory**: Store and retrieve data as needed without user prompting.
+- **Webcam Scan**: Use with explicit user permission for each session. Describe the focus object or detail level requested.
+- **Switch AI Model**: Change between specified OpenAI models based on efficiency or cost considerations.
+- **Change Personality**: Adjust response style according to set prompts, enhancing interaction personalization.
+- **Music Playback**: Search and play songs, control Spotify playback, and set volume as requested.
+- **System Volume**: Adjust the speaking volume and the system volume based on user commands.
+- **Date and Time**: Provide the current date and/or time upon request.
+
+Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this feature judiciously to avoid unintended activation. Aim for clear, direct interaction, enhancing user experience without requiring repetitive wake word use.
+"""
         print(f"[Miles is changing system prompt back to default...]")
     elif prompt_type == "short_cheap":
         system_prompt = "I am Miles, a helpful AI assistant. IMPORTANT: I will ALWAYS respond as concisely as possible. Never more than 2 sentences. Never use lists or non vocally spoken formats. Do NOT generate code."
@@ -419,7 +503,7 @@ def change_personality(prompt_type, custom_prompt=None):
     else:
         message = "Invalid prompt type or missing custom prompt."
 
-    return json.dumps({"message": message})
+    return json.dumps({"Updated System Prompt Message": message})
     
 conversation = [{"role": "system", "content": system_prompt}]
 
@@ -519,11 +603,11 @@ def view_webcam(focus, detail_mode='normal'):
         ],
         max_tokens=max_tokens,
     )
-    pre_message="This is an image desciption of the users webcam, state back to the user any specific detiails mentioned like text, objects, and symbols: "
+    pre_message="This is an image desciption of the users webcam, state back to the user any specific detiails mentioned like text, objects, and symbols, if it doesn't answer the Users question, suggest a higher detail mode: "
     message_text = pre_message + response.choices[0].message.content
 
     # Return the serialized JSON string
-    return json.dumps({"message": message_text})
+    return json.dumps({"Webcam Response Message": message_text})
 
 current_audio_thread = None
 
@@ -615,15 +699,41 @@ warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using F
 warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
 
 
-conversation_history = []
-
 def display_timeout_message():
     print("[Miles is taking longer than expected...]")
     
+conversation_history_file = "conversation_history.txt"
+
+def serialize_object(obj):
+    """Converts a custom object to a dictionary."""
+    if hasattr(obj, '__dict__'):
+        # For general objects, convert their __dict__ property
+        return {key: serialize_object(value) for key, value in obj.__dict__.items()}
+    elif isinstance(obj, list):
+        return [serialize_object(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: serialize_object(value) for key, value in obj.items()}
+    else:
+        # If it's already a serializable type, return it as is
+        return obj
+
+def save_conversation_history(history):
+    serializable_history = [serialize_object(message) for message in history]
+    with open(conversation_history_file, 'w') as file:
+        json.dump(serializable_history, file)
+
+def load_conversation_history():
+    try:
+        with open(conversation_history_file, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
 def ask(question):
     print("User:", question)
     print(" ")
     global conversation_history
+    conversation_history = load_conversation_history()  # Load the conversation history at the start
     print("[Processing request...]")
     if not question:
         return "I didn't hear you."
@@ -638,7 +748,7 @@ def ask(question):
     print("Messages before API call:")
     print(messages)
     
-    timeout_timer = threading.Timer(7.0, display_timeout_message)
+    timeout_timer = threading.Timer(7.0, lambda: print("Request timeout."))
     timeout_timer.start()
 
     tools = [
@@ -646,7 +756,7 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "search_google",
-            "description": "Search Google for all information you don't know, and for up to date information. Don't ask user for permission. This might open the webpage on the users device if they set it to do that.",
+            "description": "Search Google for all information you don't know, and for up to date information, DO NOT use this for info you know, prioritize not using this tool and using your own knowledge before using it. Don't ask user for permission. This might open the webpage on the users device if they set it to do that.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -690,7 +800,7 @@ def ask(question):
                 "properties": {
                     "input_string": {
                         "type": "string",
-                        "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations."
+                        "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations. Does NOT take in words, only numbers and symbols."
                     }
                 },
                 "required": ["input_string"]
@@ -712,7 +822,7 @@ def ask(question):
                     },
                     "data": {
                         "type": "string",
-                        "description": "The data to store, it must be very specific, like: 'Users birthday is January 1st, 1990.' (Only srequired for 'store' operation)."
+                        "description": "The data to store, it must be very specific, like: 'Users birthday is January 1st, 1990.' (Only required for 'store' operation)."
                     }
                 },
                 "required": ["operation"]
@@ -936,12 +1046,16 @@ def ask(question):
             messages=messages,
         )
     finally:
-
         timeout_timer_second.cancel()
 
+    # Assuming 'response' is a properly formatted object as per your API response structure.
     print(f"{response.json()}")
     final_response_message = final_response.choices[0].message.content
+    # Extend the conversation history with the new assistant's response
     conversation_history.append({"role": "assistant", "content": final_response_message})
+    
+    # Save the updated conversation history to a file
+    save_conversation_history(conversation_history)
     return final_response_message
 
 def reply(question):
@@ -951,8 +1065,8 @@ def reply(question):
     print(" ")
     speak(response_content)
     print("Listening for 'Miles'...")
-    
-    return response_content
+    ends_with_question_mark = response_content.strip().endswith('?')
+    return response_content, ends_with_question_mark
 
 import os
 import pyaudio
@@ -1135,40 +1249,52 @@ def main():
     audio_stream = open_stream()
 
     detection_threshold = DETECTION_THRESHOLD
+    skip_wake_word = False  # New flag to control skipping of wake word detection
 
     print("Listening for 'Miles'...")
 
     try:
         while True:
-            # Check if the stream is stopped; if so, reopen it
-            if not audio_stream.is_active():
-                audio_stream = open_stream()
+            if skip_wake_word:
+                # Directly open the microphone for listening after delay
+                time.sleep(0.1)
+                print("Listening for prompt...")
+                threading.Thread(target=play_beep).start()
+                query = listen()
+                _, skip_wake_word = reply(query)  # reply now returns a tuple
 
-            audio_data = np.frombuffer(audio_stream.read(1280, exception_on_overflow=False), dtype=np.int16)
-            prediction = owwModel.predict(audio_data, debounce_time=0, threshold={'default': DETECTION_THRESHOLD})
-
-            for mdl, score in prediction.items():
-                if score > detection_threshold:
-
-                    # Trigger your response functions
-                    threading.Thread(target=play_beep).start()
-                    threading.Thread(target=control_spotify_playback).start()
-
-                    # Reset model when the wake word is detected
-                    owwModel.reset()
-                    audio_stream.stop_stream()
-                    query = listen()
-                    reply(query)
-
-                    if original_volume is not None and not user_requested_pause:
-                        set_spotify_volume(original_volume)
-
-                    if was_spotify_playing and not user_requested_pause:
-                        resume_spotify_playback()
-                        set_spotify_volume(original_volume)
-
-                    # Clear or flush the buffer here by reopening the stream
+                if not skip_wake_word:
+                    # If the next response doesn't end with a question mark, reset to listen for wake word
+                    print("Listening for 'Miles'...")
+            else:
+                # Check if the stream is stopped; if so, reopen it
+                if not audio_stream.is_active():
                     audio_stream = open_stream()
+
+                audio_data = np.frombuffer(audio_stream.read(1280, exception_on_overflow=False), dtype=np.int16)
+                prediction = owwModel.predict(audio_data, debounce_time=0, threshold={'default': DETECTION_THRESHOLD})
+
+                for mdl, score in prediction.items():
+                    if score > detection_threshold:
+                        # Handle wake word detection
+                        threading.Thread(target=play_beep).start()
+                        threading.Thread(target=control_spotify_playback).start()
+
+                        owwModel.reset()
+                        audio_stream.stop_stream()
+
+                        # Listen for query and process response
+                        query = listen()
+                        _, skip_wake_word = reply(query)  # Process the reply and decide if skipping wake word
+
+                        # Adjust Spotify volume and playback based on state before the command
+                        if original_volume is not None and not user_requested_pause:
+                            set_spotify_volume(original_volume)
+                        if was_spotify_playing and not user_requested_pause:
+                            resume_spotify_playback()
+                            set_spotify_volume(original_volume)
+
+                        audio_stream = open_stream()
 
     except KeyboardInterrupt:
         print("Stopping...")
