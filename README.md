@@ -42,6 +42,8 @@
 
 - 🔑 **API Keys**: You'll need a few API keys to use Miles, but the app will guide you. Only OpenAI requires payment. 💳
 
+- ⚙️ **Smart Wake Word**: Miles will automatically detect when or when not to use the wake word, so if he asks a follow up question, he won't make you say 'Miles' again.
+
 🧠 **Miles Can Help!**  
 Ask away! Miles is here to answer your questions, big or small. Wondering about something? Just ask! Here are some examples of what you can inquire about:  
 
