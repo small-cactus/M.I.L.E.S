@@ -106,16 +106,12 @@ function processMessage(message, isError) {
             iconClass = 'fas fa-calculator';
         } else if (actionText.startsWith('finding the current weather')) {
             iconClass = 'fas fa-cloud';
-            fetchWeather();
         } else if (actionText.startsWith('finding the current time')) {
             iconClass = 'fas fa-clock';
         } else if (actionText.startsWith('retrieving his memory')) {
             iconClass = 'fas fa-server';
         } else if (actionText.startsWith('searching for')) {
             iconClass = 'fab fa-spotify';
-        } else if (actionText.startsWith('showing the weather')) {
-            iconClass = 'fas fa-window-restore';
-            fetchWeather();
         } else if (actionText.startsWith('updating Spotify playback')) {
             iconClass = 'fab fa-spotify';
         } else if (actionText.startsWith('switching the model')) {
