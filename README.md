@@ -44,25 +44,34 @@
 
 - ⚙️ **Smart Wake Word**: Miles will automatically detect when or when not to use the wake word, so if he asks a follow up question, he won't make you say 'Miles' again.
 
-🧠 **Miles Can Help!**  
-Ask away! Miles is here to answer your questions, big or small. Wondering about something? Just ask! Here are some examples of what you can inquire about:  
+## 🔒 **Your Privacy Matters**
 
-- "How many fingers am I holding up?"  
-- "Remember my name as Anthony."  
-- "Who is Mike Tyson's next opponent?"  
-- "Play that famous Rick Astley song."  
-- "I'm holding up a paper to the camera, what does it say?"  
-- "Should I wear a jacket?"  
-- "Miles, should I choose the red or blue pill?"  
-- "What's the date today, Miles?"  
-- "Adopt a pirate persona, Miles!"  
-- "Switch to GPT-4, you're not making sense."  
-- "Switch back to the less expensive version, please."  
-- "Does this outfit look okay, Miles?"  
-- "Miles, do you think I have Resting B**** Face?"  
-- "What does your name stand for?"  
+Here is an in-depth look at how Miles ensures `your information is safe and secure`:
 
-Miles is ready for your queries, suggestions, and commands.
+- **Local Processing**: All voice commands, images captured by the webcam, and other inputs are `processed locally on your device`. This includes `wake word detection, image recognition, and audio processing for voice commands`.
+
+- **Secure Data Transmission**: When data needs to be sent to the OpenAI API (for example, to fetch responses from `GPT-4 Turbo` or `GPT-3.5 Turbo`), it is `securely encrypted and transmitted over a protected connection`. `Your API keys and any sensitive information never leave the app`.
+
+- **Voice and Image Data**: 
+  - Voice audio is `processed in real-time on your device`. Absolutely no voice data is sent anywhere outside your computer.
+  - Images captured for recognition are `encrypted in Base64 format` before being `securely sent to the necessary service for analysis`.
+
+- **Spotify Integration**: Communication with Spotify is `encrypted, adhering to Spotify's security protocols`. This ensures that your music preferences and commands are `securely handled`.
+
+- **Persistent Memory and Calculations**:
+  - The persistent memory feature, where you can ask Miles to remember certain information, is `stored locally on your device`. This data is not transmitted outside unless explicitly required for a query.
+  - Calculations and the use of the built-in calculator are `performed locally`, with results generated without the need to communicate with external servers.
+
+- **Local Features**:
+  - Multi-tasking, contextual awareness, and other intelligent features of Miles are `primarily processed on your device`. This limits the amount of data that needs to be transmitted and ensures `faster, more secure responses`.
+  - Internet browsing and information retrieval are done securely, with precautions to `anonymize and protect your queries`.
+
+- **Wake Word Detection**: Utilizes `short-term listening windows` to ensure that continuous audio recording is not stored or transmitted. This ensures that your ambient conversations remain `private and are not processed` by Miles.
+
+- **Data Retention**: Miles is designed to `respect your privacy by not retaining data longer than necessary`. For example, audio recordings are immediately discarded after processing your command, and any remembered information is deleted upon your request or when it is no longer needed.
+
+- **Local Storage and Encryption**: All data stored by Miles for operational purposes, such as your preferences or the information you've asked to be remembered, is `encrypted and stored locally on your device`.
+
 
 
 ## 🗣️ Natural Language Commands
