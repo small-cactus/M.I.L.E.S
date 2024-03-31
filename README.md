@@ -119,11 +119,11 @@ Let your imagination run wild with Miles!
 - LLM auto writes code to fit into place - only if I can't hard code it.
 
 ### Home Assistant integration
-> 3-29-24 - 65% complete - entire python backend is complete, just need to add it to setup
+> 3-29-24 - 80% complete - entire python backend is complete, setup complete, just need to fix overall logic.
 - During setup, you can provide your Home Assistant tokens and choose which devices you want Miles to control.
 
 ### Settings and Config Menu
-> 3-29-24 - 10% complete - extremely hard to do, would have to change every python variable to an import
+> 3-31-24 - 10% complete - extremely hard to do, would have to change every python variable to an import
 - Allows you to change API keys and preferences after setup.
 
 ### Dynamic Background Learning
