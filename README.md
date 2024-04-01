@@ -132,6 +132,11 @@ Let your imagination run wild with Miles!
 - Agentic behavior behind the scenes
 - Allowed to set schedules for tasks, learn common commands and at what time you ask them, and act upon them autonomously when trends are strong.
 
+### Projection UI
+> 3-31-24 - 85% complete - audio visualization logic needed.
+- Changes UI to simplistic black background with smooth animations meant for projecting onto a wall
+- Similar to Jarvis visuals from Iron Man
+
 
 ## 🤝 **Contribute to Development**
 Your feedback shapes M.I.L.E.S! Though this is a beta release, I eagerly await your feature requests and issue reports for our final launch on GitHub.
