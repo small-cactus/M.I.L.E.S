@@ -133,9 +133,13 @@ Let your imagination run wild with Miles!
 - Allowed to set schedules for tasks, learn common commands and at what time you ask them, and act upon them autonomously when trends are strong.
 
 ### Projection UI
-> 3-31-24 - 85% complete - audio visualization logic needed.
+> 3-31-24 - 95% complete - finished, need way to switch between UI's
 - Changes UI to simplistic black background with smooth animations meant for projecting onto a wall
-- Similar to Jarvis visuals from Iron Man
+
+
+https://github.com/small-cactus/M.I.L.E.S/assets/125771841/e57230c4-f6bb-4d66-a647-65eb5dd72ef1
+
+> This is a realtime demo of the projection UI with sound, the black background makes it appear on the wall as if it has a transparent background
 
 
 ## 🤝 **Contribute to Development**
