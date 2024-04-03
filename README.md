@@ -136,10 +136,9 @@ Let your imagination run wild with Miles!
 > 3-31-24 - 95% complete - finished, need way to switch between UI's
 - Changes UI to simplistic black background with smooth animations meant for projecting onto a wall
 
+https://github.com/small-cactus/M.I.L.E.S/assets/125771841/b3286b3c-f88b-4315-bbe5-850e8d681e9d
 
-https://github.com/small-cactus/M.I.L.E.S/assets/125771841/e57230c4-f6bb-4d66-a647-65eb5dd72ef1
-
-> This is a realtime demo of the projection UI with sound, the black background makes it appear on the wall as if it has a transparent background
+> This is a realtime demo of the projection UI with sound (modulated to emulate jarvis, not sure if I will keep it), the black background makes it appear on the wall as if it has a transparent background
 
 
 ## 🤝 **Contribute to Development**
