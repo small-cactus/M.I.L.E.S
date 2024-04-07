@@ -275,7 +275,7 @@ app.on('activate', () => {
 
 ipcMain.on('start_homeassistant_fetch', (event) => {    
     // Start the Python script with PYTHONWARNINGS set to "ignore"
-    const pythonProcess = spawn('python3', ['HomeAssistantUtils.py', '--entity-mode'], {
+    const pythonProcess = spawn(getPythonCommand(), ['-u', path.join(__dirname, 'HomeAssistantUtils.py'), '--entity-mode'], {
         env: {
             ...process.env, // Inherit the current environment
             PYTHONWARNINGS: "ignore" // Suppress Python warnings
