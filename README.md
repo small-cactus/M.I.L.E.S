@@ -19,7 +19,7 @@
 <h2 align="center">🌟 Core Features</b></h2>
 
 - 🧠 **AI Language Models**: Miles is powered by text-centric AI models developed to closely understand meaning in language, and when provided with tools, becomes an unmatched experience when compared to any other voice assistant.
-
+- 🏠 **Smart Home Integration**: Using Home Assistant, Miles can add any devices you want to himself. Miles can turn off or on any light or switch you want.
 - 🎵 **Spotify Integration**: Control Spotify entirely with your voice. Miles can play, pause, skip tracks, adjust volume, and more, all through your voice. (Requires Spotify Premium)
 
 - ☔ **Weather Data**: Get real-time weather information. No need to use specific keywords – Miles will understand you.
