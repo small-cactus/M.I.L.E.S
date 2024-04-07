@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.I.L.E.S</title>
+    <style>
+        body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+.message-container {
+    position: absolute;
+    top: 25%;
+    width: calc(100% - 200px); /* Add left and right padding of 30px each */
+    padding: 0 30px; /* Add left and right padding of 30px each */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.message {
+    display: block; /* Ensure messages are displayed by default */
+    margin: 5px auto;
+    max-width: 100%; /* Ensure messages don't exceed the container width */
+    word-wrap: break-word; /* Allow long words to break and wrap */
+    line-height: 1.6; /* Increase the line-height */
+    font-size: 18px; /* Increase the font size */
+}
+
+.user-message {
+color: #c9c9c9;
+}
+
+        /* Define fadeIn and fadeOut animations */
+        @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.fadeOut {
+  animation: fadeOut 0.5s ease-out;
+}
+
+.animatedCircle {
+  width: 200px; /* Adjust the width as needed */
+  height: 50px; /* Adjust the height as needed */
+  border: 10px solid #ffffff; /* Set the border color and thickness */
+  border-radius: 50px; /* Adjust the border-radius value to control the curvature */
+  background-color: transparent; /* Remove the background color */
+  bottom: 30%;
+  position: absolute;
+  opacity: 0.5;
+  /*box-shadow: 0 0 20px 1px rgba(255, 255, 255, 0.5),  Add a soft white glow */
+              /*inset 0 0 20px 1px rgba(255, 255, 255, 0.5);  Add an inner glow */
+}
+
+/* Use animation-fill-mode to maintain the state after animation ends */
+.pulse, .rotate, .fastPulse {
+    animation-fill-mode: forwards;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; } /* Start and end at default size */
+  50% { transform: scale(1.08); opacity: 0.5; }
+}
+
+.pulse { 
+  animation: pulse 2s ease-in-out; 
+}
+
+@keyframes pulseWhite {
+  0%, 100% { transform: scale(1); opacity: 0.5; } /* Start and end at default size */
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.pulseWhite { 
+  animation: pulseWhite 1s ease-in-out; 
+}
+
+
+@keyframes pulseBig {
+  0%, 100% { transform: scale(1); opacity: 0.5; } /* Start and end at default size */
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+.pulseBig {
+  animation: pulseBig 1.5s cubic-bezier(0.73, 0.31, 0.16, 0.86);
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); opacity: 0.5; }
+  100% { transform: rotate(360deg); opacity: 0.5; }
+}
+
+.rotate { 
+  animation: rotate 2s linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%);
+}
+
+@keyframes fastPulse {
+  0%, 100% { transform: scale(1); opacity: 1; } /* Start and end at default size */
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+.fastPulse { 
+  animation: fastPulse 1s cubic-bezier(0.63, -0.18, 0.22, 1.01);
+}
+    </style>
+</head>
+<body>
+    <div class="animatedCircle"></div>
+    <div class="message-container">
+        <!-- Messages will be dynamically inserted here -->
+        <div class="message user-message"></div> <!-- Placeholder for User message -->
+        <div class="message miles-message"></div> <!-- Placeholder for Miles message -->
+    </div>
+
+    <script src="renderer.js"></script>
+    <!-- Load MathJax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Add this within the <body> tag -->
+</body>
+</html>

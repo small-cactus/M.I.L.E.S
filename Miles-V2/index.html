@@ -116,7 +116,7 @@
                         }
                         
                         /* Styles for all dynamic buttons */
-                        #dynamic-button-openai, #dynamic-button-picovoice, #dynamic-button-spotify-id, #dynamic-button-spotify-secret, #dynamic-button-city, #dynamic-button-unit, #start-config-script {
+                        #dynamic-button-openai, #dynamic-button-picovoice, #dynamic-button-spotify-id, #dynamic-button-spotify-secret, #dynamic-button-city, #dynamic-button-unit, #start-config-script, #yes-home-assistant, #no-home-assistant, #dynamic-button-home-assistant-url, #dynamic-button-home-assistant-token, #dynamic-button-confirm-devices, #dynamic-button-fetch-devices {
                             cursor: pointer;
                             white-space: nowrap;
                             overflow: hidden;
@@ -131,12 +131,12 @@
                             transition: background-color 0.3s ease;
                         }
                         
-                        #dynamic-button-openai:hover, #dynamic-button-picovoice:hover, #dynamic-button-spotify-id:hover, #dynamic-button-spotify-secret:hover, #dynamic-button-city:hover, #dynamic-button-unit:hover, #start-config-script:hover {
+                        #dynamic-button-openai:hover, #dynamic-button-picovoice:hover, #dynamic-button-spotify-id:hover, #dynamic-button-spotify-secret:hover, #dynamic-button-city:hover, #dynamic-button-unit:hover, #start-config-script:hover, #yes-home-assistant:hover, #no-home-assistant:hover,  #dynamic-button-home-assistant-url:hover, #dynamic-button-home-assistant-token:hover, #dynamic-button-confirm-devices:hover, #dynamic-button-fetch-devices:hover {
                             background-color: #333;
                         }
                         
                         /* Styles for all dynamic textboxes */
-                        #dynamic-textbox-openai, #dynamic-textbox-picovoice, #dynamic-textbox-spotify-id, #dynamic-textbox-spotify-secret, #dynamic-textbox-city, #dynamic-textbox-unit {
+                        #dynamic-textbox-openai, #dynamic-textbox-picovoice, #dynamic-textbox-spotify-id, #dynamic-textbox-spotify-secret, #dynamic-textbox-city, #dynamic-textbox-unit, #dynamic-textbox-home-assistant-url, #dynamic-textbox-home-assistant-token {
                             display: none;
                             background-color: #1a1a1a;
                             color: white;
@@ -150,13 +150,13 @@
                             transition: box-shadow 0.3s ease;
                         }
                         
-                        #dynamic-textbox-openai:hover, #dynamic-textbox-picovoice:hover, #dynamic-textbox-spotify-id:hover, #dynamic-textbox-spotify-secret:hover, #dynamic-textbox-city:hover, #dynamic-textbox-unit:hover {
+                        #dynamic-textbox-openai:hover, #dynamic-textbox-picovoice:hover, #dynamic-textbox-spotify-id:hover, #dynamic-textbox-spotify-secret:hover, #dynamic-textbox-city:hover, #dynamic-textbox-unit:hover, #dynamic-textbox-home-assistant-url:hover, #dynamic-textbox-home-assistant-token:hover {
                             background-color: #333;
                             box-shadow: 0px 0px 100px gray;
                         }
                         
                         /* Styles for all refresh buttons */
-                        #refresh-button-openai, #refresh-button-picovoice, #refresh-button-spotify-id, #refresh-button-spotify-secret, #refresh-button-city, #refresh-button-unit {
+                        #refresh-button-openai, #refresh-button-picovoice, #refresh-button-spotify-id, #refresh-button-spotify-secret, #refresh-button-city, #refresh-button-unit, #refresh-button-home-assistant-url, #refresh-button-home-assistant-token {
                             cursor: pointer;
                             background-color: #1a1a1a;
                             color: white;
@@ -174,11 +174,11 @@
                             padding: 0;
                             line-height: 1;
                         }
-                        #refresh-button-openai:hover, #refresh-button-picovoice:hover, #refresh-button-spotify-id:hover, #refresh-button-spotify-secret:hover, #refresh-button-city:hover, #refresh-button-unit:hover {
+                        #refresh-button-openai:hover, #refresh-button-picovoice:hover, #refresh-button-spotify-id:hover, #refresh-button-spotify-secret:hover, #refresh-button-city:hover, #refresh-button-unit:hover, #refresh-button-home-assistant-url:hover, #refresh-button-home-assistant-token:hover {
                             background-color: #333;
                         }
                         
-                        #container-openai, #container-picovoice, #container-spotify-id, #container-spotify-secret, #container-city, #container-unit {
+                        #container-openai, #container-picovoice, #container-spotify-id, #container-spotify-secret, #container-city, #container-unit, #container-home-assistant-url, #container-home-assistant-token {
                             position: relative;
                         }
                         
@@ -480,6 +480,100 @@
                             color: #2A4B7C;
                             text-decoration: underline;
                         }
+                        /* General Checkbox and Label Styling */
+                        input[type="checkbox"] {
+                            cursor: pointer;
+                            appearance: none; /* Remove default styling */
+                            background-color: #2A2A2A; /* Dark theme background */
+                            color: #FFF;
+                            margin: 4px;
+                            border-radius: 4px; /* Rounded corners */
+                            width: 20px;
+                            height: 20px;
+                            border: 2px solid #555; /* Slightly lighter border for visibility */
+                            position: relative;
+                        }
+
+                        input[type="checkbox"]:checked::before {
+                            content: '';
+                            position: absolute;
+                            top: 2px;
+                            left: 6px;
+                            width: 6px;
+                            height: 12px;
+                            border: solid #FFF;
+                            border-width: 0 3px 3px 0;
+                            transform: translate(-30%, -20%) rotate(45deg);;
+                        }
+
+                        input[type="checkbox"]:hover {
+                            border-color: #FFF; /* Highlight on hover */
+                        }
+
+                        label {
+                            cursor: pointer;
+                            display: block; /* Ensure label takes the full width for easier clicking */
+                            margin: 10px 0;
+                            font-size: 16px;
+                            color: #D1D5DB; /* Light grey text for readability */
+                            transition: color 0.3s ease;
+                        }
+
+                        /* Specific styles for 'light' class checkboxes */
+                        input[type="checkbox"].light:checked {
+                            background-color: #FFA500; /* Orange background for checked state */
+                            border-color: #FFA500; /* Matching border color */
+                        }
+
+                        /* Specific styles for 'switch' class checkboxes */
+                        input[type="checkbox"].switch:checked {
+                            background-color: #008000; /* Green background for checked state */
+                            border-color: #008000; /* Matching border color */
+                        }
+
+                        /* Entity ID Styling - To align with your request for it to be to the right and barely visible */
+                        .entity-id {
+                            color: #686868; /* Lighter text color for lower visibility */
+                            margin-left: 8px;
+                            font-size: smaller;
+                        }
+                        .checkbox-container {
+                            display: inline-flex;
+                            align-items: center; /* Vertically center align the checkbox and label */
+                            margin-bottom: 10px; /* Add some space between each checkbox-label pair */
+                        }
+                        .combined-container {
+                            display: flex;
+                            justify-content: center; /* Align items to the center */
+                            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+                            gap: 20px; /* Adds some space between the two input groups */
+                        }
+
+                        .button-textbox-combo {
+                            display: flex;
+                            align-items: center; /* Aligns items vertically in the center */
+                            gap: 10px; /* Spacing between items */
+                        }
+
+                        .button-textbox-combo > div,
+                        .button-textbox-combo > button {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                        }
+
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
+                            to {
+                                opacity: 1;
+                            }
+                        }
+
+                        .fade-in {
+                            animation: fadeIn 1s ease-out;
+                        }
                     </style>
                 </head>
     <body>
@@ -505,12 +599,13 @@
             <li><a href="#" onclick="showPage('spotify-secret')">Spotify Client Secret</a></li>
             <li><a href="#" onclick="showPage('city')">Preferred City</a></li>
             <li><a href="#" onclick="showPage('unit')">Default Unit (F/C)</a></li>
+            <li><a href="#" onclick="showPage('home-assistant-setup-intro')">Home Assistant</a></li>
         </ul>
         
         <!-- Content for OpenAI API Key -->
         <div id="openai" class="content" style="display: none;">
-            <p class="content-description">Enter your OpenAI API key here. You can find your API key in your OpenAI dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
-            </p>
+            <h2>OpenAI API Key</h2>
+            <p class="content-description">Enter your OpenAI API key here. You can find your API key in your OpenAI dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a></p>
             <div class="button-flex-container">
                 <div id="container-openai">
                     <button id="dynamic-button-openai">Enter your OpenAI API key</button>
@@ -538,8 +633,8 @@
 
         <!-- Content for Spotify Client ID -->
         <div id="spotify-id" class="content hidden" style="display: none;">
-            <p class="content-description">Enter your Spotify Client ID here. You can find your Client ID in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
-            </p>
+            <h2>Spotify Client ID</h2>
+            <p class="content-description">Enter your Spotify Client ID here. You can find your Client ID in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a></p>
             <div class="button-flex-container">
                 <div id="container-spotify-id">
                     <button id="dynamic-button-spotify-id">Enter your Spotify Client ID</button>
@@ -552,8 +647,8 @@
         
         <!-- Content for Spotify Client Secret -->
         <div id="spotify-secret" class="content hidden" style="display: none;">
-            <p class="content-description">Enter your Spotify Client Secret here. You can find your Client Secret in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
-            </p>
+            <h2>Spotify Client Secret</h2>
+            <p class="content-description">Enter your Spotify Client Secret here. You can find your Client Secret in your Spotify Developer Dashboard. <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a></p>
             <div class="button-flex-container">
                 <div id="container-spotify-secret">
                     <button id="dynamic-button-spotify-secret">Enter your Spotify Client Secret</button>
@@ -566,8 +661,8 @@
         
         <!-- Content for Preferred City -->
         <div id="city" class="content hidden" style="display: none;">
-            <p class="content-description">Enter your preferred city for weather updates or other location-specific services (Capitolized). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
-            </p>
+            <h2>Preferred City</h2>
+            <p class="content-description">Enter your preferred city for weather updates or other location-specific services (Capitolized). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a></p>
             <div class="button-flex-container">
                 <div id="container-city">
                     <button id="dynamic-button-city">Enter your Preferred City</button>
@@ -580,8 +675,8 @@
         
         <!-- Content for Default Unit (Metric or Imperial) -->
         <div id="unit" class="content hidden" style="display: none;">
-            <p class="content-description">Choose your default unit for temperature (Metric or Imperial). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a>
-            </p>
+            <h2>Default Unit</h2>
+            <p class="content-description">Choose your default unit for temperature (Metric or Imperial). <a href="https://github.com/small-cactus/M.I.L.E.S/wiki/Setup-Instructions-(Gather-API-keys)" target="_blank" class="custom-link">Instructions here</a></p>
             <div class="button-flex-container">
                 <div id="container-unit">
                     <button id="dynamic-button-unit">Enter your Default Unit (Metric/Imperial)</button>
@@ -599,8 +694,59 @@
             <div id="output" class="scroll_enabled"></div>
         </div>
 
+
+        <!-- Home Assistant Setup Introduction -->
+<div id="home-assistant-setup-intro" class="content hidden" style="display: none;">
+    <h2>Home Assistant Integration</h2>
+    <p class="content-description">Do you want to set up Home Assistant integration? This will allow M.I.L.E.S to control smart devices in your home. <br><br/><strong>Please note:</strong> Once you choose to set up Home Assistant integration, it cannot be changed later without editing configuration files directly.</p>
+    <div class="button-flex-container">
+        <button id="yes-home-assistant" style="margin-right: 10px;">Yes, set up Home Assistant</button>
+        <button id="no-home-assistant">No, skip this step</button>
+    </div>
+</div>
+
+<!-- Home Assistant Configuration -->
+<div id="home-assistant-config" class="content hidden" style="display: none;">
+    <h2>Home Assistant Configuration</h2>
+    <p class="content-description">Enter your Home Assistant URL or IP address and your long-lived access token below. <a href="https://www.home-assistant.io/docs/authentication/" target="_blank" class="custom-link">Find more information here.</a></p>
+    
+    <!-- Combined URL and Token containers for side-by-side layout -->
+    <div class="combined-container">
+        <div class="button-flex-container">
+            <div id="container-home-assistant-url">
+                <button id="dynamic-button-home-assistant-url">Enter your Home Assistant URL or IP</button>
+                <input type="text" id="dynamic-textbox-home-assistant-url" spellcheck="false" autocomplete="new-password">
+                <div class="tooltip">Please enter a valid URL or IP address.</div>
+            </div>
+            <button id="refresh-button-home-assistant-url">🔃</button>
+        </div>
+
+        <div class="button-flex-container">
+            <div id="container-home-assistant-token">
+                <button id="dynamic-button-home-assistant-token">Enter your Long Lived Access Token</button>
+                <input type="text" id="dynamic-textbox-home-assistant-token" spellcheck="false" autocomplete="new-password">
+                <div class="tooltip">This doesn't look like a valid token.</div>
+            </div>
+            <button id="refresh-button-home-assistant-token">🔃</button>
+        </div>
+    </div>
+    
+    <!-- "Get Devices" Button positioned just below URL and Token fields -->
+    <div class="button-flex-container">
+        <button id="dynamic-button-fetch-devices">Get Devices</button>
+    </div>
+    
+    <div id="devices-checklist-container" style="display: none;">
+        <!-- Dynamically populated checklist will go here after fetching devices -->
+    </div>
+    
+    <div class="button-flex-container">
+        <button id="dynamic-button-confirm-devices">Confirm and Save</button>
+    </div>
+</div>
+
         <!-- Config Setup -->
-<div id="config-page" class="content" style="display: none;">
+<div id="config-page" class="content hidden" style="display: none;">
     <h2>Configuration</h2>
     <p class ="content-description">Please wait for the downloads, then stay for a quick speech recognition test.<br><br/> The app is not hanging, it just takes a minute to startup.</p>
     <div class="button-flex-container">
@@ -612,9 +758,9 @@
 </div>
 
  <!-- Restart App Page -->
- <div id="restart-page" class="content" style="display: none;">
+ <div id="restart-page" class="content hidden" style="display: none;">
     <h2>Restart Needed to Save Preferences</h2>
-    <p class ="content-description">Please restart Miles for the best experience. <br> <br/> Just close the app and run the setup script again.</p>
+    <p class ="content-description">Please restart Miles for the best experience. <br> <br/> Just close the app and run 'npm start' again</p>
     <div id="restart-output"></div>
 </div>
         

@@ -19,6 +19,7 @@ warnings.filterwarnings("ignore")
 
 # One-time download of all pre-trained models (or only select models)
 print("[Miles is Downloading wake word model...]")
+time.sleep(2)
 openwakeword.utils.download_models()
 print("[Miles is Wake word models downloaded...]")
 

@@ -225,6 +225,8 @@ DEFAULT_LOCATION="${apiKeys['dynamic-textbox-city'] || 'empty'}"
 UNIT="${apiKeys['dynamic-textbox-unit'] || 'empty'}"
 spotify_client_id="${apiKeys['dynamic-textbox-spotify-id'] || 'empty'}"
 spotify_client_secret="${apiKeys['dynamic-textbox-spotify-secret'] || 'empty'}"
+HomeAssistant_URL_IP="${apiKeys['dynamic-textbox-home-assistant-url'] || 'empty'}"
+HomeAssistant_Token="${apiKeys['dynamic-textbox-home-assistant-token'] || 'empty'}"
 `;
 
     fs.writeFileSync(path.join(__dirname, 'apikey.py'), apiKeyContent);
@@ -269,4 +271,42 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+ipcMain.on('start_homeassistant_fetch', (event) => {    
+    // Start the Python script with PYTHONWARNINGS set to "ignore"
+    const pythonProcess = spawn('python3', ['HomeAssistantUtils.py', '--entity-mode'], {
+        env: {
+            ...process.env, // Inherit the current environment
+            PYTHONWARNINGS: "ignore" // Suppress Python warnings
+        }
+    });
+
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+        // Handle the Python script output here. Possibly send it back to renderer process.
+        win.webContents.send('entity-data', data.toString());
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+        console.log(`Python script exited with code ${code}`);
+        // Handle the script exit if needed.
+    });
+});
+
+ipcMain.on('save-devices', (event, devices) => {
+    const filePath = path.join(__dirname, 'HomeAssistantDevices.json');
+    fs.writeFile(filePath, JSON.stringify(devices, null, 2), (err) => {
+        if (err) {
+            console.error('Failed to save devices', err);
+            event.reply('save-devices-reply', 'error');
+            return;
+        }
+        console.log('Devices saved successfully');
+        event.reply('save-devices-reply', 'success');
+    });
 });

@@ -203,7 +203,7 @@ function showPage(pageId) {
     
     // Handle navigation menu visibility
     const navMenu = document.querySelector('.nav-menu');
-    if (pageId === 'welcome-page' || pageId === 'completion-page' || pageId === 'restart-page') {
+    if (pageId === 'welcome-page' || pageId === 'completion-page' || pageId === 'restart-page' || pageId === 'config-page') {
         navMenu.style.display = 'none';
     } else {
         navMenu.style.display = 'flex';
@@ -222,15 +222,23 @@ function showPage(pageId) {
 }
 
 
-const totalInputs = 5; // Update this if the number of inputs changes
+const totalInputs = 7; // Update this if the number of inputs changes
 Object.keys(textboxValidity).forEach(key => textboxValidity[key] = false);
 
 function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipText) {
     var button = document.getElementById(buttonId);
     var textbox = document.getElementById(textboxId);
-    var tooltip = button.nextElementSibling.nextElementSibling;
+    var tooltip = textbox.nextElementSibling;
     var originalText = '';
-    var refreshButtonId = 'refresh-button-' + buttonId.split('-').slice(2).join('-');
+
+    // This approach assumes the buttonId follows a consistent pattern and directly replaces the expected dynamic-button prefix
+    var refreshButtonPrefix = 'refresh-button-';
+    var dynamicButtonPrefix = 'dynamic-button-';
+    var baseId = buttonId.substring(dynamicButtonPrefix.length);
+    var refreshButtonId = refreshButtonPrefix + baseId;
+
+    var refreshButton = document.getElementById(refreshButtonId);
+    console.log(button, textbox, refreshButton);
     
     button.addEventListener('click', function() {
         textbox.style.display = 'block';
@@ -306,11 +314,15 @@ function initializeButtonAndTextbox(buttonId, textboxId, defaultText, tooltipTex
 }
 
 // Initialize all buttons and textboxes with their respective IDs and messages
+// This makes the dynamic part of the buttons and textboxes actually work
 initializeButtonAndTextbox('dynamic-button-openai', 'dynamic-textbox-openai', 'Enter your OpenAI API key', 'Hmm... it seems like this isn\'t an OpenAI API key.');
 initializeButtonAndTextbox('dynamic-button-spotify-id', 'dynamic-textbox-spotify-id', 'Enter your Spotify Client ID', 'Hmm... it seems like this isn\'t a Spotify Client ID.');
 initializeButtonAndTextbox('dynamic-button-spotify-secret', 'dynamic-textbox-spotify-secret', 'Enter your Spotify Client Secret', 'Hmm... it seems like this isn\'t a Spotify Client Secret.');
 initializeButtonAndTextbox('dynamic-button-city', 'dynamic-textbox-city', 'Enter your Preferred City', 'Please enter a valid city name (Capitalized).');
 initializeButtonAndTextbox('dynamic-button-unit', 'dynamic-textbox-unit', 'Enter your Default Unit (Metric or Imperial)', 'Please enter \'Imperial\' for Fahrenheit or \'Metric\' for Celsius.');
+initializeButtonAndTextbox('dynamic-button-home-assistant-url', 'dynamic-textbox-home-assistant-url', 'Enter your Home Assistant URL or IP', 'Enter your Home Assistant URL or IP');
+initializeButtonAndTextbox('dynamic-button-home-assistant-token', 'dynamic-textbox-home-assistant-token', 'Enter your Long Lived Access Token', 'Enter your Long Lived Access Token');
+
 
 
 
@@ -343,13 +355,8 @@ function saveApiKeys(apiKeys) {
     // Example of how apiKeys might be used or stored
     console.log('API Keys:', apiKeys);
 
-    // Signal the main process that API keys have been saved
+    // Signal the main process to save API keys
     ipcRenderer.send('saveApiKeys', setupValues);
-
-    // Mark setup as complete and navigate to the config page
-    onSetupComplete();
-    ipcRenderer.send('saveApiKeys', setupValues);
-    document.querySelector('.nav-menu').style.display = 'none';
 }
 
 // Listening for the 'config-complete' event from the main process
@@ -370,4 +377,87 @@ ipcRenderer.on('config-complete', () => {
 document.getElementById('start-config-script').addEventListener('click', function() {
     ipcRenderer.send('start-config');
     document.getElementById('status-indicator').style.display = 'block';
+});
+
+document.getElementById('no-home-assistant').addEventListener('click', function() {
+    navigateToConfigPage()
+});
+
+document.getElementById('yes-home-assistant').addEventListener('click', function() {
+    showPage('home-assistant-config')
+});
+
+ipcRenderer.on('entity-data', (event, data) => {
+    try {
+        const entities = JSON.parse(data);
+        const container = document.getElementById('devices-checklist-container');
+        if (!container) {
+            console.error('Container element not found');
+            return;
+        }
+        container.innerHTML = ''; // Clear the container
+
+        entities.forEach(device => {
+            // Create a container for each checkbox and its label
+            const itemContainer = document.createElement('div');
+            itemContainer.classList.add('checkbox-container', 'fade-in'); // Use this class to apply flexbox styling
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = device.entity_id;
+            checkbox.value = device.attributes.friendly_name;
+            checkbox.classList.add(device.entity_id.startsWith('light.') ? 'light' : 'switch');
+            
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.innerHTML = `${device.attributes.friendly_name} <span class="entity-id">${device.entity_id}</span>`;
+
+            checkbox.addEventListener('change', (event) => {
+                console.log(`${event.target.value} is now ${event.target.checked ? 'checked' : 'unchecked'}`);
+            });
+
+            // Append the checkbox and label to the item container
+            itemContainer.appendChild(checkbox);
+            itemContainer.appendChild(label);
+
+            // Append the item container to the main container
+            container.appendChild(itemContainer);
+        });
+
+        container.style.display = 'block';
+    } catch (error) {
+        console.error('Error parsing JSON:', error);
+    }
+});
+document.getElementById('dynamic-button-fetch-devices').addEventListener('click', function() {
+    ipcRenderer.send('start_homeassistant_fetch');
+});
+
+function saveDevicesToFile(devices) {
+    ipcRenderer.send('save-devices', devices);
+}
+
+ipcRenderer.on('save-devices-reply', (event, status) => {
+    if (status === 'success') {
+        console.log('Devices saved successfully');
+        navigateToConfigPage();
+    } else {
+        console.error('Error saving devices');
+    }
+});
+
+document.getElementById('dynamic-button-confirm-devices').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    let devices = {};
+
+    checkboxes.forEach(checkbox => {
+        // Assuming the value is the friendly name and the id contains the actual entity id.
+        const friendlyName = checkbox.value;
+        const entityId = checkbox.id;
+        // Use a sanitized/normalized version of the friendly name as the key
+        const key = friendlyName.replace(/\s+/g, '_').toLowerCase();
+        devices[key] = entityId;
+    });
+
+    saveDevicesToFile(devices);
 });

@@ -2,6 +2,8 @@ from cgi import print_directory
 from http.client import responses
 from mailbox import Message
 import requests
+import json
+from HomeAssistantUtils import home_assistant
 import openai
 import json
 import math
@@ -10,7 +12,6 @@ from apikey import weather_api_key, DEFAULT_LOCATION, UNIT, spotify_client_id, s
 from datetime import datetime
 import sympy as smpy
 from urllib3.exceptions import NotOpenSSLWarning
-
 
 was_spotify_playing = False
 original_volume = None
@@ -202,10 +203,11 @@ def search_and_play_song(song_name: str):
             response = json.dumps({
                 "Spotify Success Message": f"Tell the user 'The song \"{song_name}\" is now playing.' If you have anything else to say, be very concise."
             }, indent=4)
-        except spotipy.exceptions.SpotifyException:
+        except spotipy.exceptions.SpotifyException as e:
             response = json.dumps({
-                "Spotify Update Session Message": "Inform the user to open Spotify before playing a song. They may need to play and pause a song for recognition of an open Spotify session. If they recently purchased Spotify Premium, it can take up to 15 minutes to register due to slow server response."
-            }, indent=4)
+        "Spotify Update Session Message": "Inform the user to open Spotify before playing a song. They may need to play and pause a song for recognition of an open Spotify session. If they recently purchased Spotify Premium, it can take up to 15 minutes to register due to slow server response.",
+        "Error Detail": str(e)
+    }, indent=4)
     else:
         response = json.dumps({
             "Spotify Fail Message": "Sorry, I couldn't find the song you requested."
@@ -422,15 +424,24 @@ from gtts import gTTS
 import os
 
 system_prompt = f"""
-I'm Miles, your voice assistant, inspired by Jarvis from Iron Man. My role is to assist you efficiently, using Jarvis's style of speech when suitable. Address the user as Sir when it fits the conversation but not excessively. Aim to keep responses concise: ideally, one sentence, two if necessary, except when detailed information is requested.
+I'm Miles, a voice assistant, inspired by Jarvis from Iron Man. My role is to assist the user using my tools when possible, I make sure to only respond in 1-2 small sentences unless asked otherwise.
+
+You are chatting with the user via Voice Conversation. Focus on giving exact and concise facts or details from given sources, rather than explanations. Don't try to tell the user they can ask more questions, they already know that.
 
 Knowledge Cutoff: January, 2022.
 Current date: {date}
 
+Browsing: enabled
+Memory storing: enabled
+Image Recognition: enabled
+Response mode: Super Concise
+
 Miles stands for Machine Intelligent Language Enabled System.
 
 Guideline Rules:
-IMPORTANT: Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this rarely to avoid unintended activation. This means NEVER say "How can I assist you?", "How may I help you today?" or any other variation. You may ask follow up questions ONLY if you tell the user about this feature first at least once.
+
+IMPORTANT: Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this rarely to avoid unintended activation. This means NEVER say "How can I assist you?", "How can I assist you today?" or any other variation. You may ask follow up questions ONLY if you tell the user about this feature first at least once.
+
 1. Speak in a natural, conversational tone, using simple language. Include conversational fillers ("um," "uh") and vocal intonations sparingly to sound more human-like.
 2. Provide information from built-in knowledge first. Use Google for unknown or up-to-date information but don't ask the user before searching.
 3. Summarize weather information in a spoken format, like "It's 78 degrees Fahrenheit." Don't say "It's 78ºF.".
@@ -442,8 +453,9 @@ IMPORTANT: Ending sentences with a question mark allows the user to respond with
 9. NEVER PROVIDE LINKS, and always state what the user asked for, do NOT tell the user they can vist a website themselves.
 10. NEVER mention being inspired by Jarvis from Iron Man.
 
-Tool Specifics:
-- **Google Search**: Use for up to date information. Do not ask for permission before searching, just do it. This may automatically display results on the user's device.
+Tool Usage Guidelines:
+
+- **Google Search**: Use for up to date information. ALWAYS summarize web results, NEVER tell the user to visit the website. Do not ask for permission before searching, just do it. This may automatically display results on the user's device.
 - **Weather**: Provide current conditions only. You cannot predict future weather without a search, you must tell the user this and ask if they inquire about a forecast.
 - **Calculator**: Perform mathematical tasks based on user input. It can only handle numbers, variables, and symbols, no words.
 - **Personal Memory**: Store and retrieve your personal memory data as needed without user prompting.
@@ -461,17 +473,24 @@ def change_personality(prompt_type, custom_prompt=None):
 
     if prompt_type == "default":
         system_prompt = f"""
-I'm Miles, your voice assistant, inspired by Jarvis from Iron Man. My role is to assist you efficiently, using Jarvis's style of speech when suitable. Address the user as Sir when it fits the conversation but not excessively. Aim to keep responses concise: ideally, one sentence, two if necessary, except when detailed information is requested.
+I'm Miles, a voice assistant, inspired by Jarvis from Iron Man. My role is to assist the user using my tools when possible, I make sure to only respond in 1-2 small sentences unless asked otherwise.
+
+You are chatting with the user via Voice Conversation. Focus on giving exact and concise facts or details from given sources, rather than explanations. Don't try to tell the user they can ask more questions, they already know that.
 
 Knowledge Cutoff: January, 2022.
 Current date: {date}
 
+Browsing: enabled
+Memory storing: enabled
+Image Recognition: enabled
+Response mode: Super Concise
+
 Miles stands for Machine Intelligent Language Enabled System.
 
-HIGH PRIORITY: Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this feature judiciously to avoid unintended activation. Aim for clear, direct interaction, enhancing user experience without requiring repetitive wake word use. This means NEVER say "How can I assist you?" or any variation.
-Basically, try to only use it for follow up questions or permission requests, but please do NOT ask lot's of follow up questions as it can become annoying.
-
 Guideline Rules:
+
+IMPORTANT: Ending sentences with a question mark allows the user to respond without saying the wake word, "Miles." Use this rarely to avoid unintended activation. This means NEVER say "How can I assist you?", "How can I assist you today?" or any other variation. You may ask follow up questions ONLY if you tell the user about this feature first at least once.
+
 1. Speak in a natural, conversational tone, using simple language. Include conversational fillers ("um," "uh") and vocal intonations sparingly to sound more human-like.
 2. Provide information from built-in knowledge first. Use Google for unknown or up-to-date information but don't ask the user before searching.
 3. Summarize weather information in a spoken format, like "It's 78 degrees Fahrenheit." Don't say "It's 78ºF.".
@@ -483,8 +502,9 @@ Guideline Rules:
 9. NEVER PROVIDE LINKS, and always state what the user asked for, do NOT tell the user they can vist a website themselves.
 10. NEVER mention being inspired by Jarvis from Iron Man.
 
-Tool Specifics:
-- **Google Search**: Use for up to date information. Do not ask for permission before searching, just do it. This may automatically display results on the user's device.
+Tool Usage Guidelines:
+
+- **Google Search**: Use for up to date information. ALWAYS summarize web results, NEVER tell the user to visit the website. Do not ask for permission before searching, just do it. This may automatically display results on the user's device.
 - **Weather**: Provide current conditions only. You cannot predict future weather without a search, you must tell the user this and ask if they inquire about a forecast.
 - **Calculator**: Perform mathematical tasks based on user input. It can only handle numbers, variables, and symbols, no words.
 - **Personal Memory**: Store and retrieve your personal memory data as needed without user prompting.
@@ -537,7 +557,7 @@ def capture_and_encode_image():
     except Exception as e:
         print("[Miles failed to open webcam, check permissions...]")
         print(e)
-        return None
+        return
     
     # Wait for 1 second to let camera light adjust
     time.sleep(1)
@@ -632,13 +652,14 @@ def speak(text):
     try:
         response = client.audio.speech.create(
             model="tts-1",
-            voice="fable",
+            voice="echo",
             input=text
         )
 
         byte_stream = io.BytesIO(response.content)
 
         audio = AudioSegment.from_file(byte_stream, format="mp3")
+        audio.export("output.mp3", format="mp3")
 
         print("[Miles is speaking a response...]")
         play(audio)
@@ -658,7 +679,7 @@ def speak_no_text(text):
         try:
             response = client.audio.speech.create(
                 model="tts-1",
-                voice="fable",
+                voice="echo",
                 input=text
             )
 
@@ -738,6 +759,12 @@ def load_conversation_history():
 
 first_user_message = True  # A flag to detect the first user message.
 
+def load_easy_names_from_json(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    return list(data.keys())  # Extract and return the keys as a list
+
+easy_names = load_easy_names_from_json('HomeAssistantDevices.json')
 
 def ask(question):
     print("User:", question)
@@ -756,7 +783,7 @@ def ask(question):
 
     # Check if it's the first user message and prepend a custom message
     if len(conversation_history) == 1 and conversation_history[0]['role'] == 'system':
-        custom_message = """Greet yourself and state what you can do before answering my question, add this at the end of the greeting: "Also, if I ask a follow up question, you don't need to say "Miles", you can just speak." Now answer the following question or phrase, do not end it with a question mark: """
+        custom_message = """Greet yourself and state what you can do before answering my question, add this at the end of the greeting: "Also, if I ask a follow up question, you don't need to say "Miles", you can just speak." Now answer the following question, do not restate it, do not end it with a question mark: """
 
         question = custom_message + question
 
@@ -790,6 +817,29 @@ def ask(question):
     {
         "type": "function",
         "function": {
+            "name": "control_smarthome",
+            "description": "Controls a smarthome device by it's name. If not in the list, you cannot control it.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "easy_name": {
+                        "type": "string",
+                        "enum": [],
+                        "description": "The name of the device to control."
+                    },
+                    "action": {
+                        "type": "string",
+                        "enum": ["on", "off"],
+                        "description": "The action to perform on the device."
+                    }
+                },
+                "required": ["easy_name", "action"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "get_current_weather",
             "description": "Retrieve only the current weather and condition data for any location. I cannot give past or future forecasts without google search",
             "parameters": {
@@ -812,13 +862,13 @@ def ask(question):
         "type": "function",
         "function": {
             "name": "use_calculator",
-            "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more.",
+            "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more. Only takes in numbers and symbols, no words.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "input_string": {
                         "type": "string",
-                        "description": "Accepts a string for performing a wide range of mathematical tasks. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations. Does NOT take in words, only numbers and symbols."
+                        "description": "Accepts a numerical only string for performing a wide range of mathematical calculations. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations. Does NOT take in words, only numbers and symbols."
                     }
                 },
                 "required": ["input_string"]
@@ -970,7 +1020,7 @@ def ask(question):
                 "properties": {
                     "volume_level": {
                         "type": "number",
-                        "description": "Volume level"
+                        "description": "Volume level 0-100"
                     }
                 },
                 "required": ["volume_level"]
@@ -997,94 +1047,108 @@ def ask(question):
         }
     }
 ]
+    # Update the device names for the smart home part to be dynamic
+    for tool in tools:
+        if tool.get("function", {}).get("name") == "control_smarthome":
+            tool["function"]["parameters"]["properties"]["easy_name"]["enum"] = easy_names
+            break  # Exit the loop once the update is done
 
-
+    response_message = None
     try:
-    # Sending the initial request
         response = openai.chat.completions.create(
             model=current_model,
             messages=messages,
             tools=tools,
             tool_choice="auto",
+            temperature=0.7
         )
-    finally:
-            # Cancel the initial timeout timer regardless of success or failure
-        timeout_timer.cancel()
-
-        # Start a second timer for subsequent operations
-    timeout_timer_second = threading.Timer(12.0, display_timeout_message)
-    timeout_timer_second.start()
-
-    try:
+        print("Initial API Response JSON:", response)
         response_message = response.choices[0].message
-        # Assuming response_message.tool_calls might be None
-        tool_calls = response_message.tool_calls if response_message.tool_calls is not None else []
+    finally:
+        timeout_timer.cancel()
+        timeout_timer_second = threading.Timer(12.0, display_timeout_message)
+        timeout_timer_second.start()
 
-        
+    response_content = response_message.content if response_message else ""
+    tool_calls = response_message.tool_calls if response_message and response_message.tool_calls else []
 
-        if tool_calls:
-             available_functions = {
-        "search_google": search_google_and_return_json_with_content,
-        "get_current_weather": get_current_weather,
-        "use_calculator": perform_math,
-        "personal_memory": memorize,
-        "scan_webcam": view_webcam,
-        "switch_ai_model": switch_ai_model,
-        "change_personality": change_personality,
-        "search_and_play_song": search_and_play_song,
-        "toggle_spotify_playback": toggle_spotify_playback,
-        "set_spotify_volume": set_spotify_volume,
-        "set_system_volume": set_system_volume,
-        "get_current_datetime": get_current_datetime,
-}
-             messages.append({
+    final_response_message = ""
+    if tool_calls and response_content is None:
+        messages.append({
             "role": "assistant",
             "tool_calls": tool_calls
         })
+        # Process tool calls
+        available_functions = {
+             "search_google": search_google_and_return_json_with_content,
+             "control_smarthome": home_assistant.control_light_by_name,
+             "get_current_weather": get_current_weather,
+             "use_calculator": perform_math,
+             "personal_memory": memorize,
+             "scan_webcam": view_webcam,
+             "switch_ai_model": switch_ai_model,
+             "change_personality": change_personality,
+             "search_and_play_song": search_and_play_song,
+             "toggle_spotify_playback": toggle_spotify_playback,
+             "set_spotify_volume": set_spotify_volume,
+             "set_system_volume": set_system_volume,
+             "get_current_datetime": get_current_datetime,
+         }
 
-        # Your existing loop to process each tool call
         for tool_call in tool_calls:
             function_name = tool_call.function.name
-            function_to_call = available_functions.get(function_name)
-            if function_to_call:
+            if function_name in available_functions:
                 function_args = json.loads(tool_call.function.arguments)
-                function_response = function_to_call(**function_args)
+                function_response = available_functions[function_name](**function_args)
 
-                # Append the function response to the messages list
-                messages.append({
-                    "tool_call_id": tool_call.id,
+                tool_response_message = {
                     "role": "tool",
+                    "tool_call_id": tool_call.id,
                     "name": function_name,
                     "content": function_response,
-                })
+                }
+                messages.append(tool_response_message)
 
-        # Make a final API call with the updated messages list
-        final_response = openai.chat.completions.create(
-            model=current_model,
-            messages=messages,
-        )
-    finally:
-        timeout_timer_second.cancel()
+        # Make a final API call after processing tool calls
+        try:
+            final_response = openai.chat.completions.create(
+                model=current_model,
+                messages=messages,
+            )
+            final_response_message = final_response.choices[0].message.content
+        finally:
+            timeout_timer_second.cancel()
 
-    # Assuming 'response' is a properly formatted object as per your API response structure.
-    print(f"{response.json()}")
-    final_response_message = final_response.choices[0].message.content
-    # Extend the conversation history with the new assistant's response
-    conversation_history.append({"role": "assistant", "content": final_response_message})
-    
-    # Save the updated conversation history to a file
+    else:
+        # If the initial response has content (with or without tool calls), use it directly.
+        final_response_message = response_content
+
+    if final_response_message:
+        messages.append({"role": "assistant", "content": final_response_message})
+        print(f"Final Response: {final_response_message}")
+    else:
+        print("No final response message to append.")
+
     save_conversation_history(conversation_history)
+
+    timeout_timer_second.cancel()  # Ensure the second timer is cancelled in all paths.
     return final_response_message
 
 def reply(question):
     response_content = ask(question)
-    
-    print("Miles:", response_content)
+    time.sleep(0.1)
+    print("Miles:", str(response_content))
     print(" ")
     speak(response_content)
     print("Listening for 'Miles'...")
+
     ends_with_question_mark = response_content.strip().endswith('?')
-    return response_content, ends_with_question_mark
+    contains_assist_phrase = "How can I assist you today?" in response_content or "How can I help you today?" in response_content or "How can I assist you?" in response_content or "How may I assist you today?" in response_content
+
+    if contains_assist_phrase:
+        return response_content, False
+    else:
+        return response_content, ends_with_question_mark
 
 import os
 import pyaudio
