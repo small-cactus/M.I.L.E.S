@@ -119,7 +119,7 @@ Let your imagination run wild with Miles!
 - LLM auto writes code to fit into place - only if I can't hard code it.
 
 ### Home Assistant integration
-> 3-29-24 - 80% complete - entire python backend is complete, setup complete, just need to fix overall logic.
+> 3-29-24 - 100% complete - finished
 - During setup, you can provide your Home Assistant tokens and choose which devices you want Miles to control.
 
 ### Settings and Config Menu
@@ -133,7 +133,7 @@ Let your imagination run wild with Miles!
 - Allowed to set schedules for tasks, learn common commands and at what time you ask them, and act upon them autonomously when trends are strong.
 
 ### Projection UI
-> 3-31-24 - 95% complete - finished, need way to switch between UI's
+> 3-31-24 - 100% complete - finished
 - Changes UI to simplistic black background with smooth animations meant for projecting onto a wall
 
 https://github.com/small-cactus/M.I.L.E.S/assets/125771841/b3286b3c-f88b-4315-bbe5-850e8d681e9d
