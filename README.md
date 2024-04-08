@@ -114,7 +114,7 @@ Let your imagination run wild with Miles!
 > These are all planned features that will soon be implemented, you'll see the date last updated, and current progress as of that date.
 
 ### Plugins
-> 3-29-24 - 50% complete - tool list generation from any python function complete - need to integrate and test
+> 3-29-24 - 100% complete - finished
 - Allows anyone to add a python function or group of python functions to Miles' tool list.
 - All you have to do is write a python function and follow the correct docstring format
 
