@@ -1,3 +1,4 @@
+
 api_key="empty"
 weather_api_key="c8b138cd625d476fbdb31921231507"
 DEFAULT_LOCATION="empty"

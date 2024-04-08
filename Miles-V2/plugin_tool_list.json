@@ -1,0 +1,25 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "encode_message",
+            "description": "Encodes a given message by shifting each letter by a specified number of places down the alphabet. Wraps around the alphabet if the shift goes beyond 'z'. Ideal for simple encryption or obfuscating text. Non-alphabetic characters are left unchanged.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A string representing the message to be encoded. It is a required parameter."
+                    },
+                    "shift": {
+                        "type": "integer",
+                        "description": "(Optional) An integer indicating how many places to shift each letter. Defaults to 1 if not specified."
+                    }
+                },
+                "required": [
+                    "message"
+                ]
+            }
+        }
+    }
+]

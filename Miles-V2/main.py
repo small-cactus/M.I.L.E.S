@@ -12,6 +12,7 @@ from apikey import weather_api_key, DEFAULT_LOCATION, UNIT, spotify_client_id, s
 from datetime import datetime
 import sympy as smpy
 from urllib3.exceptions import NotOpenSSLWarning
+import generateTool
 
 was_spotify_playing = False
 original_volume = None
@@ -766,6 +767,18 @@ def load_easy_names_from_json(file_path):
 
 easy_names = load_easy_names_from_json('HomeAssistantDevices.json')
 
+def load_json(file_path):
+    """Loads JSON data from a file."""
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+def append_tools(tools, plugin_file_path):
+    """Dynamically appends tools from a plugin file to the main tools list."""
+    plugin_tools = load_json(plugin_file_path)
+    print(tools + plugin_tools)
+    return tools + plugin_tools  # Return the combined list
+
+
 def ask(question):
     print("User:", question)
     print(" ")
@@ -796,257 +809,9 @@ def ask(question):
     timeout_timer.start()
 
 
-    tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "search_google",
-            "description": "Search Google for all information you don't know, and for up to date information, DO NOT use this for info you know, prioritize not using this tool and using your own knowledge before using it. Don't ask user for permission. This might open the webpage on the users device if they set it to do that.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "searchquery": {
-                        "type": "string",
-                        "description": "The search query to use for the Google search"
-                    }
-                },
-                "required": ["searchquery"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "control_smarthome",
-            "description": "Controls a smarthome device by it's name. If not in the list, you cannot control it.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "easy_name": {
-                        "type": "string",
-                        "enum": [],
-                        "description": "The name of the device to control."
-                    },
-                    "action": {
-                        "type": "string",
-                        "enum": ["on", "off"],
-                        "description": "The action to perform on the device."
-                    }
-                },
-                "required": ["easy_name", "action"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_current_weather",
-            "description": "Retrieve only the current weather and condition data for any location. I cannot give past or future forecasts without google search",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g., Tampa, FL. Leave blank for default location."
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": ["celsius", "fahrenheit"]
-                    }
-                },
-                "required": []
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "use_calculator",
-            "description": "Performs arithmetic operations, solves equations (including multi-variable), and evaluates expressions involving powers, roots, and more. Only takes in numbers and symbols, no words.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "input_string": {
-                        "type": "string",
-                        "description": "Accepts a numerical only string for performing a wide range of mathematical calculations. Supports arithmetic operations, solving linear and multi-variable equations, and evaluating expressions with powers, square roots, etc. Examples: '5 + 7' performs addition. '2x = 10' solves for x. 'x^2 + y^2 = 16' solves a multi-variable equation. 'sqrt(16), 3^3' evaluates square root and power expressions. 'x + y + z = 6, 2*x + y - z = 3, x - y + 2*z = 0' solves a system of multi-variable equations. Does NOT take in words, only numbers and symbols."
-                    }
-                },
-                "required": ["input_string"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "personal_memory",
-            "description": "Use this to Store, retrieve, or clear data in my permanent memory, anything I store here will persist across sessions. I should be specific when storing data and I should do this without user input.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "operation": {
-                        "type": "string",
-                        "enum": ["store", "retrieve", "clear"],
-                        "description": "Operation to perform. Clear will erase everything."
-                    },
-                    "data": {
-                        "type": "string",
-                        "description": "The data to store, it must be very specific, like: 'Users birthday is January 1st, 1990.' (Only required for 'store' operation)."
-                    }
-                },
-                "required": ["operation"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "scan_webcam",
-            "description": "Access the user's default webcam to scan an item. NEVER access the users webcam without explicit permission.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "focus": {
-                        "type": "string",
-                        "description": "The primary subject or object to focus on when scanning the webcam image. Be sure to be extremely specific, but it doesn't have to be specific, like this: 'what brand is the VR headset in the image', or 'what color are the eyes in the image', or 'what is the user holding', or 'thing in image'."
-                    },
-                    "detail_mode": {
-                        "type": "string",
-                        "enum": ["quick", "normal", "extreme"],
-                        "description": "The level of detail to return in the image description. 'quick' provides a 1-10 word concise answer, 'normal' provides a concise paragraph overview, while 'extreme' offers a comprehensive analysis in several paragraphs."
-                    }
-                },
-                "required": ["focus", "detail_mode"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "switch_ai_model",
-            "description": "Switch between OpenAI API models: 'gpt-4-0125-preview' or 'gpt-3.5-turbo-0125'. GPT-4-Turbo is more advanced and costly, while GPT-3.5-Turbo is less effective but 20 times cheaper.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "model_name": {
-                        "type": "string",
-                        "description": "Name of the OpenAI AI model to switch to"
-                    }
-                },
-                "required": ["model_name"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "change_personality",
-            "description": "Change the system prompt to 'default', 'short_cheap', or 'custom'. For 'custom', provide a first-person prompt, like 'I am a southern cowboy'. This controls your personality.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "prompt_type": {
-                        "type": "string",
-                        "enum": ["default", "short_cheap", "custom"],
-                        "description": "Type of prompt to set. Options are 'default', 'short_cheap', 'custom'."
-                    },
-                    "custom_prompt": {
-                        "type": "string",
-                        "description": "The custom prompt to use. It must be in the first person and be written like the example. Never name yourself or include a section that gives you a name. It needs to be 2-5 sentences."
-                    }
-                },
-                "required": ["prompt_type"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "search_and_play_song",
-            "description": "Search for a song on Spotify using a given name and play it. The song name can vary from the exact user input.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "song_name": {
-                        "type": "string",
-                        "description": "The name of the song to search for"
-                    }
-                },
-                "required": ["song_name"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "toggle_spotify_playback",
-            "description": "Control Spotify playback: pause, unpause, or toggle between pause and unpause.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "action": {
-                        "type": "string",
-                        "enum": ["pause", "unpause", "toggle"],
-                        "description": "Action for Spotify playback: choose 'pause', 'unpause', or 'toggle'."
-                    }
-                },
-                "required": ["action"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "set_spotify_volume",
-            "description": "Set Spotify playback volume. Specify volume as a percentage (0-100).",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "volume_percent": {
-                        "type": "number",
-                        "description": "Volume level 0-100"
-                    }
-                },
-                "required": ["volume_percent"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "set_system_volume",
-            "description": "Set system volume, also your speaking volume. Default to this volume unless recently asked to play a song. Volume level range: 0-100.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "volume_level": {
-                        "type": "number",
-                        "description": "Volume level 0-100"
-                    }
-                },
-                "required": ["volume_level"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_current_datetime",
-            "description": "Retrieve the current date and/or time. Options: date, time, or both.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "mode": {
-                        "type": "string",
-                        "enum": ["date", "time", "date & time"],
-                        "description":
-                        "Choose whether to get date, time, or both"
-                    }
-                },
-                "required": ["mode"]
-            }
-        }
-    }
-]
+    tools = load_json('tools.json')
+    tools = append_tools(tools, 'plugin_tool_list.json')
+
     # Update the device names for the smart home part to be dynamic
     for tool in tools:
         if tool.get("function", {}).get("name") == "control_smarthome":
@@ -1079,21 +844,7 @@ def ask(question):
             "tool_calls": tool_calls
         })
         # Process tool calls
-        available_functions = {
-             "search_google": search_google_and_return_json_with_content,
-             "control_smarthome": home_assistant.control_light_by_name,
-             "get_current_weather": get_current_weather,
-             "use_calculator": perform_math,
-             "personal_memory": memorize,
-             "scan_webcam": view_webcam,
-             "switch_ai_model": switch_ai_model,
-             "change_personality": change_personality,
-             "search_and_play_song": search_and_play_song,
-             "toggle_spotify_playback": toggle_spotify_playback,
-             "set_spotify_volume": set_spotify_volume,
-             "set_system_volume": set_system_volume,
-             "get_current_datetime": get_current_datetime,
-         }
+        available_functions = initialize_and_extend_available_functions()
 
         for tool_call in tool_calls:
             function_name = tool_call.function.name
@@ -1149,6 +900,37 @@ def reply(question):
         return response_content, False
     else:
         return response_content, ends_with_question_mark
+    
+def initialize_and_extend_available_functions():
+    # Initialize with core functions
+    available_functions = {
+             "search_google": search_google_and_return_json_with_content,
+             "control_smarthome": home_assistant.control_light_by_name,
+             "get_current_weather": get_current_weather,
+             "use_calculator": perform_math,
+             "personal_memory": memorize,
+             "scan_webcam": view_webcam,
+             "switch_ai_model": switch_ai_model,
+             "change_personality": change_personality,
+             "search_and_play_song": search_and_play_song,
+             "toggle_spotify_playback": toggle_spotify_playback,
+             "set_spotify_volume": set_spotify_volume,
+             "set_system_volume": set_system_volume,
+             "get_current_datetime": get_current_datetime,
+         }
+
+    # Try to dynamically extend available_functions with those defined in plugin.py
+    try:
+        import plugin
+        plugin_functions = {
+            name: getattr(plugin, name) for name in dir(plugin)
+            if callable(getattr(plugin, name)) and not name.startswith("__")
+        }
+        available_functions.update(plugin_functions)
+    except ImportError:
+        print("Note: No additional functions were loaded from 'plugin.py'.")
+
+    return available_functions
 
 import os
 import pyaudio
@@ -1292,8 +1074,20 @@ elif platform.system() == 'Darwin':  # macOS
     MODEL_PATH = "Miles/miles-50k.tflite"
     INFERENCE_FRAMEWORK = 'tflite'
     DETECTION_THRESHOLD = 0.01
+elif platform.system() == 'Linux':
+    # Check for TensorFlow Lite availability, fall back to ONNX if necessary
+    try:
+        import tflite_runtime.interpreter as tflite
+        print("Using TensorFlow Lite model on Linux.")
+        MODEL_PATH = "Miles/miles-50k.tflite"
+        INFERENCE_FRAMEWORK = 'tflite'
+    except ImportError:
+        print("tflite_runtime is not available, using ONNX model.")
+        MODEL_PATH = "Miles/miles-50k.onnx"
+        INFERENCE_FRAMEWORK = 'onnx'
+    DETECTION_THRESHOLD = 0.01
 else:
-    raise Exception("Unsupported operating system for this application.")
+    raise Exception("Unsupported operating system for this application. Tried Linux, Windows, and macOS. All Failed.")
 
 BEEP_SOUND_PATH = "beep_sound.wav"
 
@@ -1303,8 +1097,11 @@ def play_beep():
     elif platform.system() == 'Windows':
         import winsound  # Import winsound only on Windows
         winsound.PlaySound(BEEP_SOUND_PATH, winsound.SND_FILENAME)
+    elif platform.system() == 'Linux':
+        # Use aplay for Linux audio playback
+        subprocess.run(["aplay", BEEP_SOUND_PATH])
     else:
-        print("Unsupported operating system for beep sound.")
+        print("Unsupported operating system for beep sound, tried Linux, Windows, and macOS. All Failed.")
 
 def initialize_wake_word_model():
     # Load the specified model with the appropriate inference framework
@@ -1312,6 +1109,7 @@ def initialize_wake_word_model():
     return owwModel
 
 def main():
+    initialize_and_extend_available_functions()
     global was_spotify_playing, original_volume, user_requested_pause
 
     # Initialize PyAudio
