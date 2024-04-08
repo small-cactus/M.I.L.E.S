@@ -114,9 +114,9 @@ Let your imagination run wild with Miles!
 > These are all planned features that will soon be implemented, you'll see the date last updated, and current progress as of that date.
 
 ### Plugins
-> 3-29-24 - 15% complete - conceptual frameworks in place, I have ideas how to make this possible
+> 3-29-24 - 50% complete - tool list generation from any python function complete - need to integrate and test
 - Allows anyone to add a python function or group of python functions to Miles' tool list.
-- LLM auto writes code to fit into place - only if I can't hard code it.
+- All you have to do is write a python function and follow the correct docstring format
 
 ### Home Assistant integration
 > 3-29-24 - 100% complete - finished
