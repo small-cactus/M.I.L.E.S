@@ -354,6 +354,13 @@ ipcRenderer.on('initialize-setup', () => {
 function saveApiKeys(apiKeys) {
     // Example of how apiKeys might be used or stored
     console.log('API Keys:', apiKeys);
+    
+    // Check if the Home Assistant URL and token are not provided
+    if (!setupValues['dynamic-textbox-home-assistant-url'] || !setupValues['dynamic-textbox-home-assistant-token']) {
+        // Set Home Assistant URL and token to "none" if not provided
+        setupValues['dynamic-textbox-home-assistant-url'] = 'none';
+        setupValues['dynamic-textbox-home-assistant-token'] = 'none';
+    }
 
     // Signal the main process to save API keys
     ipcRenderer.send('saveApiKeys', setupValues);
