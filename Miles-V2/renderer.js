@@ -381,6 +381,7 @@ document.getElementById('start-config-script').addEventListener('click', functio
 
 document.getElementById('no-home-assistant').addEventListener('click', function() {
     navigateToConfigPage()
+    saveApiKeys()
 });
 
 document.getElementById('yes-home-assistant').addEventListener('click', function() {
