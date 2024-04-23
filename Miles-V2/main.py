@@ -1070,12 +1070,19 @@ if platform.system() == 'Windows':
     INFERENCE_FRAMEWORK = 'onnx'
     DETECTION_THRESHOLD = 0.01
 elif platform.system() == 'Darwin':  # macOS
-    print("User is on macOS, using tflite model.")
-    MODEL_PATH = "Miles/miles-50k.tflite"
-    INFERENCE_FRAMEWORK = 'tflite'
+    try:
+        # Attempt to import TensorFlow Lite to see if it's available
+        import tflite_runtime.interpreter as tflite
+        print("User is on macOS, using tflite model.")
+        MODEL_PATH = "Miles/miles-50k.tflite"
+        INFERENCE_FRAMEWORK = 'tflite'
+    except ImportError:
+        # Fallback to ONNX if TensorFlow Lite is not installed
+        print("tflite_runtime is not available on macOS, using ONNX model.")
+        MODEL_PATH = "Miles/miles-50k.onnx"
+        INFERENCE_FRAMEWORK = 'onnx'
     DETECTION_THRESHOLD = 0.01
 elif platform.system() == 'Linux':
-    # Check for TensorFlow Lite availability, fall back to ONNX if necessary
     try:
         import tflite_runtime.interpreter as tflite
         print("Using TensorFlow Lite model on Linux.")
@@ -1087,7 +1094,10 @@ elif platform.system() == 'Linux':
         INFERENCE_FRAMEWORK = 'onnx'
     DETECTION_THRESHOLD = 0.01
 else:
-    raise Exception("Unsupported operating system for this application. Tried Linux, Windows, and macOS. All Failed.")
+    print(f"Unsupported operating system: {platform.system()}. Defaulting to ONNX model.")
+    MODEL_PATH = "Miles/miles-50k.onnx"
+    INFERENCE_FRAMEWORK = 'onnx'
+    DETECTION_THRESHOLD = 0.01
 
 BEEP_SOUND_PATH = "beep_sound.wav"
 
