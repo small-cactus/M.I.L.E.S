@@ -292,6 +292,7 @@ def set_spotify_volume(volume_percent):
 def set_system_volume(volume_level):
     print(f"[Miles is setting system volume to {volume_level}%...]")
     try:
+        volume_level = int(volume_level)
         os.system(f"osascript -e 'set volume output volume {volume_level}'")
         return json.dumps({"System Volume Success Message": f"System volume set to {volume_level}"})
     except Exception as e:
