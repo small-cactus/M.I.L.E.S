@@ -114,12 +114,13 @@ Let your imagination run wild with Miles!
 > These are all planned features that will soon be implemented, you'll see the date last updated, and current progress as of that date.
 
 ### Smart Wake Up
-> 4-30-24 - 10% complete - lots of ideas, plans laid out
+> 4-30-24 - 60% complete - lots of ideas, plans laid out
 - Say anything to activate Miles
 - It understands context, meaning it won't activate by you just talking
 - Examples: Instead of just saying Miles, you could say "i need help" or "wake up" or "wake up miles" or hi miles, hey miles, okay miles, and miles
 - Annoyance mode: Allows slower but smarter commands, you don't need a wake word at all anymore, just talk when you wanna talk, Miles will always be listening and transcribing background context and conversations to differentiate between a question, task, and if it's directed towards Miles or someone else.
 - I'm highly confident I can recreate the useability of Jarvis from Ironman, where you just talk whenever you want and it works. Although it will be very expensive and very slow, probably 2-7 seconds slower.
+- Update: I finished the annoyance mode, it works great and can recreate the useability of jarvis, i got it to work with local models for everything too.
 
 ### Plugins
 > 3-29-24 - 100% complete - finished
