@@ -216,7 +216,7 @@ def search_and_play_song(song_name: str):
 
     return response
     
-current_model = "gpt-3.5-turbo-0125" # default model to start the program with, you can change this.
+current_model = "gpt-4o-mini" # default model to start the program with, you can change this.
 
 def toggle_spotify_playback(action):
     global was_spotify_playing, user_requested_pause
@@ -262,20 +262,20 @@ def toggle_spotify_playback(action):
 
 def switch_ai_model(model_name):
     global current_model
-    valid_models = ["gpt-4-0125-preview", "gpt-3.5-turbo-0125"]
+    valid_models = ["gpt-4o", "gpt-4o-mini"]
     warning_message = ""
 
     if model_name in valid_models:
         current_model = model_name
         print(f"[Miles is switching the model to {current_model}...]")
 
-        if current_model == "gpt-3.5-turbo-0125":
-            warning_message = "Tell the user: I'm required to tell you this disclaimer, choosing GPT-3.5 as my model will result in less accurate responses and reduced tool functionality but will be 20 times cheaper."
-        elif current_model == "gpt-4-0125-preview":
-            warning_message = "Tell the user this: I'm required to tell you this disclaimer, using GPT-4 as my model is approximately 20 times more expensive and may take longer to process responses."
+        if current_model == "gpt-4o-mini":
+            warning_message = "Tell the user: I am now using gpt-4o-mini."
+        elif current_model == "gpt-4o":
+            warning_message = "Tell the user this: I am now using gpt-4o."
 
     else:
-        current_model = "gpt-3.5-turbo-0125"
+        current_model = "gpt-4o-mini"
 
     message = f"Switched to model {current_model}. {warning_message}"
     return json.dumps({"AI Model Update Success": message.strip()})
@@ -613,7 +613,7 @@ def view_webcam(focus, detail_mode='normal'):
     
     # Setup the API request with the base64 image
     response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
+        model="gpt-4o",
         messages=[
             {
                 "role": "user",
