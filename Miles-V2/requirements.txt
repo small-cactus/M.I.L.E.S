@@ -4,16 +4,16 @@ beautifulsoup4==4.12.3
 gTTS==2.5.1
 imageio==2.34.0
 Imageio-ffmpeg
-numpy==1.26.4
+numpy>=1.26.4
 openai==1.16.2
-openai-whisper
+openai-whisper @ git+https://github.com/openai/whisper.git@c0d2f624c09dc18e709e37c2ad90c039a4eb72a2
 openwakeword==0.6.0
-Pillow==10.3.0
+Pillow>=10.3.0
 PyAudio==0.2.14
 pydub==0.25.1
 Requests==2.31.0
 SpeechRecognition==3.10.1
 spotipy==2.23.0
-sympy==1.12
+sympy>=1.12
 urllib3==2.2.1
 TensorFlow
