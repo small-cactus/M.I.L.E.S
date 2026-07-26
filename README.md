@@ -150,8 +150,21 @@ https://github.com/small-cactus/M.I.L.E.S/assets/125771841/b3286b3c-f88b-4315-bb
 > This is a realtime demo of the projection UI with sound (modulated to emulate jarvis, not sure if I will keep it), the black background makes it appear on the wall as if it has a transparent background
 
 
-## 🤝 **Contribute to Development**
-Your feedback shapes M.I.L.E.S! Though this is a beta release, I eagerly await your feature requests and issue reports for our final launch on GitHub.
+## Paid setup and custom work
 
-**Contact:** anthonyhayward1000@gmail.com
+I created M.I.L.E.S. Active feature development is paused while I work on other things, but I take on a small amount of fixed-price work around my full-time software engineering role:
+
+- Getting M.I.L.E.S installed and configured on your own system
+- Adding an integration: a tool, device, API, or workflow you need it to work with
+- Building a custom voice or automation agent for a bounded use case using the same architecture
+
+Paid work starts around $300. Most integration projects land between $600 and $1,500, fixed price, quoted in writing before any money moves.
+
+For a quote, email anthonyhayward1000@gmail.com with your operating system, what you want the end result to do, and your timeline. I will reply with either a fixed quote or an honest answer that your case is not a fit.
+
+Bug reports and general questions still belong in Issues.
+
+## 🤝 **Contribute to Development**
+
+Your feedback shapes M.I.L.E.S. Though active feature development is paused, feature requests and issue reports are still welcome.
 
